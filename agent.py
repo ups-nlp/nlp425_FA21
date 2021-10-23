@@ -1,5 +1,5 @@
 """
-An AI agent for playing text-based games
+Agents for playing text-based games
 """
 
 import random
