@@ -30,3 +30,6 @@ class HumanAgent(Agent):
         """Takes in the history and returns the next action to take"""
         print("Action: ")
         return input()
+
+class MonteAgent(Agent):
+    """"Monte Carlo Search Tree Player"""
