@@ -6,7 +6,7 @@ from jericho import FrotzEnv
 from agent import Agent
 from agent import RandomAgent
 from agent import HumanAgent
-from agent import DEPagent
+from DEPagent import DEPagent
 
 
 def play_game(agent: Agent, game_file: str, num_steps: int):
