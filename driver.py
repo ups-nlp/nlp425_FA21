@@ -20,8 +20,8 @@ jericho_dir = '/Users/prowe/software/jericho-master/z-machine-games-master/' \
 # The name of the game you want to play
 game = 'zork1.z5'
 
-# The type of agent: random, human, etc
-agent = "human"
+# The type of agent: random, human, DEP, etc
+agent = "DEP"
 
 # The number of moves
 num_moves = 10

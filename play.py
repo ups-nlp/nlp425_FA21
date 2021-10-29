@@ -6,6 +6,7 @@ from jericho import FrotzEnv
 from agent import Agent
 from agent import RandomAgent
 from agent import HumanAgent
+from agent import DEPagent
 
 
 def play_game(agent: Agent, game_file: str, num_steps: int):
@@ -18,7 +19,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
     history = []
 
     # Get the initial observation and info
-    # info is a dictionary (i.e. hashmap) of {'moves': int, 'score':int}
+    # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
     curr_obs, info = env.reset()
     done = False
 
@@ -65,6 +66,8 @@ def main(agent, game_file, num_moves):
         ai_agent = RandomAgent()
     elif agent == 'human':
         ai_agent = HumanAgent()
+    elif agent == 'DEP':
+        ai_agent = DEPagent()
     else:
         ai_agent = RandomAgent()
 
