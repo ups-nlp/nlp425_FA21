@@ -14,14 +14,13 @@ import play
 
 # The location of your Jericho game suite. This is unique to your computer,
 # so you should modify it
-jericho_dir = '/Users/prowe/software/jericho-master/z-machine-games-master/' \
-              + 'jericho-game-suite/'
+jericho_dir = '.../jericho-master/z-machine-games-master/jericho-game-suite/'
               
 # The name of the game you want to play
 game = 'zork1.z5'
 
 # The type of agent: random, human, DEP, etc
-agent = "DEP"
+agent = "random"
 
 # The number of moves
 num_moves = 10

@@ -5,6 +5,7 @@ Agents for playing text-based games
 import random
 from jericho import FrotzEnv
 
+
 class Agent:
     """Interface for an Agent"""
 
@@ -29,4 +30,3 @@ class HumanAgent(Agent):
         """Takes in the history and returns the next action to take"""
         print("Action: ")
         return input()
-
