@@ -37,7 +37,7 @@ class DEPagent(Agent):
         1) Should this be a method or a class?
         2) Don't we need the points as input, so we can train?
         """
-        return 'Take all'
+        return 'I am the hoarder you need code me up'
     
     def interactor(self, valid_actions, history):
         """ Determine what action the interactor would take. """
@@ -48,7 +48,9 @@ class DEPagent(Agent):
         return 'go  ' + random.choice(['north','south','east','west'])
     
     def decision_maker(self, actions, history):
-        """ Decide which choice to take randomly for now"""
+        """ Decide which choice to take randomly for now
+        this needs some intelligence
+        """
         return random.choice(actions)
         
     
