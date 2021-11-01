@@ -48,7 +48,7 @@ print("You have chosen this sentence:")
 print(desired_input)
 print()
 
-# Parse the desired input &kioi print
+# Parse the desired input & print
 doc = nlp(desired_input)
 sentences = (doc.sents)
 
@@ -59,8 +59,13 @@ for sentence in sentences:
 
 # Parse the actual nouns from the Spacy output
 
+# The Main Method
 
 
 # The Standard Function for the Final Project
-get.actions():
-print("Hello")
+# def get_valid_actions( obs)
+
+
+# get_nouns
+
+# get_directions
