@@ -122,6 +122,23 @@ def bestChild(parent, exploration):
                 max = childValue
     return bestChild
 
+"""
+This function backpropogates the results of the Monte Carlo Simulation back up the tree
+
+Keyword arguments:
+node -- the child node we simulated from
+delta -- the component of the reward vector associated with the current player at node v
+"""
+def backUp(node, delta):
+    while node is not None:
+        # Increment the number of times the node has 
+        # been visited and the simulated value of the node
+        node.visited += 1
+        node.simValue += delta
+        # Traverse up the tree
+        node = node.getParent()
+
+
 
 # A node in the MCTS
 class Node:
