@@ -4,21 +4,24 @@ import random
 
 
 
+""" Expand this node 
 
-# Expand From the given node
-def expandNode(parent):
-    # Get ready to store the selected action
-    action = ""
+Create all children of the given node
 
-    # Find the best action
-    for action in Node.actions: ## Node store its possible actions? or rather actions as method parameter
-        action = "" ## Somehow select what action to do
+Keyword arguments:
+parent -- the node being expanded
+Return: a child node to explore """
+# Expand all possible children of the given node
+def expandNode(parent, env):
+    # Get possible actions
+    actions = env.get_valid_actions()
 
+    # Create all possible child nodes
+    for action in actions: 
         # Make a new node
-        newNode = Node(parent, action, parent.actions) ## Node knows what action led to this state? as argument for constructor?
+        newNode = Node(parent, action, parent.actions) 
 
-    ## Add newNode as child node of parent
-    # Return the newly created node to-be-explored
+    # Return a newly created node to-be-explored
     return newNode
 
 def defaultPolicy(state):
@@ -145,10 +148,9 @@ class Node:
     This is a temporary class to be filled in later. It holds a state of the game.
     """
 
-    def __init__(self, parent, prevAct, actions):
+    def __init__(self, parent, prevAct):
         self.parent = parent
         self.prevAct = prevAct
-        self.actions = actions
         self.children = []
         self.simValue = inf
         self.visited = 0
