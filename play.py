@@ -53,46 +53,32 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         print(action)
 
 
-def main(agent, game_file, num_moves):
-    """ 
-    The main method that instantiates an agent and calls play_game for the
-    specified game.
-    """
-
     
-    # Right now all you can create is a RandomAgent or a HumanAgent. 
-    # This will expand in the future.
-    if agent == 'random':
-        ai_agent = RandomAgent()
-    elif agent == 'human':
-        ai_agent = HumanAgent()
-    elif agent == 'DEPagent':
-        ai_agent = DEPagent()
-    else:
-        ai_agent = RandomAgent()
-
-    play_game(ai_agent, game_file, num_moves)
-    
-
 if __name__ == "__main__":
     """
-    Read in command line arguments and begin the game play.
-    Use a parser for the command line arguments
+    Use a parser to read in the command line arguments
     num_moves -- The number of moves the agent should make
-    agent -- Right now this is just 'random' but will expand as we make 
-    other agents
+    agent -- Right now this is just 'random' but will expand as we make other agents
     game_file -- The full path to the game file
     """
     parser = argparse.ArgumentParser(
         description='Runs an AI agent on a specified game')
 
-    # Get the argements that were read in from the command line
     parser.add_argument(
         'num_moves', type=int, help='Number of moves for the agent to make')
     parser.add_argument('agent', help='[random|human]')
     parser.add_argument('game_file', help='Full pathname for game')
     args = parser.parse_args()
-    
-    # Call the main code to set up the agent and start the game
-    main(args.agent, args.game_file, args.num_moves)
+
+    # Right now all you can create is a RandomAgent. This will expand in the future
+    if args.agent == 'random':
+        ai_agent = RandomAgent()
+    elif args.agent == 'human':
+        ai_agent = HumanAgent()
+    elif args.agent == 'DEPagent':
+        ai_agent = DEPagent()
+    else:
+        ai_agent = RandomAgent()
+
+    play_game(ai_agent, args.game_file, args.num_moves)
 

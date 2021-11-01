@@ -11,15 +11,6 @@ Created on Thu Oct 28 18:59:14 2021
 # Installed modules
 import random
 from jericho import FrotzEnv
-#import spacy
-#import benepar; benepar.download('benepar_en3')
-
-# # Set up nlp
-# nlp = spacy.load('en_core_web_lg')
-# if spacy.__version__.startswith('2'):
-#     nlp.add_pipe(benepar.BeneparComponent("benepar_en3"))
-# else:
-#     nlp.add_pipe("benepar", config={"model": "benepar_en3"})
     
 
 # In-house modules
@@ -60,13 +51,7 @@ class DEPagent(Agent):
         # Eventually the valid actions will be determined by Team 1,
         # but for now use the FrotzEnv
         valid_actions = env.get_valid_actions()
-        
-        #for sentence in valid_actions:
-        #    print(nlp(sentence))
-        
-        # Run a logic module that will do certain tasks every time
-        # Should we parse the list of actions and get out nouns?
-        
+                
         
         # Make the possible set of actions a list of strings, so we can grow 
         # it later if we want
