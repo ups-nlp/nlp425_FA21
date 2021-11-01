@@ -58,3 +58,9 @@ for sentence in sentences:
     print()
 
 # Parse the actual nouns from the Spacy output
+
+
+
+# The Standard Function for the Final Project
+get.actions():
+print("Hello")
