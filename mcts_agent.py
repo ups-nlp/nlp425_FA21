@@ -14,11 +14,10 @@ def expandNode(parent):
     for action in Node.actions: ## Node store its possible actions? or rather actions as method parameter
         action = "" ## Somehow select what action to do
 
-    # Make a new node
-    newNode = Node(parent, action, parent.actions) ## Node knows what action led to this state? as argument for constructor?
+        # Make a new node
+        newNode = Node(parent, action, parent.actions) ## Node knows what action led to this state? as argument for constructor?
 
     ## Add newNode as child node of parent
-
     # Return the newly created node to-be-explored
     return newNode
 
