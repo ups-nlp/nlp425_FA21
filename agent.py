@@ -36,7 +36,7 @@ class MonteAgent(Agent):
     """"Monte Carlo Search Tree Player"""
 
 
-    def __init__(self, env: FrotzEnv):
+    def __init__(self, env: FrotzEnv, num_steps: int):
         # create root node with the initial state
         self.root = mcts_agent.Node(None, None)
         # create a pointer node to use to traverse the tree later
@@ -51,7 +51,7 @@ class MonteAgent(Agent):
             # Create a new node on the tree
             newNode = mcts_agent.treePolicy(self.root, env, self.exploreConst)
             # Determine the simulated value of the new node
-            delta = mcts_agent.defaultPolicy(newNode, env)
+            delta = mcts_agent.defaultPolicy(newNode, env, num_steps)
             # Propogate the simulated value back up the tree
             mcts_agent.backUp(newNode, delta)
 
