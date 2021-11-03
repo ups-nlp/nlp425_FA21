@@ -15,6 +15,9 @@ from jericho import FrotzEnv
 
 # In-house modules
 from agent import Agent
+from decision_maker import decision_maker
+
+        
 
 
 class DEPagent(Agent):
@@ -24,26 +27,55 @@ class DEPagent(Agent):
         """ 
         Determine what action the hoarder would take.
         
-        Questions:
-        1) Should this be a method or a class?
-        2) Don't we need the points as input, so we can train?
+        @param valid_actions
+        @param history
+        
+        For the moment, hoarder will return "take all" until futher intelligance 
+        can be added. 
+        
+        @return chosen_action: A string of containing "take all"
+        
         """
         return 'take all'
     
-    def interactor(self, valid_actions, history):
-        """ Determine what action the interactor would take. """
-        return 'attack'
+    def fighter(self, valid_actions, history):
+        """ 
+        @param valid_actions
+        @param history
+         
+        For the moment: fighter will return "kill ___ with ____" until further 
+        intelligance can be added.  
+        
+        @return chosen_action: A string containing "kill ____ with ____"
+        """
+        return 'kill ___ with ___'
     
-    def observer(self, valid_actions, history):
-        """ Determine what action the interactor would take. """
+    def mover(self, valid_actions, history):
+        """ 
+        @param valid_actions
+        @param history
+        
+        The mover will take some set of vaild move actions, cross that will 
+        other known move actions and will pick one by prioritizing new directions
+        
+        @return chosen_action: A string containing a move action
+        """
         return 'go  ' + random.choice(['north','south','east','west'])
     
-    def decision_maker(self, actions, history):
-        """ Decide which choice to take randomly for now
-        this needs some intelligence
-        """
-        return random.choice(actions)
+    
+    def everything_else(self, valid_actions, history):
+        """ 
+        @param valid_actions
+        @param history
         
+        Will use the observation and list of vaild actions, feed them into a
+        recurrent neural network that will decided what the next action will be
+        
+        @return chosen_action: A String containing a new action
+        """
+        return 'talk'
+    
+    
     
     def take_action(self, env: FrotzEnv, history: list) -> str:
         """Takes in the history and returns the next action to take"""
@@ -53,21 +85,17 @@ class DEPagent(Agent):
         valid_actions = env.get_valid_actions()
                 
         
-        # Make the possible set of actions a list of strings, so we can grow 
-        # it later if we want
-        actions = []
         
-        # Possible responses to action from the Hoarder
-        actions.append(self.hoarder(valid_actions, history))
+        chosen_module = decision_maker(valid_actions, history)
+
+        action_modules = [self.hoarder,
+                          self.mover,
+                          self.fighter,
+                          self.everything_else] 
         
-        # Possible responses to action from the Observer
-        actions.append(self.observer(valid_actions, history))
+        action = action_modules[chosen_module](valid_actions, history)
         
-        # Possible responses to action from the Interactor
-        actions.append(self.interactor(valid_actions, history))
-        
-        # Choose between the hoarder, observer, and interactor
-        return self.decision_maker(actions, history)
+        return action
 
     
     
