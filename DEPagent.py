@@ -16,14 +16,13 @@ from jericho import FrotzEnv
 # In-house modules
 from agent import Agent
 from decision_maker import decision_maker
-
         
 
 
 class DEPagent(Agent):
     """Agent created by Danielle, Eric, and Penny. Details TBD"""
     
-    def hoarder(self, valid_actions, history):
+    def hoarder(self, valid_actions:list, history:list) -> str:
         """ 
         Determine what action the hoarder would take.
         
@@ -38,7 +37,7 @@ class DEPagent(Agent):
         """
         return 'take all'
     
-    def fighter(self, valid_actions, history):
+    def fighter(self, valid_actions:list, history:list) -> str:
         """ 
         @param valid_actions
         @param history
@@ -50,7 +49,7 @@ class DEPagent(Agent):
         """
         return 'kill ___ with ___'
     
-    def mover(self, valid_actions, history):
+    def mover(self, valid_actions:list, history:list) -> str:
         """ 
         @param valid_actions
         @param history
@@ -63,13 +62,13 @@ class DEPagent(Agent):
         return 'go  ' + random.choice(['north','south','east','west'])
     
     
-    def everything_else(self, valid_actions, history):
+    def everything_else(self, valid_actions:list, history:list) -> str:
         """ 
+        Feed the observation and list of vaild actions into a recurrent
+        neural network that will decided what the next action will be
+        
         @param valid_actions
         @param history
-        
-        Will use the observation and list of vaild actions, feed them into a
-        recurrent neural network that will decided what the next action will be
         
         @return chosen_action: A String containing a new action
         """
@@ -78,7 +77,14 @@ class DEPagent(Agent):
     
     
     def take_action(self, env: FrotzEnv, history: list) -> str:
-        """Takes in the history and returns the next action to take"""
+        """
+        Takes in the history and returns the next action to take
+        
+        @param env, Information about the game state from Frotz
+        @param history, A list of tuples of previous actions and observations
+        
+        @return action, A string with the action to take
+        """
 
         # Eventually the valid actions will be determined by Team 1,
         # but for now use the FrotzEnv
