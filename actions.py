@@ -1,4 +1,4 @@
-@author brayancodes
+#@author brayancodes
 # Imports from my jupyter notebook.
 from collections import Counter
 import math
@@ -32,32 +32,26 @@ input_4 = "You are in the living room. There is a doorway to the east, a wooden 
 input_5 = "With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door."
 
 # Prompt for Input
-user_input = input("Enter 1 - 5 to choose a different sentences to parse from Zork 1: ")
-if user_input == 1:
-    desired_input = input_1
-elif user_input == 2:
-    desired_input = input_2
-elif user_input == 3:
-    desired_input = input_3
-elif user_input == 4:
-    desired_input = input_4
-else:
-    desired_input = input_5
-print()
-print("You have chosen this sentence:")
-print(desired_input)
-print()
+# user_input = input("Enter 1 - 5 to choose a different sentences to parse from Zork 1: ")
+# if user_input == 1:
+#     desired_input = input_1
+# elif user_input == 2:
+#     desired_input = input_2
+# elif user_input == 3:
+#     desired_input = input_3
+# elif user_input == 4:
+#     desired_input = input_4
+# else:
+#     desired_input = input_5
+# print()
+# print("You have chosen this sentence:")
+# print(desired_input)
+# print()
 
 # Parse the desired input & print
-doc = nlp(desired_input)
+#doc = nlp(desired_input)
+doc = nlp(input_1)
 sentences = (doc.sents)
-
-for sentence in sentences:
-    print()
-    print(sentence._.parse_string)
-    print()
-
-# Parse the actual nouns from the Spacy output
 
 # The Main Method
 
@@ -66,6 +60,22 @@ for sentence in sentences:
 # def get_valid_actions( obs)
 
 
-# get_nouns
+# get_nouns <- Brayan
+text = [token.text for token in doc]
+pos = [token.pos_ for token in doc]
 
-# get_directions
+words_to_get = [] # This is finding the indexes for the nouns.
+counter = 0
+for word in pos:
+    if word == 'NOUN':
+        words_to_get.append(counter)
+    counter += 1
+
+words_we_wanted = []
+for index in words_to_get:
+    words_we_wanted.append(text[index])
+
+print()
+print(words_we_wanted)
+
+# get_directions <- Ben
