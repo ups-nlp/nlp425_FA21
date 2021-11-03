@@ -1,5 +1,5 @@
 
-from math import inf, sqrt, log2
+from math import inf, sqrt, log2, trunc
 from jericho import FrotzEnv
 import random
 
@@ -198,20 +198,48 @@ This function creates a jericho environement and runs a game to a certain point 
 
 Keyword arguments:
 path -- an array containing the actions used to get to this point
+game_file -- the file of the game being played
+stepLimit -- the max number of steps we want to simulate
 Return: the endstate tuple generated after entering all the given actions (i think observation is the first item of the tuple)
 """
-def simulatePath(path, game_file):
+def simulatePath(path, game_file, stepLimit):
     # Create the environment
     env = FrotzEnv(game_file)
 
-    env.reset()
+    # Make sure its reset just in case
+    curState = env.reset()
 
     # Take steps except the last step
-    for i in range(len(path) - 1):
-        # Take the action at this point in the path
-        env.step(path[i])
+    for i in range(len(path)):
+        # Check to see if we are in a terminal state
+        if(isTerminal(curState, i, stepLimit)):
+            # If we are at a terminal state return the last current state
+            return curState
+        else:
+            # Take the action at this point in the path and store state tuple
+            curState = env.step(path[i])
 
-    # Return the endstate after reaching the destination of the action path 
-    return env.step(path[-1])
+    # Return endstate of this path
+    return curState
 
+   
+"""
+Checks to see if this step of the simulation should be a terminal state
 
+This function checks an environment and sees if it is at its step limit, a game over, or a successful end game terminal state
+
+Keyword arguments:
+env -- the current game environment
+curState -- the current state of the game
+curSteps -- the current number of steps taken
+Return: true if the step is terminal, false if not
+"""
+def isTerminal(env, curState, curSteps, stepLimit):
+    # Check if step limit reached
+    if(curSteps > stepLimit):
+        return True
+    elif(curState[2]): # Check if the 'done' value of the game state is true
+        return True
+    else: # See if we are game over or not
+        return env.game_over()
+        
