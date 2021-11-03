@@ -43,7 +43,7 @@ def defaultPolicy(state, env, currDepth, depthLimit):
     the passed-in node to a terminal state. 
     """
     #if currently unexplored node, set score to 0
-    if state.simValue = inf:
+    if state.simValue == inf:
         state.simvalue = 0
 
     currScore = env.get_score()
@@ -52,7 +52,7 @@ def defaultPolicy(state, env, currDepth, depthLimit):
     curr = state
     x = 0
     DEPTH = 10 #change this value depending on how far down the tree to search
-    while !(curr.isTerminal(env, curr, (currDepth+x),depthLimit)):
+    while not (curr.isTerminal(env, curr, (currDepth+x),depthLimit)):
         """
         INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         Once an action is explored, remove from the available actions list
