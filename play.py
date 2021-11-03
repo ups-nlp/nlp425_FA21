@@ -64,7 +64,7 @@ if __name__ == "__main__":
     elif args.agent == 'human':
         ai_agent = HumanAgent()
     elif args.agent == 'mcts':
-        ai_agent = MonteAgent(env, num_moves)
+        ai_agent = MonteAgent(FrotzEnv(args.game_file), args.num_moves)
     else:
         ai_agent = RandomAgent()
 
