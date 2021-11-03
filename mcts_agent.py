@@ -1,16 +1,19 @@
 
 from math import inf, sqrt, log2
+from jericho import FrotzEnv
 import random
 
 
 
-""" Expand this node 
+""" 
+Expand this node 
 
 Create all children of the given node
 
 Keyword arguments:
 parent -- the node being expanded
-Return: a child node to explore """
+Return: a child node to explore 
+"""
 # Expand all possible children of the given node
 def expandNode(parent, env):
     # Get possible actions
@@ -185,4 +188,30 @@ class Node:
             chil.remove()
         self.getParent().children.remove(self)
         return None
+
+############################### STUFF TO RUN DOWN SIMULATION BELOW
+
+"""
+Simulates the end state of the given path
+
+This function creates a jericho environement and runs a game to a certain point getting the 'end state' for that line of actions
+
+Keyword arguments:
+path -- an array containing the actions used to get to this point
+Return: the endstate tuple generated after entering all the given actions (i think observation is the first item of the tuple)
+"""
+def simulatePath(paths, game_file):
+    # Create the environment
+    env = FrotzEnv(game_file)
+
+    env.reset()
+
+    # Take steps except the last step
+    for i in range(len(path) - 1):
+        # Take the action at this point in the path
+        env.step(path[i])
+
+    # Return the endstate after reaching the destination of the action path 
+    return env.step(actions[-1])
+
 

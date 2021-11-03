@@ -33,3 +33,9 @@ class HumanAgent(Agent):
 
 class MonteAgent(Agent):
     """"Monte Carlo Search Tree Player"""
+
+    def take_action(self, env: FrotzEnv, history: list) -> str:
+        """Takes in the history and returns the next action to take"""
+        print("Action: ")
+        return input()
+
