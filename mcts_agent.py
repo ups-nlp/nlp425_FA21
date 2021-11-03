@@ -37,16 +37,22 @@ state -- the node being expanded
 env -- FrotzEnv interface between the learning agent and the game
 Return: 
 """
-def defaultPolicy(state, env):
+def defaultPolicy(state, env, currDepth, depthLimit):
     """
     The defaultPolicy represents a simulated exploration of the tree from
     the passed-in node to a terminal state. 
     """
-    explored = [] #track all explored actions from the current state
+    #if currently unexplored node, set score to 0
+    if state.simValue = inf:
+        state.simvalue = 0
+
+    currScore = env.get_score()
+    #track all explored actions from the current state
+    explored = [] 
     curr = state
     x = 0
     DEPTH = 10 #change this value depending on how far down the tree to search
-    while x<= 10:
+    while !(curr.isTerminal(env, curr, (currDepth+x),depthLimit)):
         """
         INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         Once an action is explored, remove from the available actions list
@@ -57,16 +63,10 @@ def defaultPolicy(state, env):
         curr.actions.remove(act)
 
         #create a new state resulting from taking action in current state
-        """
-        ERROR: to expand on any state, won't we need the possible actions for that state?
-        And isn't this determined by the feedback from the game in response fo our action,
-         which we won't have access to before actually taking that action.
-         Currently, I am sending forward the list of remaining unexplored actions, but this is not valid
-        """
-        curr = Node(curr, act, curr.actions)
+        curr = env.step(act)
         x+=1
     #store the reward received by reaching terminal state
-    rew = reward(curr)
+    rew = reward(currScore,env)
 
     #reset simulation to current state (add back actions)
     while curr != state:
@@ -78,12 +78,12 @@ def defaultPolicy(state, env):
     #return the reward
     return rew
 
-def reward(state):
+def reward(curr, terminal):
     """
-    The reward method will calculate the reward of any state given a reward function we will determine later.
-    Currently, it just returns the amount of possible actions remaining.
+    The reward method calculates the change in the score of the game from
+    the current state to the end of the simulation.
     """
-    return len(state.actions)
+    return terminal.get_score()-curr
 
 #######################
 
