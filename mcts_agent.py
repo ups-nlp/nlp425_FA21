@@ -212,6 +212,6 @@ def simulatePath(path, game_file):
         env.step(path[i])
 
     # Return the endstate after reaching the destination of the action path 
-    return env.step(actions[-1])
+    return env.step(path[-1])
 
 
