@@ -200,7 +200,7 @@ Keyword arguments:
 path -- an array containing the actions used to get to this point
 Return: the endstate tuple generated after entering all the given actions (i think observation is the first item of the tuple)
 """
-def simulatePath(paths, game_file):
+def simulatePath(path, game_file):
     # Create the environment
     env = FrotzEnv(game_file)
 
