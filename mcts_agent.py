@@ -23,7 +23,7 @@ def expandNode(parent, env):
     # Create all possible child nodes
     for action in actions: 
         # Make a new node
-        newNode = Node(parent, action, parent.actions) 
+        newNode = Node(parent, action, parent.actions, parent.depth+1) 
 
     # update the env variable to the new node we are exploring
     env.step(newNode.getPrevAction)
@@ -37,7 +37,7 @@ state -- the node being expanded
 env -- FrotzEnv interface between the learning agent and the game
 Return: 
 """
-def defaultPolicy(state, env, currDepth, depthLimit):
+def defaultPolicy(state, env, depthLimit):
     """
     The defaultPolicy represents a simulated exploration of the tree from
     the passed-in node to a terminal state. 
@@ -52,7 +52,7 @@ def defaultPolicy(state, env, currDepth, depthLimit):
     curr = state
     x = 0
     DEPTH = 10 #change this value depending on how far down the tree to search
-    while not (curr.isTerminal(env, curr, (currDepth+x),depthLimit)):
+    while not (curr.isTerminal(env, curr, (state.depth+x),depthLimit)):
         """
         INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         Once an action is explored, remove from the available actions list
@@ -108,7 +108,7 @@ def treePolicy(root, env, explore_exloit_const):
             # Select the best child of the current node to explore
             node = bestChild(node, explore_exloit_const)
             # update the env variable
-            env.step(node.getPrevAction)
+            env.step(node.getPrevAction())
 
 """ Select and return the best child of the parent node to explore 
 
@@ -162,12 +162,13 @@ class Node:
     This is a temporary class to be filled in later. It holds a state of the game.
     """
 
-    def __init__(self, parent, prevAct):
+    def __init__(self, parent, prevAct, depth):
         self.parent = parent
         self.prevAct = prevAct
         self.children = []
         self.simValue = inf
         self.visited = 0
+        self.depth = depth
 
     def addChild(self, child):
         self.children.append(child)

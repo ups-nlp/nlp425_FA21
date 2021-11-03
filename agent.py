@@ -38,7 +38,7 @@ class MonteAgent(Agent):
 
     def __init__(self, env: FrotzEnv, num_steps: int):
         # create root node with the initial state
-        self.root = mcts_agent.Node(None, None)
+        self.root = mcts_agent.Node(None, None, 0)
         # create a pointer node to use to traverse the tree later
         self.current = self.root
         # This constant balances tree exploration with exploitation of ideal nodes
