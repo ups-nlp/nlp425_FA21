@@ -12,6 +12,7 @@ Create all children of the given node
 
 Keyword arguments:
 parent -- the node being expanded
+env -- FrotzEnv interface between the learning agent and the game
 Return: a child node to explore 
 """
 # Expand all possible children of the given node
@@ -24,10 +25,19 @@ def expandNode(parent, env):
         # Make a new node
         newNode = Node(parent, action, parent.actions) 
 
+    # update the env variable to the new node we are exploring
+    env.step(newNode.getPrevAction)
     # Return a newly created node to-be-explored
     return newNode
 
-def defaultPolicy(state):
+""" 
+
+Keyword arguments:
+state -- the node being expanded
+env -- FrotzEnv interface between the learning agent and the game
+Return: 
+"""
+def defaultPolicy(state, env):
     """
     The defaultPolicy represents a simulated exploration of the tree from
     the passed-in node to a terminal state. 
@@ -85,19 +95,20 @@ explores the best child node of the current node.
 
 Keyword arguments:
 root -- the root node of the tree
+env -- FrotzEnv interface between the learning agent and the game
 Return: the ideal node to expand on """
-def treePolicy(root):
+def treePolicy(root, env, explore_exloit_const):
     node = root
     while node is not None:
         #if parent is not full expanded, expand it and return
         if(not node.isExpanded()):
-            return expandNode(node)
+            return expandNode(node, env)
         #Otherwise, look at the parent's best child
         else:
-            # This constant balances tree exploration with exploitation of ideal nodes
-            Exploration_Exploitation = 2
             # Select the best child of the current node to explore
-            node = bestChild(node, Exploration_Exploitation)
+            node = bestChild(node, explore_exloit_const)
+            # update the env variable
+            env.step(node.getPrevAction)
 
 """ Select and return the best child of the parent node to explore 
 
@@ -163,6 +174,9 @@ class Node:
 
     def getParent(self):
         return self.parent
+
+    def getPrevAction(self):
+        return self.prevAct
 
     def getChildren(self):
         return self.children
