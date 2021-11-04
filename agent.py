@@ -46,23 +46,33 @@ class MonteAgent(Agent):
 
         # train the tree using the Monte Carlo Search Algorithm
         count = 0
+        done = False
         # for now, we will only generate a tree with 101 nodes
-        while(count < 100):
+        while(count < 300 and not done):
+            print(count)
             # Create a new node on the tree
-            newNode = mcts_agent.treePolicy(self.root, env, self.exploreConst)
+            newNode = mcts_agent.treePolicy(self.root, env, num_steps, self.exploreConst)
             # Determine the simulated value of the new node
-            delta = mcts_agent.defaultPolicy(newNode, env, num_steps)
+            delta = mcts_agent.defaultPolicy2(newNode, env, num_steps)
             # Propogate the simulated value back up the tree
             mcts_agent.backUp(newNode, delta)
 
+            if(env.victory()): 
+                done = True
             # reset the state of the game when done with one simulation 
             env.reset()
             count += 1
+
+        #self.root.print(0)
 
     
     def take_action(self, env: FrotzEnv, history: list) -> str:
         """Takes in the history and returns the next action to take"""
         print("Action: ")
-        self.current = mcts_agent.bestChild(self.current, self.exploreConst)
+        print(env.get_valid_actions())
+        for child in self.current.children:
+            print(child.getPrevAction(), ", count:", child.visited, ", value:", child.simValue)
+        self.current = mcts_agent.selectAction(self.current, self.exploreConst)
+        print(self.current)
         return self.current.getPrevAction()
 
