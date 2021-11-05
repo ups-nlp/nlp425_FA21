@@ -53,7 +53,7 @@ class MonteAgent(Agent):
             # Create a new node on the tree
             newNode = mcts_agent.treePolicy(self.root, env, num_steps, self.exploreConst)
             # Determine the simulated value of the new node
-            delta = mcts_agent.defaultPolicy2(newNode, env, num_steps)
+            delta = mcts_agent.defaultPolicy(newNode, env, num_steps)
             # Propogate the simulated value back up the tree
             mcts_agent.backUp(newNode, delta)
 
