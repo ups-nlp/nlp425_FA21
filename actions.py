@@ -1,5 +1,5 @@
-#@author brayancodes, ben
-# Imports from my jupyter notebook.
+# @author brayancodes, Real-Froggychair-2
+
 from collections import Counter
 import math
 import random
@@ -7,15 +7,7 @@ import numpy as np
 import os
 import re
 import statistics
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
 import spacy
-from spacy import displacy
-
-# https://pypi.org/project/benepar/
-import benepar
-benepar.download('benepar_en3')
 
 nlp = spacy.load('en_core_web_lg')
 
