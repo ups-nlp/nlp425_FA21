@@ -24,6 +24,44 @@ if spacy.__version__.startswith('2'):
 else:
     nlp.add_pipe("benepar", config={"model": "benepar_en3"})
 
+def get_directions(input_string):
+	#Extremely rudimentary dictionary containing direction info 
+	directionDict = {
+		"north" : {'north', 'front', 'ahead'},
+		"south" : {'south', 'behind', 'back'},
+		"east"  : {'east', 'right'},
+		"west"  : {'west', 'left'}
+	}
+
+	working_strings = input_string.split('\n')
+
+	for s in working_strings:
+		doc = nlp(s) #run information from game through the nlp pipeline
+		text = [token.text for token in doc]
+		pos  = [token.pos_ for token in doc]
+		sent = list(doc.sents)[0]
+
+		print("POS: ", pos)
+		print("TEXT: ", text)
+
+		# Using input of enviornment, determine directional words
+		parsed = sent._.parse_string
+
+		# Plan for later:
+		# Read parse tree to understand relationship between direction and object
+		# E.x. differentiate "West of house" means going east goes to house
+		# v.s. "to the north" means going north follows that path 
+
+if __name__ == "__main__" :
+	#Things to be run from commandline 
+	env = FrotzEnv(game_file)
+	info = env.reset()[0]
+
+	#cleans out the copyright info for pipeline
+	info = info.split('\n', maxsplit = 4)[-1].strip()
+
+	get_directions(info)
+
 # Test Input from Zork 1
 input_1 = "You are facing the south side of a white house. There is no door here, and all the windows are boarded."
 input_2 = "You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar."
@@ -60,19 +98,19 @@ sentences = (doc.sents)
 # def get_valid_actions( obs)
 
 
-# get_nouns <- Brayan
-text = [token.text for token in doc]
-pos = [token.pos_ for token in doc]
+# ===== get_nouns <- Brayan ======
+text = [token.text for token in doc] # Words
+pos = [token.pos_ for token in doc] # Pos tags
 
-words_to_get = [] # This is finding the indexes for the nouns.
+words_to_get = [] # This is storing the indexes for the words which are nouns.
 counter = 0
-for word in pos:
+for word in pos:# This is finding the indexes for the nouns.
     if word == 'NOUN':
         words_to_get.append(counter)
     counter += 1
 
-words_we_wanted = []
-for index in words_to_get:
+words_we_wanted = [] # This is storing the actual nouns
+for index in words_to_get: # Pulling the noun from its list using the found index.
     words_we_wanted.append(text[index])
 
 print()
