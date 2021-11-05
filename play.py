@@ -25,6 +25,8 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
     while num_steps > 0 and not done:
         action_to_take = agent.take_action(env, history)
+
+        # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
         next_obs, _, done, info = env.step(action_to_take)
 
         history.append((curr_obs, action_to_take))
@@ -44,10 +46,12 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
 
 if __name__ == "__main__":
-    # Use a parser for the command line arguments
+    # Read in command line arguments and play the game with the specified parameters
+    # Uses a parser for the command line arguments:
     # num_moves -- The number of moves the agent should make
     # agent -- Right now this is just 'random' but will expand as we make other agents
     # game_file -- The full path to the game file
+
     parser = argparse.ArgumentParser(
         description='Runs an AI agent on a specified game')
 
