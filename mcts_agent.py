@@ -83,7 +83,7 @@ def expand_node(parent, env):
     """
     Expand this node
 
-    Create all children of the given node
+    Create a random child of this node
 
     Keyword arguments:
     parent -- the node being expanded
@@ -91,27 +91,39 @@ def expand_node(parent, env):
     Return: a child node to explore
     """
 
-    # Get possible actions
-    actions = env.get_valid_actions()
+    # Get possible unexplored actions
+    actions = parent.new_actions 
 
-    # Create all possible child nodes
-    new_node = None
-    for action in actions:
-        # Make a new node
-        new_node = Node(parent, action)
-        parent.add_child(new_node)
+    # Pick a random unexplored action
+    rand_index = random.randint(0, len(actions)) - 1
+    action = actions[rand_index]
 
-    # if no new nodes were created, we are at a terminal state
-    if new_node is None:
-        # set the parent to terminal and return the parent
-        parent.terminal = True
-        return parent
+    # Remove that action from the unexplored action list and update parent
+    actions.remove(rand_index)
 
-    else:
-        # update the env variable to the new node we are exploring
-        env.step(new_node.get_prev_action())
-        # Return a newly created node to-be-explored
-        return new_node
+    # Create the child
+    new_node = Node(parent, action)
+
+    # Step into the state of that child and get its possible actions
+    new_actions = env.get_valid_actions()
+
+    # Set the unexplored valid actions of the child and return it
+    new_node.set_new_actions(new_actions)
+    return new_node
+
+    
+
+    # # if no new nodes were created, we are at a terminal state
+    # if new_node is None:
+    #     # set the parent to terminal and return the parent
+    #     parent.terminal = True
+    #     return parent
+
+    # else:
+    #     # update the env variable to the new node we are exploring
+    #     env.step(new_node.get_prev_action())
+    #     # Return a newly created node to-be-explored
+    #     return new_node
 
 
 def default_policy(new_node, env, sim_length):
@@ -176,7 +188,15 @@ class Node:
         self.children = []
         self.sim_value = 0
         self.visited = 0
-        self.terminal = False
+        self.new_actions = []
+
+    # Sets the 'new_actions' which are unexplored actions. Basically future potential child nodes
+    def set_new_actions(self, new_actions):
+        self.new_actions = new_actions
+
+    # The node is terminal if it has no children and no possible children
+    def is_terminal(self):
+        return (len(self.children) == 0) and (len(self.new_actions) == 0) 
 
     def print(self, level):
         space = ">" * level
