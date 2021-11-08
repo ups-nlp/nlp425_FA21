@@ -39,32 +39,59 @@ def tree_policy(root, env: FrotzEnv, max_depth, explore_exploit_const):
     # The node is terminal, so expand it
     return expand_node(node, env)
 
-def best_child(parent, exploration):
-    """ Select and return the best child of the parent node to explore
+def best_child(parent, exploration, use_bound = True):
+    """ Select and return the best child of the parent node to explore or the action to take
 
     From the current parent node, we will select the best child node to
     explore and return it. The exploration constant is inputted into this function,
     it balances exploration with exploitation. If the parent node has unexplored
     children, they will automatically be explored first.
 
+    or 
+
+    From the availble actions from this node, we will pick the one that has the most 
+    efficient score / visited ratio. Aka the best action to take
+
     Keyword arguments:
     parent -- the parent node
     exploration -- the exploration-exploitation constant
+    use_bound -- whether you are picking the best child to expand (true) or selecting the best action (false)
     Return: the best child to explore
     """
     max_val = -inf
-    best = None
+    bestLs = [None]
     for child in parent.get_children():
-        # Use the Upper Confidence Bounds for Trees to determine the value for the child
-        child_value = (child.sim_value/child.visited) + 2*exploration*sqrt((2*log2(parent.visited))/child.visited)
+        # Use the Upper Confidence Bounds for Trees to determine the value for the child or pick the child based on visited
+        if(use_bound):
+            child_value = (child.sim_value/child.visited) + 2*exploration*sqrt((2*log2(parent.visited))/child.visited)
+        else:
+            child_value = (child.sim_value/child.visited) #select_action
+        
         # if there is a tie for best child, randomly pick one
-        if child_value == max_val and random.random() > .5:
-            best = child
+        if child_value == max_val:
+            bestLs.append(child)
             max_val = child_value
         #if it's calue is greater than the best so far, it will be our best so far
         elif child_value > max_val:
-            best = child
+            bestLs = [child]
             max_val = child_value
+    return bestLs[random.randint(0, len(bestLs) - 1)]
+
+def select_action(parent, exploration):
+    max_val = -inf
+    best = None
+    for child in parent.get_children():
+        # if there is a child we haven't explored, explore it
+        if child.visited != 0:
+            
+            # if there is a tie for best child, randomly keep one
+            if child_value == max_val and random.random() > .5:
+                best = child
+                max_val = child_value
+            #if it's value is greater than the best so far, it will be our best so far
+            elif child_value > max_val:
+                best = child
+                max_val = child_value
     return best
 
 
@@ -152,22 +179,7 @@ def backup(node, delta):
         node = node.get_parent()
 
 
-def select_action(parent, exploration):
-    max_val = -inf
-    best = None
-    for child in parent.get_children():
-        # if there is a child we haven't explored, explore it
-        if child.visited != 0:
-            child_value = (child.sim_value/child.visited)
-            # if there is a tie for best child, randomly keep one
-            if child_value == max_val and random.random() > .5:
-                best = child
-                max_val = child_value
-            #if it's value is greater than the best so far, it will be our best so far
-            elif child_value > max_val:
-                best = child
-                max_val = child_value
-    return best
+
 
 
 class Node:
