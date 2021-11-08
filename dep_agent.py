@@ -15,7 +15,6 @@ from jericho import FrotzEnv
 
 # In-house modules
 from agent import Agent
-from decision_maker import decision_maker
 
 
 
@@ -92,7 +91,7 @@ class DEPagent(Agent):
 
 
 
-        chosen_module = decision_maker(valid_actions, history)
+        chosen_module = self.decision_maker(valid_actions, history)
 
         action_modules = [self.hoarder,
                           self.mover,
@@ -104,7 +103,7 @@ class DEPagent(Agent):
         return action
 
 
-    def decision_maker(valid_actions:list, history:list) -> int:
+    def decision_maker(self, valid_actions:list, history:list) -> int:
         """
         Decide which choice to take randomly for now
         this needs some intelligence
