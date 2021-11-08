@@ -3,8 +3,8 @@ Agents for playing text-based games
 """
 
 import random
-import mcts_agent
 from jericho import FrotzEnv
+import mcts_agent
 
 
 class Agent:
@@ -33,52 +33,54 @@ class HumanAgent(Agent):
         print("Action: ")
         return input()
 
+
 class MonteAgent(Agent):
     """"Monte Carlo Search Tree Player"""
-
 
     def __init__(self, env: FrotzEnv, num_steps: int):
         # create root node with the initial state
         self.root = mcts_agent.Node(None, None)
+
         # create a pointer node to use to traverse the tree later
         self.current = self.root
+
         # This constant balances tree exploration with exploitation of ideal nodes
-        self.exploreConst = 2
+        self.explore_const = 2
 
         # The total number of nodes to create in the tree
-        maxNodes = 2000
-        # The length of each monte carlo simulation
-        simulationLength = 10
+        max_nodes = 2000
 
-        # train the tree using the Monte Carlo Search Algorithm
+        # The length of each monte carlo simulation
+        simulation_length = 10
+
+        # Train the agent using the Monte Carlo Search Algorithm
         count = 0
         done = False
-        # for now, we will only generate a tree with 101 nodes
-        while(count < maxNodes and not done):
+        
+        while(count < max_nodes and not done):
             print(count)
             # Create a new node on the tree
-            newNode = mcts_agent.treePolicy(self.root, env, num_steps, self.exploreConst)
+            new_node = mcts_agent.tree_policy(self.root, env, num_steps, self.explore_const)
             # Determine the simulated value of the new node
-            delta = mcts_agent.defaultPolicy(newNode, env, simulationLength)
+            delta = mcts_agent.default_policy(new_node, env, simulation_length)
             # Propogate the simulated value back up the tree
-            mcts_agent.backUp(newNode, delta)
+            mcts_agent.backup(new_node, delta)
 
-            if(env.victory()): 
+            if env.victory():
                 done = True
-            # reset the state of the game when done with one simulation 
+            # reset the state of the game when done with one simulation
             env.reset()
             count += 1
 
         #self.root.print(0)
 
-    
+
     def take_action(self, env: FrotzEnv, history: list) -> str:
         """Takes in the history and returns the next action to take"""
         print("Action: ")
         print(env.get_valid_actions())
         for child in self.current.children:
-            print(child.getPrevAction(), ", count:", child.visited, ", value:", child.simValue, ", terminal:", child.terminal)
-        self.current = mcts_agent.selectAction(self.current, self.exploreConst)
+            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, ", terminal:", child.terminal)
+        self.current = mcts_agent.select_action(self.current, self.explore_const)
         print(self.current)
-        return self.current.getPrevAction()
-
+        return self.current.get_prev_action()
