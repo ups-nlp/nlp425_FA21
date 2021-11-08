@@ -6,11 +6,11 @@ from jericho import FrotzEnv
 from agent import Agent
 from agent import RandomAgent
 from agent import HumanAgent
-from DEPagent import DEPagent
+from dep_agent import DEPagent
 
 
 def play_game(agent: Agent, game_file: str, num_steps: int):
-    """ The method that runs the game play. """
+    """ The main method that instantiates an agent and plays the specified game"""
 
     # Create the environment
     env = FrotzEnv(game_file)
@@ -18,8 +18,6 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
     # The history is a list of (observation, action) tuples
     history = []
 
-    # Get the initial observation and info
-    # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
     curr_obs, info = env.reset()
     done = False
 
@@ -33,8 +31,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         # env is the environment from Frotz
         action_to_take = agent.take_action(env, history)
         
-        # Take the action, which produces a new observation and updated info
-        # done is true wh
+        # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
         next_obs, _, done, info = env.step(action_to_take)
 
         history.append((curr_obs, action_to_take))
@@ -55,12 +52,11 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
     
 if __name__ == "__main__":
-    """
-    Use a parser to read in the command line arguments
-    num_moves -- The number of moves the agent should make
-    agent -- Right now this is just 'random' but will expand as we make other agents
-    game_file -- The full path to the game file
-    """
+    # Read in command line arguments and play the game with the specified parameters
+    # Uses a parser for the command line arguments:
+    # num_moves -- The number of moves the agent should make
+    # agent -- Right now this is just 'random' but will expand as we make other agents
+    # game_file -- The full path to the game file
     parser = argparse.ArgumentParser(
         description='Runs an AI agent on a specified game')
 
