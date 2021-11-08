@@ -23,7 +23,7 @@ def tree_policy(root, env: FrotzEnv, max_depth, explore_exploit_const):
     # How do you go back up the tree to explore other paths
     # when the best path has progressed past the max_depth?
     #while env.get_moves() < max_depth:
-    while True:
+    while not node.isTerminal:
         #if parent is not full expanded, expand it and return
         if not node.is_expanded():
             return expand_node(node, env)
@@ -31,17 +31,13 @@ def tree_policy(root, env: FrotzEnv, max_depth, explore_exploit_const):
         else:
             # Select the best child of the current node to explore
             child = best_child(node, explore_exploit_const)
-            if child is None:
-                # if all the child nodes are terminal, set this
-                # node to terminal and go back up to the parent
-                node.terminal = True
-                node = node.get_parent()
-            else:
-                # else, go into the best child
-                node = child
-                # update the env variable
-                env.step(node.get_prev_action())
+            # else, go into the best child
+            node = child
+            # update the env variable
+            env.step(node.get_prev_action())
 
+    # The node is terminal, so expand it
+    return expand_node(node, env)
 
 def best_child(parent, exploration):
     """ Select and return the best child of the parent node to explore
@@ -59,24 +55,16 @@ def best_child(parent, exploration):
     max_val = -inf
     best = None
     for child in parent.get_children():
-        # if there is a child we haven't explored, explore it
-        if child.visited == 0:
-            return child
-        #if the child is terminal, go to the next child
-        elif child.terminal:
-            continue
-        # otherwise, check if this is the best child so far
-        else:
-            # Use the Upper Confidence Bounds for Trees to determine the value for the child
-            child_value = (child.sim_value/child.visited) + 2*exploration*sqrt((2*log2(parent.visited))/child.visited)
-            # if there is a tie for best child, randomly pick one
-            if child_value == max_val and random.random() > .5:
-                best = child
-                max_val = child_value
-            #if it's calue is greater than the best so far, it will be our best so far
-            elif child_value > max_val:
-                best = child
-                max_val = child_value
+        # Use the Upper Confidence Bounds for Trees to determine the value for the child
+        child_value = (child.sim_value/child.visited) + 2*exploration*sqrt((2*log2(parent.visited))/child.visited)
+        # if there is a tie for best child, randomly pick one
+        if child_value == max_val and random.random() > .5:
+            best = child
+            max_val = child_value
+        #if it's calue is greater than the best so far, it will be our best so far
+        elif child_value > max_val:
+            best = child
+            max_val = child_value
     return best
 
 
