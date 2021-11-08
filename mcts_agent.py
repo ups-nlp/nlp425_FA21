@@ -23,7 +23,7 @@ def tree_policy(root, env: FrotzEnv, max_depth, explore_exploit_const):
     # How do you go back up the tree to explore other paths
     # when the best path has progressed past the max_depth?
     #while env.get_moves() < max_depth:
-    while not node.isTerminal:
+    while not node.terminal:
         #if parent is not full expanded, expand it and return
         if not node.is_expanded():
             return expand_node(node, env)
@@ -179,7 +179,17 @@ def backup(node, delta):
 
 class Node:
     """
-    This is a temporary class to be filled in later. It holds a state of the game.
+    This Node class represents a state of the game. Each node holds the following:
+    parent -- it's parent node
+    prev_act -- the previous action taken to get to this node
+    children -- a list of the children of this node
+    sim_value -- the simulated value of the node
+    visited -- the number of times this node has been visited
+    terminal -- a boolean indicating if this node is terminal
+
+    Keyword arguments:
+    parent -- it's parent node
+    prev_act -- the previous action taken to get to this node
     """
 
     def __init__(self, parent, prev_act):
