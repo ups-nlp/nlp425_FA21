@@ -25,9 +25,17 @@ def treePolicy(root, env, max_depth, explore_exploit_const):
         #Otherwise, look at the parent's best child
         else:
             # Select the best child of the current node to explore
-            node = bestChild(node, explore_exploit_const)
-            # update the env variable
-            env.step(node.getPrevAction())
+            child = bestChild(node, explore_exploit_const)
+            if child is None:
+                # if all the child nodes are terminal, set this 
+                # node to terminal and go back up to the parent
+                node.terminal = True
+                node = node.getParent()
+            else:
+                # else, go into the best child
+                node = child
+                # update the env variable
+                env.step(node.getPrevAction())
 
 
 
@@ -49,12 +57,19 @@ def bestChild(parent, exploration):
         # if there is a child we haven't explored, explore it
         if(child.visited == 0):
             return child
+        #if the child is terminal, go to the next child
+        elif(child.terminal):
+            continue
         # otherwise, check if this is the best child so far
         else:
             # Use the Upper Confidence Bounds for Trees to determine the value for the child
             childValue = (child.simValue/child.visited) + 2*exploration*sqrt((2*log2(parent.visited))/child.visited)
+            # if there is a tie for best child, randomly pick one
+            if(childValue == max and random.random() > .5):
+                bestChild = child
+                max = childValue
             #if it's calue is greater than the best so far, it will be our best so far
-            if(childValue >= max):
+            elif(childValue > max):
                 bestChild = child
                 max = childValue
     return bestChild
@@ -75,25 +90,30 @@ Return: a child node to explore
 def expandNode(parent, env):
     # Get possible actions
     actions = env.get_valid_actions()
-
-    #There is a case we need to figure out where there are no valid 
-    # actions from the given state (If we have won/lost)
     
     # Create all possible child nodes
+    newNode = None
     for action in actions: 
         # Make a new node
-        newNode = Node(parent, action, parent.depth+1) 
+        newNode = Node(parent, action) 
         parent.addChild(newNode)
 
-    # update the env variable to the new node we are exploring
-    env.step(newNode.getPrevAction())
-    # Return a newly created node to-be-explored
-    return newNode
+    # if no new nodes were created, we are at a terminal state
+    if newNode is None:
+        # set the parent to terminal and return the parent
+        parent.terminal = True
+        return parent
+
+    else:
+        # update the env variable to the new node we are exploring
+        env.step(newNode.getPrevAction())
+        # Return a newly created node to-be-explored
+        return newNode
 
 
 
 
-def defaultPolicy(newNode, env, depthLimit):
+def defaultPolicy(newNode, env, simLength):
     """
     The defaultPolicy represents a simulated exploration of the tree from
     the passed-in node to a terminal state. 
@@ -104,11 +124,9 @@ def defaultPolicy(newNode, env, depthLimit):
     newNode.simvalue = 0
 
     prevScore = env.get_score()
-
-    maxDepth = 10
     
     # While the game is not over and we have not run out of moves, keep exploring
-    while (not env.game_over()) and (not env.victory()) and (env.get_moves() < maxDepth):
+    while (not env.game_over()) and (not env.victory()) and (env.get_moves() < simLength):
         """
         INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         Once an action is explored, remove from the available actions list
@@ -120,12 +138,12 @@ def defaultPolicy(newNode, env, depthLimit):
 
         # Take that action, updating env to a new state
         env.step(act)
-    
-    # Potential error here when determining the score? All the nodes have negative scores
+        outcome = env.get_score()
+        if(outcome > prevScore):
+            return outcome
 
     #return the reward received by reaching terminal state
-    outcome = env.get_score() - prevScore
-    return outcome
+    return env.get_score()
 
 """
 This function backpropogates the results of the Monte Carlo Simulation back up the tree
@@ -151,10 +169,13 @@ def selectAction(parent, exploration):
     for child in parent.getChildren():
         # if there is a child we haven't explored, explore it
         if(child.visited != 0):
-            # Use the Upper Confidence Bounds for Trees to determine the value for the child
             childValue = (child.simValue/child.visited)
-            #if it's calue is greater than the best so far, it will be our best so far
-            if(childValue >= max):
+            # if there is a tie for best child, randomly keep one
+            if(childValue == max and random.random() > .5):
+                bestChild = child
+                max = childValue
+            #if it's value is greater than the best so far, it will be our best so far
+            elif(childValue > max):
                 bestChild = child
                 max = childValue
     return bestChild
@@ -169,13 +190,13 @@ class Node:
     This is a temporary class to be filled in later. It holds a state of the game.
     """
 
-    def __init__(self, parent, prevAct, depth):
+    def __init__(self, parent, prevAct):
         self.parent = parent
         self.prevAct = prevAct
         self.children = []
         self.simValue = 0
         self.visited = 0
-        self.depth = depth
+        self.terminal = False
 
     def print(self, level):
         space = ""
@@ -202,7 +223,7 @@ class Node:
         return self.children
 
     def isExpanded(self):
-        if len(self.children) == 0:
+        if len(self.children) == 0 and not self.terminal:
             return False
         else:
             return True
