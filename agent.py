@@ -29,6 +29,7 @@ class HumanAgent(Agent):
 
     def take_action(self, env: FrotzEnv, history: list) -> str:
         """Takes in the history and returns the next action to take"""
+        print(env.get_valid_actions())
         print("Action: ")
         return input()
 
@@ -38,22 +39,27 @@ class MonteAgent(Agent):
 
     def __init__(self, env: FrotzEnv, num_steps: int):
         # create root node with the initial state
-        self.root = mcts_agent.Node(None, None, 0)
+        self.root = mcts_agent.Node(None, None)
         # create a pointer node to use to traverse the tree later
         self.current = self.root
         # This constant balances tree exploration with exploitation of ideal nodes
         self.exploreConst = 2
 
+        # The total number of nodes to create in the tree
+        maxNodes = 2000
+        # The length of each monte carlo simulation
+        simulationLength = 10
+
         # train the tree using the Monte Carlo Search Algorithm
         count = 0
         done = False
         # for now, we will only generate a tree with 101 nodes
-        while(count < 300 and not done):
+        while(count < maxNodes and not done):
             print(count)
             # Create a new node on the tree
             newNode = mcts_agent.treePolicy(self.root, env, num_steps, self.exploreConst)
             # Determine the simulated value of the new node
-            delta = mcts_agent.defaultPolicy(newNode, env, num_steps)
+            delta = mcts_agent.defaultPolicy(newNode, env, simulationLength)
             # Propogate the simulated value back up the tree
             mcts_agent.backUp(newNode, delta)
 
@@ -71,7 +77,7 @@ class MonteAgent(Agent):
         print("Action: ")
         print(env.get_valid_actions())
         for child in self.current.children:
-            print(child.getPrevAction(), ", count:", child.visited, ", value:", child.simValue)
+            print(child.getPrevAction(), ", count:", child.visited, ", value:", child.simValue, ", terminal:", child.terminal)
         self.current = mcts_agent.selectAction(self.current, self.exploreConst)
         print(self.current)
         return self.current.getPrevAction()
