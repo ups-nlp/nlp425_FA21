@@ -44,17 +44,6 @@ def get_directions(input_string):
 		# E.x. differentiate "West of house" means going east goes to house
 		# v.s. "to the north" means going north follows that path 
 
-if __name__ == "__main__" :
-	#Things to be run from commandline 
-	env = FrotzEnv(game_file)
-	info = env.reset()[0]
-
-	#cleans out the copyright info for pipeline
-	info = info.split('\n', maxsplit = 4)[-1].strip()
-
-	get_directions(info)
-    get_nouns(info)
-
 # Test Input from Zork 1
 input_1 = "You are facing the south side of a white house. There is no door here, and all the windows are boarded."
 input_2 = "You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar."
@@ -69,19 +58,35 @@ def get_nouns(input):
     doc = nlp(input)
     sentences = (doc.sents)
 
-    text = [token.text for token in doc] # Words
-    pos = [token.pos_ for token in doc] # Pos tags
+    text = [token.text for token in doc]
+	pos = [token.pos_ for token in doc]
 
-    words_to_get = [] # This is storing the indexes for the words which are nouns.
-    counter = 0
-    for word in pos:# This is finding the indexes for the nouns.
-        if word == 'NOUN':
-            words_to_get.append(counter)
-        counter += 1
+	nouns = [] # This is storing the indexes for the words which are nouns.
+	index = 0
+	for word in pos:# This is finding the indexes for the nouns.
+    if word == 'NOUN':
+        nouns.append(text[index])
+    index += 1
 
-    words_we_wanted = [] # This is storing the actual nouns
-    for index in words_to_get: # Pulling the noun from its list using the found index.
-        words_we_wanted.append(text[index])
+	return nouns
 
-    print()
-    print(words_we_wanted)
+# The method that will be called when a list of valid actions is needed.
+# @ game_observation - The current game observation.
+# @ history - A list of all the game observations.
+def get_valid_actions(game_observation, history):
+
+	# Add get_directions once its been cleaned up & add  to the return
+	list = get_nouns(game_observation)
+	return list
+
+# ====== Main Method =======
+if __name__ == "__main__" :
+	#Things to be run from commandline 
+	env = FrotzEnv(game_file)
+	info = env.reset()[0]
+
+	#cleans out the copyright info for pipeline
+	info = info.split('\n', maxsplit = 4)[-1].strip()
+
+	get_directions(info)
+    get_nouns(info)
