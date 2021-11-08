@@ -222,11 +222,9 @@ class Node:
     def get_children(self):
         return self.children
 
+    # Return true if it has expanded all possible actions AND has at least 1 child
     def is_expanded(self):
-        if len(self.children) == 0 and not self.terminal:
-            return False
-        
-        return True
+        return len(self.new_actions) == 0 and len(self.children) != 0
 
 
 
