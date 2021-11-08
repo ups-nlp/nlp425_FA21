@@ -87,6 +87,3 @@ if __name__ == "__main__" :
 
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
-
-	get_directions(info)
-    get_nouns(info)
