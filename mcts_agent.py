@@ -77,23 +77,6 @@ def best_child(parent, exploration, use_bound = True):
             max_val = child_value
     return bestLs[random.randint(0, len(bestLs) - 1)]
 
-def select_action(parent, exploration):
-    max_val = -inf
-    best = None
-    for child in parent.get_children():
-        # if there is a child we haven't explored, explore it
-        if child.visited != 0:
-            
-            # if there is a tie for best child, randomly keep one
-            if child_value == max_val and random.random() > .5:
-                best = child
-                max_val = child_value
-            #if it's value is greater than the best so far, it will be our best so far
-            elif child_value > max_val:
-                best = child
-                max_val = child_value
-    return best
-
 
 
 def expand_node(parent, env):
