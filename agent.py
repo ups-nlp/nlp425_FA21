@@ -41,9 +41,6 @@ class MonteAgent(Agent):
         # create root node with the initial state
         self.root = mcts_agent.Node(None, None, env.get_valid_actions())
 
-        # create a pointer node to use to traverse the tree later
-        self.current = self.root
-
         # This constant balances tree exploration with exploitation of ideal nodes
         self.explore_const = 2
 
@@ -80,10 +77,11 @@ class MonteAgent(Agent):
             env.set_state(self.currState)
             count += 1
 
+
         print(env.get_valid_actions())
-        for child in self.current.children:
+        for child in self.root.children:
             print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value)
 
-        self.current = mcts_agent.best_child(self.current, self.explore_const, False)
-        print(self.current)
-        return self.current.get_prev_action()
+        self.root = mcts_agent.best_child(self.root, self.explore_const, False)
+        print(self.root)
+        return self.root.get_prev_action()
