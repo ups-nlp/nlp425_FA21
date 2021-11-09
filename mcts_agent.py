@@ -103,6 +103,7 @@ def expand_node(parent, env):
     actions.remove(action)
 
     # Step into the state of that child and get its possible actions
+    env.step(action)
     new_actions = env.get_valid_actions()
 
     # Create the child
