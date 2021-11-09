@@ -39,7 +39,7 @@ class MonteAgent(Agent):
 
     def __init__(self, env: FrotzEnv, num_steps: int):
         # create root node with the initial state
-        self.root = mcts_agent.Node(None, None)
+        self.root = mcts_agent.Node(None, None, env.get_valid_actions())
 
         # create a pointer node to use to traverse the tree later
         self.current = self.root
@@ -52,10 +52,6 @@ class MonteAgent(Agent):
     def take_action(self, env: FrotzEnv, history: list) -> str:
         """Takes in the history and returns the next action to take"""
         print("Action: ")
-        print(env.get_valid_actions())
-        for child in self.current.children:
-            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, ", terminal:", child.terminal)
-
         #
         # Train the agent using the Monte Carlo Search Algorithm
         #
@@ -64,7 +60,7 @@ class MonteAgent(Agent):
         simulation_length = 10
 
         # Maximum number of nodes to generate in the tree each time a move is made
-        max_nodes = 2000
+        max_nodes = 100
 
         #current number of generated nodes
         count = 0
@@ -72,7 +68,8 @@ class MonteAgent(Agent):
         #current state of the game. Return to this state each time generating a new node
         self.currState = env.get_state()
         while(count <= max_nodes):
-            #print(count)
+            if(count %10 == 0): 
+                print(count)
             # Create a new node on the tree
             new_node = mcts_agent.tree_policy(self.root, env, self.explore_const)
             # Determine the simulated value of the new node
@@ -80,10 +77,13 @@ class MonteAgent(Agent):
             # Propogate the simulated value back up the tree
             mcts_agent.backup(new_node, delta)
             # reset the state of the game when done with one simulation
-            env = env.set_state(self.currState)
+            env.set_state(self.currState)
             count += 1
 
+        print(env.get_valid_actions())
+        for child in self.current.children:
+            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value)
 
-        self.current = mcts_agent.select_action(self.current, self.explore_const)
+        self.current = mcts_agent.best_child(self.current, self.explore_const, False)
         print(self.current)
         return self.current.get_prev_action()

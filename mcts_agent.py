@@ -2,12 +2,12 @@
 An implementation of the UCT algorithm for text-based games
 """
 
-from math import inf, sqrt, log2
+from math import inf, sqrt, log2, floor
 import random
 from jericho import FrotzEnv
 
 
-def tree_policy(root, env: FrotzEnv, max_depth, explore_exploit_const):
+def tree_policy(root, env: FrotzEnv, explore_exploit_const):
     """ Travel down the tree to the ideal node to expand on
 
     This function loops down the tree until it finds a
@@ -23,7 +23,7 @@ def tree_policy(root, env: FrotzEnv, max_depth, explore_exploit_const):
     # How do you go back up the tree to explore other paths
     # when the best path has progressed past the max_depth?
     #while env.get_moves() < max_depth:
-    while not node.terminal:
+    while not node.is_terminal():
         #if parent is not full expanded, expand it and return
         if not node.is_expanded():
             return expand_node(node, env)
@@ -95,20 +95,22 @@ def expand_node(parent, env):
     actions = parent.new_actions 
 
     # Pick a random unexplored action
-    rand_index = random.randint(0, len(actions)) - 1
+    rand_index = floor(len(actions)*random.random())
+    #print(len(actions), rand_index)
     action = actions[rand_index]
 
     # Remove that action from the unexplored action list and update parent
-    actions.remove(rand_index)
-
-    # Create the child
-    new_node = Node(parent, action)
+    actions.remove(action)
 
     # Step into the state of that child and get its possible actions
     new_actions = env.get_valid_actions()
 
-    # Set the unexplored valid actions of the child and return it
-    new_node.set_new_actions(new_actions)
+    # Create the child
+    new_node = Node(parent, action, new_actions)
+
+    # Add the child to the parent
+    parent.add_child(new_node)
+
     return new_node
 
     
@@ -192,13 +194,13 @@ class Node:
     prev_act -- the previous action taken to get to this node
     """
 
-    def __init__(self, parent, prev_act):
+    def __init__(self, parent, prev_act, new_actions):
         self.parent = parent
         self.prev_act = prev_act
         self.children = []
         self.sim_value = 0
         self.visited = 0
-        self.new_actions = []
+        self.new_actions = new_actions
 
     # Sets the 'new_actions' which are unexplored actions. Basically future potential child nodes
     def set_new_actions(self, new_actions):
@@ -234,6 +236,7 @@ class Node:
 
     # Return true if it has expanded all possible actions AND has at least 1 child
     def is_expanded(self):
+        #print("is expanded: ", len(self.new_actions), len(self.children))
         return len(self.new_actions) == 0 and len(self.children) != 0
 
 
