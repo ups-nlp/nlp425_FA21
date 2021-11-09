@@ -68,7 +68,7 @@ class MonteAgent(Agent):
         #current state of the game. Return to this state each time generating a new node
         self.currState = env.get_state()
         while(count <= max_nodes):
-            if(count %10 == 0): 
+            if(count % 10 == 0): 
                 print(count)
             # Create a new node on the tree
             new_node = mcts_agent.tree_policy(self.root, env, self.explore_const)
