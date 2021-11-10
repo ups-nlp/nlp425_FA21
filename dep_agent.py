@@ -3,13 +3,13 @@
 """
 Created on Thu Oct 28 18:59:14 2021
 
-@author: prowe
+@author: Penny Rowe, Eric, Danielle Dolan
 """
 
 # Built-in modules
+import random
 
 # Installed modules
-import random
 from jericho import FrotzEnv
 
 
@@ -28,8 +28,8 @@ class DEPagent(Agent):
         @param valid_actions
         @param history
 
-        For the moment, hoarder will return "take all" until futher intelligance
-        can be added.
+        For the moment, hoarder will return "take all" until futher 
+        intelligence can be added.
 
         @return chosen_action: A string of containing "take all"
 
@@ -42,11 +42,11 @@ class DEPagent(Agent):
         @param history
 
         For the moment: fighter will return "kill ___ with ____" until further
-        intelligance can be added.
+        intelligence can be added.
 
         @return chosen_action: A string containing "kill ____ with ____"
         """
-        return 'kill ___ with ___'
+        return random.action(valid_actions)
 
     def mover(self, valid_actions:list, history:list) -> str:
         """
@@ -54,11 +54,20 @@ class DEPagent(Agent):
         @param history
 
         The mover will take some set of vaild move actions, cross that will
-        other known move actions and will pick one by prioritizing new directions
+        other known move actions and will pick one by prioritizing new 
+        directions
 
         @return chosen_action: A string containing a move action
         """
-        return 'go  ' + random.choice(['north','south','east','west'])
+        
+        # This should also cut down on jumping off the cliff
+        movements = ["north", "south", "east", "west", "northeast",
+                     "northwest", "southeast", "southwest", "up", "down"]
+
+        # Check the history for the last action and don't go that way
+        
+        
+        return random.action(valid_actions)
 
 
     def everything_else(self, valid_actions:list, history:list) -> str:

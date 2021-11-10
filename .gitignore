@@ -2,5 +2,7 @@
 __pycache__
 
 # Files to be kept locally only
-my_driver.py  # Contains the path for jericho_dir on my machine
+driver.py  # Contains the path for jericho_dir on my machine
 
+# MacOs files
+.DS_Store
