@@ -37,7 +37,7 @@ def tree_policy(root, env: FrotzEnv, explore_exploit_const):
             env.step(node.get_prev_action())
 
     # The node is terminal, so expand it
-    return expand_node(node, env)
+    return node
 
 def best_child(parent, exploration, use_bound = True):
     """ Select and return the best child of the parent node to explore or the action to take
@@ -137,7 +137,7 @@ def default_policy(new_node, env, sim_length):
     Self-note: This method doesn't require the nodes to store their depth
     """
     #if currently unexplored node, set score to 0
-    new_node.sim_value = 0
+    #new_node.sim_value = 0
 
     prev_score = env.get_score()
  
@@ -153,9 +153,9 @@ def default_policy(new_node, env, sim_length):
 
         # Take that action, updating env to a new state
         env.step(act)
-        outcome = env.get_score()
-        if outcome > prev_score:
-            return outcome
+        #outcome = env.get_score()
+        #if outcome > prev_score:
+        #    return outcome
 
     #return the reward received by reaching terminal state
     return env.get_score()
