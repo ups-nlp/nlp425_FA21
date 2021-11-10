@@ -14,9 +14,9 @@ python play.py 10 random /Users/prowe/software/jericho-master/z-machine-games-ma
 """
 
 from play import play_game
-from DEPagent import DEPagent
 from agent import RandomAgent
 from agent import HumanAgent
+from dep_agent import DEPagent
 
 # The location of your Jericho game suite. This is unique to your computer,
 # so you should modify it

@@ -46,7 +46,7 @@ class DEPagent(Agent):
 
         @return chosen_action: A string containing "kill ____ with ____"
         """
-        return random.action(valid_actions)
+        return random.choice(valid_actions)
 
     def mover(self, valid_actions:list, history:list) -> str:
         """
@@ -60,14 +60,44 @@ class DEPagent(Agent):
         @return chosen_action: A string containing a move action
         """
         
-        # This should also cut down on jumping off the cliff
-        movements = ["north", "south", "east", "west", "northeast",
-                     "northwest", "southeast", "southwest", "up", "down"]
+        if not any(valid_actions):
+            return 'no valid actions'
+            
+        if len(valid_actions) == 1:
+            return valid_actions[0]
+        
+        # Movements and their opposites
+        movements = {'north':'south', 'south':'north', 
+                     'east':'west', 'west':'east', 
+                     'up':'down', 'down':'up',
+                     'northwest':'southeast', 'southeast':'northwest',
+                     'northeast':'southwest', 'southwest':'southeast'}
+        
+        valid_movements = [action for action in movements \
+                             if action in valid_actions]
+        if not any(valid_movements):
+            return random.choice(valid_actions)
+            
 
-        # Check the history for the last action and don't go that way
+        # Check the history for the last movement and don't go in the
+        # opposite direction
+        i = 0
+        last_movement = []
+        while not any(last_movement) and i < len(history):
+            i += 1
+            last_movement = [action for action in movements \
+                             if action in history[-i][1] ]
+                
+        # last_movement should typically have only one element, unless the
+        # last action was something like 'go north then south' in which case
+        # this will not work very well
+        if any(last_movement):
+            double_back = movements[last_movement[0]]
+            if double_back in valid_movements and len(valid_movements)>1:
+                valid_movements.remove(double_back) 
         
-        
-        return random.action(valid_actions)
+        # Pick randomly from remaining choices
+        return random.choice(valid_movements)
 
 
     def everything_else(self, valid_actions:list, history:list) -> str:
@@ -80,7 +110,7 @@ class DEPagent(Agent):
 
         @return chosen_action: A String containing a new action
         """
-        return 'talk'
+        return random.choice(valid_actions)
 
 
 
