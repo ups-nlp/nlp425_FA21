@@ -22,20 +22,25 @@ def get_directions(input_string):
 		"west"  : {'west', 'left'}
 	}
 
-	#Splitting on \n as input is filtered by the main method
+
+	# Splitting on \n as input is filtered by the main method
+	# This gets us each sentence rather than trying to put multiple sentences into the pipeline at once
 	working_strings = input_string.split('\n')
 
 	for s in working_strings:
-		doc = nlp(s) #run information from game through the nlp pipeline
-		text = [token.text for token in doc]
-		pos  = [token.pos_ for token in doc]
-		sent = list(doc.sents)[0]
+		doc = nlp(s.lower()) #run information from game through the nlp pipeline
+		
+		for token in doc:
+			if token.text in directionDict: 
+				# This builds a subtree around a directional word, allowing us to analyze that tree alone
+				subtree = token.subtree
+				print([t.text for t in subtree])
 
-		print("POS: ", pos)
-		print("TEXT: ", text)
-
-		# Using input of enviornment, determine directional words
-		parsed = sent._.parse_string
+				# There should be a way to use the subtree we have to parse for modifier
+				# E.g. "west of a white house", the "of" tells us the house is the subject and west is adverb
+				# Using this we can decide that we need to go east to reach the house 
+				# Can't just decide to go west because it says west 
+		
 
 		# Plan for later:
 		# Read parse tree to understand relationship between direction and object
