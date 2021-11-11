@@ -1,4 +1,4 @@
-#@author brayancodes, ben
+#@author brayancodes, real-froggy-chair
 # Imports from my jupyter notebook.
 from collections import Counter
 import math
@@ -15,7 +15,8 @@ from spacy import displacy
 
 # https://pypi.org/project/benepar/
 import benepar
-benepar.download('benepar_en3')
+# Commenting this out as it's already cached on our system
+#benepar.download('benepar_en3')
 
 nlp = spacy.load('en_core_web_lg')
 
