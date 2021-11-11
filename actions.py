@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 #@author brayancodes, real-froggy-chair
 # Imports from my jupyter notebook.
-=======
-# @author brayancodes, Real-Froggychair-2
 
->>>>>>> 552fcb77831af447a55687004c919a1aef816d21
 from collections import Counter
 import math
 import random
@@ -13,13 +9,9 @@ import os
 import re
 import statistics
 import spacy
+from jericho import FrotzEnv
 
 nlp = spacy.load('en_core_web_lg')
-
-if spacy.__version__.startswith('2'):
-    nlp.add_pipe(benepar.BeneparComponent("benepar_en3"))
-else:
-    nlp.add_pipe("benepar", config={"model": "benepar_en3"})
 
 def get_directions(input_string):
 	#Extremely rudimentary dictionary containing direction info 
@@ -30,6 +22,7 @@ def get_directions(input_string):
 		"west"  : {'west', 'left'}
 	}
 
+	#Splitting on \n as input is filtered by the main method
 	working_strings = input_string.split('\n')
 
 	for s in working_strings:
@@ -58,21 +51,19 @@ input_5 = "With a great effort, the rug is moved to one side of the room, reveal
 
 # ===== get_nouns ======
 def get_nouns(input):
+	# Giving spacey the sentence
+	doc = nlp(input)
+	sentences = (doc.sents)
 
-    # Giving spacey the sentence
-    doc = nlp(input)
-    sentences = (doc.sents)
-
-    text = [token.text for token in doc]
+	text = [token.text for token in doc]
 	pos = [token.pos_ for token in doc]
 
 	nouns = [] # This is storing the indexes for the words which are nouns.
 	index = 0
 	for word in pos:# This is finding the indexes for the nouns.
-    if word == 'NOUN':
-        nouns.append(text[index])
-    index += 1
-
+		if word == 'NOUN':
+			nouns.append(text[index])
+		index += 1
 	return nouns
 
 # The method that will be called when a list of valid actions is needed.
@@ -86,12 +77,14 @@ def get_valid_actions(game_observation, history):
 
 # ====== Main Method =======
 if __name__ == "__main__" :
-	#Things to be run from commandline 
-	env = FrotzEnv(game_file)
+	#Things to be run from commandline
+
+
+	env = FrotzEnv('zork1.z5')
 	info = env.reset()[0]
 
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
 
 	get_directions(info)
-    get_nouns(info)
+	get_nouns(info)
