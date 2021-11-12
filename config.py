@@ -2,4 +2,4 @@
 
 # verbosity of 0 --> nothing prints
 # verbosity of 1 --> everything prints
-verbosity = 1
+VERBOSITY = 1

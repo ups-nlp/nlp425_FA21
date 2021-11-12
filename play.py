@@ -21,7 +21,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
     curr_obs, info = env.reset()
     done = False
 
-    if config.verbosity > 0:
+    if config.VERBOSITY > 0:
         print('=========================================')
         print("Initial Observation\n" + curr_obs)
 
@@ -35,7 +35,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
         curr_obs = next_obs
 
-        if config.verbosity > 0:
+        if config.VERBOSITY > 0:
             print('\n\n=========================================')
             print('Taking action: ', action_to_take)
             print('Game State:', next_obs.strip())
@@ -43,7 +43,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
         num_steps -= 1
 
-    if config.verbosity > 1:
+    if config.VERBOSITY > 1:
         print('\n\n============= HISTORY OF ACTIONS TAKEN =============')
         for _, action in history:
             print(action)
@@ -77,6 +77,6 @@ if __name__ == "__main__":
 
     # Set the verbosity level
     if args.verbosity == 0 or args.verbosity == 1:
-        config.verbosity = args.verbosity
+        config.VERBOSITY = args.verbosity
 
     play_game(ai_agent, args.game_file, args.num_moves)

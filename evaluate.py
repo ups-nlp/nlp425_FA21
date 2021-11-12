@@ -1,8 +1,6 @@
 """ Subroutines for evaluating agents """
 import argparse
 
-from jericho import FrotzEnv
-from agent import Agent
 from agent import RandomAgent
 from agent import HumanAgent
 
@@ -12,7 +10,7 @@ import config
 
 
 if __name__ == "__main__":
-    
+
     parser = argparse.ArgumentParser(description='Evaluates an agent')
 
     parser.add_argument('num_trials', type=int, help='Number of times to run the agent on the specified game')
@@ -31,16 +29,15 @@ if __name__ == "__main__":
 
     # Set the verbosity level
     if args.verbosity == 0 or args.verbosity == 1:
-        config.verbosity = args.verbosity
+        config.VERBOSITY = args.verbosity
 
     avg_score = 0
-    for i in range(args.num_trials):            
+    for i in range(args.num_trials):
         score, moves = play_game(ai_agent, args.game_file, args.num_moves)
         avg_score += score
-        if config.verbosity > 0:
+        if config.VERBOSITY > 0:
             print(f'Trial {i}:')
-            print(f'final score={score}\ntotal moves={moves}\n')        
-        
+            print(f'final score={score}\ntotal moves={moves}\n')
+
     print()
     print(f'Average score: {avg_score/args.num_trials}')
-
