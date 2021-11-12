@@ -20,32 +20,57 @@ def get_directions(input_string):
 		"south" : {'south', 'behind', 'back'},
 		"east"  : {'east', 'right'},
 		"west"  : {'west', 'left'}
-	}
+	} 
 
+	output = []
+	doc = nlp(input_string.lower()) #run information from game through the nlp pipeline
+	sentences = doc.sents
 
-	# Splitting on \n as input is filtered by the main method
-	# This gets us each sentence rather than trying to put multiple sentences into the pipeline at once
-	working_strings = input_string.split('\n')
+	for s in sentences:
+		for token in s:
+			if token.text in directionDict:
 
-	for s in working_strings:
-		doc = nlp(s.lower()) #run information from game through the nlp pipeline
+				#SPRINT 1
+				direction = token.text
+				output.append(direction)
+
+	print(output)
+	return(output)
+
+			# SPRINT 2  
+			# This builds a subtree around a directional word, allowing us to analyze that tree alone
+			#subtree = token.subtree
+
+			#if 'of' in subtree:
+			#	match direction:
+			#		case 'east':
+			#			output.append('west')
+			#		case 'west':
+			#			output.append('east')
+			#		case 'north':
+			#			output.append('south')
+			#		case 'south':
+			#			output.append('north')
+			#else
+			#	output.append(direction)
+
+			#print([t.text for t in subtree])
+			#print(output)
+		#elif token.pos_ is ("ADV" or "ADP"):
+		#	subtree = token.subtree
+		#	print([t.text for t in subtree])
+		#	print([t.pos_ for t in subtree])
+
+	# There should be a way to use the subtree we have to parse for modifier
+	# E.g. "west of a white house", the "of" tells us the house is the subject and west is adverb
+	# Using this we can decide that we need to go east to reach the house 
+	# Can't just decide to go west because it says west 
 		
-		for token in doc:
-			if token.text in directionDict: 
-				# This builds a subtree around a directional word, allowing us to analyze that tree alone
-				subtree = token.subtree
-				print([t.text for t in subtree])
 
-				# There should be a way to use the subtree we have to parse for modifier
-				# E.g. "west of a white house", the "of" tells us the house is the subject and west is adverb
-				# Using this we can decide that we need to go east to reach the house 
-				# Can't just decide to go west because it says west 
-		
-
-		# Plan for later:
-		# Read parse tree to understand relationship between direction and object
-		# E.x. differentiate "West of house" means going east goes to house
-		# v.s. "to the north" means going north follows that path 
+	# Plan for later:
+	# Read parse tree to understand relationship between direction and object
+	# E.x. differentiate "West of house" means going east goes to house
+	# v.s. "to the north" means going north follows that path 
 
 # Test Input from Zork 1
 input_1 = "You are facing the south side of a white house. There is no door here, and all the windows are boarded."
@@ -84,12 +109,11 @@ def get_valid_actions(game_observation, history):
 if __name__ == "__main__" :
 	#Things to be run from commandline
 
-
 	env = FrotzEnv('zork1.z5')
 	info = env.reset()[0]
 
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
 
-	get_directions(info)
-	get_nouns(info)
+	get_directions(input_4)
+	##get_nouns(info)
