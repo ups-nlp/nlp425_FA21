@@ -4,6 +4,7 @@ Agents for playing text-based games
 
 import random
 from jericho import FrotzEnv
+from math import sqrt
 import mcts_agent
 
 
@@ -42,7 +43,7 @@ class MonteAgent(Agent):
         self.root = mcts_agent.Node(None, None, env.get_valid_actions())
 
         # This constant balances tree exploration with exploitation of ideal nodes
-        self.explore_const = 2
+        self.explore_const = 1.0/sqrt(2)
 
 
 
@@ -54,16 +55,16 @@ class MonteAgent(Agent):
         #
 
         # The length of each monte carlo simulation
-        simulation_length = 10
+        simulation_length = 20
 
         # Maximum number of nodes to generate in the tree each time a move is made
-        max_nodes = 100
+        max_nodes = 200
 
         #current number of generated nodes
         count = 0
         
         #current state of the game. Return to this state each time generating a new node
-        self.currState = env.get_state()
+        curr_state = env.get_state()
         while(count <= max_nodes):
             if(count % 10 == 0): 
                 print(count)
@@ -74,14 +75,13 @@ class MonteAgent(Agent):
             # Propogate the simulated value back up the tree
             mcts_agent.backup(new_node, delta)
             # reset the state of the game when done with one simulation
-            env.set_state(self.currState)
+            env.reset()
+            env.set_state(curr_state)
             count += 1
 
 
         print(env.get_valid_actions())
         for child in self.root.children:
-            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value)
-
+            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, "normalized value:", (child.sim_value/child.visited))
         self.root = mcts_agent.best_child(self.root, self.explore_const, False)
-        print(self.root)
         return self.root.get_prev_action()
