@@ -133,6 +133,7 @@ def default_policy(new_node, env, sim_length):
 
     Self-note: This method doesn't require the nodes to store their depth
     """
+<<<<<<< HEAD
     #if currently unexplored node, set score to 0
     #new_node.sim_value = 0
     #if node is already terminal, return 0
@@ -141,21 +142,37 @@ def default_policy(new_node, env, sim_length):
 
     prev_score = env.get_score()
     #count = 0
+=======
+    #if node is already terminal, return 0
+    if(env.game_over()):
+        return 0
+>>>>>>> 4babc30 (Added max_children attribute to the Node class to make is_terminal() and is_expanded() more straightforward. Updated the rewards policy in default_policy() to return values in [0,1] and stop the simulation after a specified number of iterations.)
  
     # While the game is not over and we have not run out of moves, keep exploring
     while (not env.game_over()) and (not env.victory()): #and (env.get_moves() < sim_length):
 
+<<<<<<< HEAD
         if(env.get_moves() < sim_length):
             outcome = env.get_score()
             return outcome/env.get_max_score()
         #INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         #Once an action is explored, remove from the available actions list
         #count += 1
+=======
+        # if we have reached the limit for exploration
+        if(env.get_moves() < sim_length):
+            #return the reward received by reaching terminal state
+            return env.get_score()/env.get_max_score()
+
+        #INIT. DEFAULT POLICY: explore a random action from the list of available actions.
+        #Once an action is explored, remove from the available actions list
+>>>>>>> 4babc30 (Added max_children attribute to the Node class to make is_terminal() and is_expanded() more straightforward. Updated the rewards policy in default_policy() to return values in [0,1] and stop the simulation after a specified number of iterations.)
         # Select a random action from this state
         actions = env.get_valid_actions()
         index = random.randint(0, len(actions))
         # Take that action, updating env to a new state
         env.step(actions[index-1])
+<<<<<<< HEAD
         #outcome = env.get_score()
         #if outcome > prev_score:
         #    return outcome
@@ -165,6 +182,12 @@ def default_policy(new_node, env, sim_length):
     outcome = env.get_score()
     #return the reward received by reaching terminal state
     return (outcome+10)/env.get_max_score()
+=======
+
+    #return the reward received by reaching terminal state 
+    # (add 10 to score to counteract the -10 punishment for dying)
+    return (env.get_score()+10)/env.get_max_score()
+>>>>>>> 4babc30 (Added max_children attribute to the Node class to make is_terminal() and is_expanded() more straightforward. Updated the rewards policy in default_policy() to return values in [0,1] and stop the simulation after a specified number of iterations.)
 
 def backup(node, delta):
     """
