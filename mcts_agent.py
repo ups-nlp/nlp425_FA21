@@ -233,13 +233,26 @@ class Node:
         self.max_children = len(new_actions)
         self.new_actions = new_actions
 
-    # Sets the 'new_actions' which are unexplored actions. Basically future potential child nodes
-    def set_new_actions(self, new_actions):
-        self.new_actions = new_actions
-
     # The node is terminal if it has no children and no possible children
     def is_terminal(self):
+        """ Returns true if this node has no possible children
+
+        Returns:
+            Boolean: true if this node has no possible children
+        """
         return self.max_children == 0
+
+    # Return true if it has expanded all possible actions AND has at least 1 child
+    def is_expanded(self):
+        """ Returns true if this node is fully expanded (ie. if 
+        the number of children it has is equal to the number of 
+        children it can possibly have).
+
+        Returns:
+            Boolean: true if this node is fully expanded
+        """
+        #print("is expanded: ", len(self.new_actions), len(self.children))
+        return (len(self.children) == self.max_children)
 
     def print(self, level):
         space = ">" * level
@@ -265,10 +278,6 @@ class Node:
     def get_children(self):
         return self.children
 
-    # Return true if it has expanded all possible actions AND has at least 1 child
-    def is_expanded(self):
-        #print("is expanded: ", len(self.new_actions), len(self.children))
-        return (len(self.children) == self.max_children)
 
 
 
