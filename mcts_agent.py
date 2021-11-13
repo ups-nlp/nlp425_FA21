@@ -36,7 +36,7 @@ def tree_policy(root, env: FrotzEnv, explore_exploit_const):
             # update the env variable
             env.step(node.get_prev_action())
 
-    # The node is terminal, so expand it
+    # The node is terminal, so return it
     return node
 
 def best_child(parent, exploration, use_bound = True):
@@ -63,7 +63,7 @@ def best_child(parent, exploration, use_bound = True):
     for child in parent.get_children():
         # Use the Upper Confidence Bounds for Trees to determine the value for the child or pick the child based on visited
         if(use_bound):
-            child_value = (child.sim_value/child.visited) + 2*exploration*sqrt((2*log2(parent.visited))/child.visited)
+            child_value = (child.sim_value/child.visited) + exploration*sqrt((2*log2(parent.visited))/child.visited)
         else:
             child_value = (child.sim_value/child.visited) #select_action
         
@@ -90,7 +90,6 @@ def expand_node(parent, env):
     env -- FrotzEnv interface between the learning agent and the game
     Return: a child node to explore
     """
-
     # Get possible unexplored actions
     actions = parent.new_actions 
 
@@ -114,8 +113,6 @@ def expand_node(parent, env):
 
     return new_node
 
-    
-
     # # if no new nodes were created, we are at a terminal state
     # if new_node is None:
     #     # set the parent to terminal and return the parent
@@ -138,27 +135,36 @@ def default_policy(new_node, env, sim_length):
     """
     #if currently unexplored node, set score to 0
     #new_node.sim_value = 0
+    #if node is already terminal, return 0
+    if(env.game_over()):
+        return 0
 
     prev_score = env.get_score()
+    #count = 0
  
     # While the game is not over and we have not run out of moves, keep exploring
-    while (not env.game_over()) and (not env.victory()) and (env.get_moves() < sim_length):        
+    while (not env.game_over()) and (not env.victory()): #and (env.get_moves() < sim_length):
+
+        if(env.get_moves() < sim_length):
+            outcome = env.get_score()
+            return outcome/env.get_max_score()
         #INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         #Once an action is explored, remove from the available actions list
-        
+        #count += 1
         # Select a random action from this state
         actions = env.get_valid_actions()
         index = random.randint(0, len(actions))
-        act = actions[index-1]
-
         # Take that action, updating env to a new state
-        env.step(act)
+        env.step(actions[index-1])
         #outcome = env.get_score()
         #if outcome > prev_score:
         #    return outcome
 
+
+    #print("default_policy:", count)
+    outcome = env.get_score()
     #return the reward received by reaching terminal state
-    return env.get_score()
+    return (outcome+10)/env.get_max_score()
 
 def backup(node, delta):
     """
@@ -201,6 +207,7 @@ class Node:
         self.children = []
         self.sim_value = 0
         self.visited = 0
+        self.max_children = len(new_actions)
         self.new_actions = new_actions
 
     # Sets the 'new_actions' which are unexplored actions. Basically future potential child nodes
@@ -209,7 +216,7 @@ class Node:
 
     # The node is terminal if it has no children and no possible children
     def is_terminal(self):
-        return (len(self.children) == 0) and (len(self.new_actions) == 0) 
+        return self.max_children == 0
 
     def print(self, level):
         space = ">" * level
@@ -238,7 +245,7 @@ class Node:
     # Return true if it has expanded all possible actions AND has at least 1 child
     def is_expanded(self):
         #print("is expanded: ", len(self.new_actions), len(self.children))
-        return len(self.new_actions) == 0 and len(self.children) != 0
+        return (len(self.children) == self.max_children)
 
 
 
