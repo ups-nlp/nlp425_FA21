@@ -201,8 +201,8 @@ class DEPagent(Agent):
         # but for now use the FrotzEnv
         valid_actions = env.get_valid_actions()
 
-        #chosen_module = self.decision_maker(valid_actions, history)
-        chosen_module = 3
+        chosen_module = self.decision_maker(valid_actions, history)
+        #chosen_module = 3
 
         action_modules = [self.hoarder,
                           self.mover,
