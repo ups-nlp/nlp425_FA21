@@ -44,6 +44,19 @@ def get_directions(input_string):
 		# E.x. differentiate "West of house" means going east goes to house
 		# v.s. "to the north" means going north follows that path 
 
+# This method will create actions phrases given a list of nouns and a list of verbs
+# Return action_phrases - The list of valid actions.
+create_action_phrases(list_of_verbs, list_of_nouns):
+	action_phrases = []
+
+	# Putting them together	
+	for verb in list_of_verbs:
+		for noun in list_of_nouns:
+			phrase =  verb + " " +  noun
+			action_phrases.append(phrase)
+
+	return action_phrases
+
 # Test Input from Zork 1
 input_1 = "You are facing the south side of a white house. There is no door here, and all the windows are boarded."
 input_2 = "You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar."
