@@ -115,6 +115,19 @@ def get_nouns(input):
 		index += 1
 	return nouns
 
+# This method will create actions phrases given a list of nouns and a list of verbs
+# Return action_phrases - The list of valid actions.
+create_action_phrases(list_of_verbs, list_of_nouns):
+	action_phrases = []
+
+	# Putting them together	
+	for verb in list_of_verbs:
+		for noun in list_of_nouns:
+			phrase =  verb + " " +  noun
+			action_phrases.append(phrase)
+
+	return action_phrases
+
 # The method that will be called when a list of valid actions is needed.
 # @ game_observation - The current game observation.
 # @ history - A list of all the game observations.
