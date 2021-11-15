@@ -13,6 +13,13 @@ from jericho import FrotzEnv
 
 nlp = spacy.load('en_core_web_lg')
 
+def is_in_dict(token, dict):
+	for key in dict.keys():
+		for value in dict[key]:
+			if token == value:
+				return key
+	return False
+
 def get_directions(input_string):
 	#Extremely rudimentary dictionary containing direction info 
 	directionDict = {
@@ -27,47 +34,51 @@ def get_directions(input_string):
 	output = []
 	doc = nlp(input_string.lower()) #run information from game through the nlp pipeline
 	sentences = (doc.sents)
-	print(directionDict)
 
 	for s in sentences:
 		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
-		for t in s:
-			# Check every token against dictionary values 
+		for t in s: # for every token in the sentence
+			dict_check = is_in_dict(t.text, directionDict)
 
-			for k in directionDict.keys():
-				for v in directionDict[k]:
-					if t.text == v: # token matches a value
-						output.append(k)
+			if dict_check is not False:
+				direction = dict_check
 
+				# SPRINT 2  
+				# This builds a subtree around a directional word, allowing us to analyze that tree alone
+				subtree = t.subtree
+				p_st = [t.text for t in subtree] # iterable text version of subtree
+				print(p_st)
 
+				if 'of' in p_st:
+					print("== of found")
+					print("opposite of " + direction)
+					if direction == 'east':
+						output.append('west')
+					elif direction == 'west':
+						output.append('east')
+					elif direction == 'north':
+						output.append('south')
+					elif direction == 'south':
+						output.append('north')
+				else:
+					print("== no of")
+					print(direction)
+					output.append(direction)
 
+				break # okay now move onto the next token  
 
-	print(output)
-	return(output)
-
-			# SPRINT 2  
-			# This builds a subtree around a directional word, allowing us to analyze that tree alone
-			#subtree = token.subtree
-
-			#if 'of' in subtree:
-			#	match direction:
-			#		case 'east':
-			#			output.append('west')
-			#		case 'west':
-			#			output.append('east')
-			#		case 'north':
-			#			output.append('south')
-			#		case 'south':
-			#			output.append('north')
-			#else
-			#	output.append(direction)
-
-			#print([t.text for t in subtree])
-			#print(output)
-		#elif token.pos_ is ("ADV" or "ADP"):
-		#	subtree = token.subtree
-		#	print([t.text for t in subtree])
-		#	print([t.pos_ for t in subtree])
+			# Token is not in the dictionary, but we suspect it's directional
+			# This has a lot of false positives. Need to refine it more 
+			# Not entirely sure this is within scope of direction finder -- is "here" a direction?
+			#elif t.pos_ is ("ADV" or "ADP") and not t.text in output: 
+			#	print("== not in dict")
+			#	print(t)
+			#	print(t.pos_)
+			#	print(t.lemma_)
+			#	print([t.text for t in t.subtree])
+			#	output.append(t.text)						
+	print(set(output))
+	return output
 
 	# There should be a way to use the subtree we have to parse for modifier
 	# E.g. "west of a white house", the "of" tells us the house is the subject and west is adverb
@@ -123,5 +134,5 @@ if __name__ == "__main__" :
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
 
-	get_directions(input_3)
+	get_directions(input_1)
 	get_nouns(info)
