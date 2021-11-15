@@ -1,0 +1,8 @@
+#Files created when python is run
+__pycache__
+
+#Files created when Mac
+.DS_Store
+
+#Files to be kept locally only
+my_driver.py
