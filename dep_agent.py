@@ -229,7 +229,7 @@ class DEPagent(Agent):
         return action
 
 
-    def decision_maker(self, valid_actions:list, history:list) -> int:
+    def decision_maker(self, valid_actions:list, history:list, env: FrotzEnv) -> int:
         """
         Decide which choice to take randomly for now
         this needs some intelligence
