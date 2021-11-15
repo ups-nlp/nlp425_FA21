@@ -19,20 +19,28 @@ def get_directions(input_string):
 		"north" : {'north', 'front', 'ahead'},
 		"south" : {'south', 'behind', 'back'},
 		"east"  : {'east', 'right'},
-		"west"  : {'west', 'left'}
+		"west"  : {'west', 'left'},
+		"up"	: {'upward', 'upwards', 'upstairs', 'up'},
+		"down"  : {'below', 'beneath', 'down'}
 	} 
 
 	output = []
 	doc = nlp(input_string.lower()) #run information from game through the nlp pipeline
-	sentences = doc.sents
+	sentences = (doc.sents)
+	print(directionDict)
 
 	for s in sentences:
-		for token in s:
-			if token.text in directionDict:
+		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
+		for t in s:
+			# Check every token against dictionary values 
 
-				#SPRINT 1
-				direction = token.text
-				output.append(direction)
+			for k in directionDict.keys():
+				for v in directionDict[k]:
+					if t.text == v: # token matches a value
+						output.append(k)
+
+
+
 
 	print(output)
 	return(output)
@@ -115,5 +123,5 @@ if __name__ == "__main__" :
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
 
-	get_directions(input_4)
-	##get_nouns(info)
+	get_directions(input_3)
+	get_nouns(info)
