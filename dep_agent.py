@@ -11,6 +11,9 @@ import random
 
 # Installed modules
 from jericho import FrotzEnv
+from numpy import dot
+from numpy.linalg import norm
+from sentence_transformers import SentenceTransformer
 
 
 # In-house modules
@@ -37,6 +40,28 @@ class DEPagent(Agent):
                           'up':'down', 'down':'up',
                           'northwest':'southeast', 'southeast':'northwest',
                           'northeast':'southwest', 'southwest':'southeast'}
+        
+        # Train model
+        # The history is a list of (observation, action) tuples
+        #model= []
+        #curr_obs, info = env.reset()
+        #done = False
+        #env.reset(True)
+        #winning_actions = len(env.get_walkthrough())
+        #for action in winning_actions:
+            # For each step of game play, the agent determines the next action
+            # based on env and the history of observations and actions
+            # env is the environment from Frotz
+         #   action_to_take = action
+            # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
+         #   next_obs, _, done, info = env.step(action_to_take)
+
+         #   history.append((curr_obs, action_to_take))
+
+         #   curr_obs = next_obs
+
+        self.model = SentenceTransformer('multi-qa-mpnet-base-dot-v1')
+        #env.reset()
 
 
     def hoarder(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
@@ -138,7 +163,27 @@ class DEPagent(Agent):
 
         @return chosen_action: A String containing a new action
         """
-        return random.choice(valid_actions)
+        # get list of past actions
+        if len(history) != 0:
+            past_actions = []
+            for combo in history:
+                past_actions.append(combo[1])
+        observation = env.get_state()[8]
+        query_vec = self.model.encode([observation])[0]
+        # set up for testing all actions
+        chosen_action = ""
+        best_similarity = 0
+        # for each vaild action, tests its similarity to the observation
+        for action in valid_actions:
+            sim = dot(query_vec, self.model.encode([action])[0])/(norm(query_vec)*norm(self.model.encode([action])[0]))
+            # chooese action with the best similarity
+            if(best_similarity < sim):
+                if(len(history) !=0 and past_actions.count(action)>1):
+                    continue
+                best_similarity = sim
+                chosen_action = action
+        print(" similarity: ", best_similarity)
+        return chosen_action    # action with the best similarity to the observation
 
 
 
@@ -156,13 +201,13 @@ class DEPagent(Agent):
         # but for now use the FrotzEnv
         valid_actions = env.get_valid_actions()
 
-        chosen_module = self.decision_maker(valid_actions, history)
+        #chosen_module = self.decision_maker(valid_actions, history)
+        chosen_module = 3
 
         action_modules = [self.hoarder,
                           self.mover,
                           self.fighter,
                           self.everything_else]
-
         action = action_modules[chosen_module](env, valid_actions, history)
 
         return action
