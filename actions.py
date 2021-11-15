@@ -1,4 +1,5 @@
-# @author brayancodes, Real-Froggychair-2
+#@author brayancodes, real-froggy-chair
+# Imports from my jupyter notebook.
 
 from collections import Counter
 import math
@@ -8,13 +9,16 @@ import os
 import re
 import statistics
 import spacy
+from jericho import FrotzEnv
 
 nlp = spacy.load('en_core_web_lg')
 
-if spacy.__version__.startswith('2'):
-    nlp.add_pipe(benepar.BeneparComponent("benepar_en3"))
-else:
-    nlp.add_pipe("benepar", config={"model": "benepar_en3"})
+def is_in_dict(token, dict):
+	for key in dict.keys():
+		for value in dict[key]:
+			if token == value:
+				return key
+	return False
 
 def get_directions(input_string):
 	#Extremely rudimentary dictionary containing direction info 
@@ -22,27 +26,70 @@ def get_directions(input_string):
 		"north" : {'north', 'front', 'ahead'},
 		"south" : {'south', 'behind', 'back'},
 		"east"  : {'east', 'right'},
-		"west"  : {'west', 'left'}
-	}
+		"west"  : {'west', 'left'},
+		"up"	: {'upward', 'upwards', 'upstairs', 'up'},
+		"down"  : {'below', 'beneath', 'down'}
+	} 
 
-	working_strings = input_string.split('\n')
+	output = []
+	doc = nlp(input_string.lower()) #run information from game through the nlp pipeline
+	sentences = (doc.sents)
 
-	for s in working_strings:
-		doc = nlp(s) #run information from game through the nlp pipeline
-		text = [token.text for token in doc]
-		pos  = [token.pos_ for token in doc]
-		sent = list(doc.sents)[0]
+	for s in sentences:
+		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
+		for t in s: # for every token in the sentence
+			dict_check = is_in_dict(t.text, directionDict)
 
-		print("POS: ", pos)
-		print("TEXT: ", text)
+			if dict_check is not False:
+				direction = dict_check
 
-		# Using input of enviornment, determine directional words
-		parsed = sent._.parse_string
+				# SPRINT 2  
+				# This builds a subtree around a directional word, allowing us to analyze that tree alone
+				subtree = t.subtree
+				p_st = [t.text for t in subtree] # iterable text version of subtree
+				print(p_st)
 
-		# Plan for later:
-		# Read parse tree to understand relationship between direction and object
-		# E.x. differentiate "West of house" means going east goes to house
-		# v.s. "to the north" means going north follows that path 
+				if 'of' in p_st:
+					print("== of found")
+					print("opposite of " + direction)
+					if direction == 'east':
+						output.append('west')
+					elif direction == 'west':
+						output.append('east')
+					elif direction == 'north':
+						output.append('south')
+					elif direction == 'south':
+						output.append('north')
+				else:
+					print("== no of")
+					print(direction)
+					output.append(direction)
+
+				break # okay now move onto the next token  
+
+			# Token is not in the dictionary, but we suspect it's directional
+			# This has a lot of false positives. Need to refine it more 
+			# Not entirely sure this is within scope of direction finder -- is "here" a direction?
+			#elif t.pos_ is ("ADV" or "ADP") and not t.text in output: 
+			#	print("== not in dict")
+			#	print(t)
+			#	print(t.pos_)
+			#	print(t.lemma_)
+			#	print([t.text for t in t.subtree])
+			#	output.append(t.text)						
+	print(set(output))
+	return output
+
+	# There should be a way to use the subtree we have to parse for modifier
+	# E.g. "west of a white house", the "of" tells us the house is the subject and west is adverb
+	# Using this we can decide that we need to go east to reach the house 
+	# Can't just decide to go west because it says west 
+		
+
+	# Plan for later:
+	# Read parse tree to understand relationship between direction and object
+	# E.x. differentiate "West of house" means going east goes to house
+	# v.s. "to the north" means going north follows that path 
 
 # Test Input from Zork 1
 input_1 = "You are facing the south side of a white house. There is no door here, and all the windows are boarded."
@@ -53,21 +100,19 @@ input_5 = "With a great effort, the rug is moved to one side of the room, reveal
 
 # ===== get_nouns ======
 def get_nouns(input):
+	# Giving spacey the sentence
+	doc = nlp(input)
+	sentences = (doc.sents)
 
-    # Giving spacey the sentence
-    doc = nlp(input)
-    sentences = (doc.sents)
-
-    text = [token.text for token in doc]
+	text = [token.text for token in doc]
 	pos = [token.pos_ for token in doc]
 
 	nouns = [] # This is storing the indexes for the words which are nouns.
 	index = 0
 	for word in pos:# This is finding the indexes for the nouns.
-    if word == 'NOUN':
-        nouns.append(text[index])
-    index += 1
-
+		if word == 'NOUN':
+			nouns.append(text[index])
+		index += 1
 	return nouns
 
 # The method that will be called when a list of valid actions is needed.
@@ -81,12 +126,13 @@ def get_valid_actions(game_observation, history):
 
 # ====== Main Method =======
 if __name__ == "__main__" :
-	#Things to be run from commandline 
-	env = FrotzEnv(game_file)
+	#Things to be run from commandline
+
+	env = FrotzEnv('zork1.z5')
 	info = env.reset()[0]
 
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
 
-	get_directions(info)
-    get_nouns(info)
+	get_directions(input_1)
+	get_nouns(info)
