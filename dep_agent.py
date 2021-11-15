@@ -8,12 +8,20 @@ Created on Thu Oct 28 18:59:14 2021
 
 # Built-in modules
 import random
+import numpy as np
+import re
 
 # Installed modules
 from jericho import FrotzEnv
 from numpy import dot
 from numpy.linalg import norm
 from sentence_transformers import SentenceTransformer
+
+import os
+import torch
+from torch import nn
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
 
 
 # In-house modules
@@ -40,7 +48,15 @@ class DEPagent(Agent):
                           'up':'down', 'down':'up',
                           'northwest':'southeast', 'southeast':'northwest',
                           'northeast':'southwest', 'southwest':'southeast'}
-        
+
+
+        self.vocab_vectors, self.word2id = self.embed_vocab()
+
+        #NEURAL NET STUFF HERE
+
+
+
+
         # Train model
         # The history is a list of (observation, action) tuples
         #model= []
@@ -229,5 +245,98 @@ class DEPagent(Agent):
         @return chosen_module: an integer between 0 and 3, representing the
                                action module we are going to use
         """
+
+        vector = self.create_observation_vect(env)
+
+
         chosen_module = random.randint(0, 3)
         return chosen_module
+
+
+    def embed_vocab(self) -> (list, dict):
+        with open("./data/vocab.txt", 'r') as f:
+            #Read in the list of words
+            words = [word.rstrip().split(' ')[0] for word in f.readlines()]
+
+        with open("./data/vectors.txt", 'r') as f:
+            #word --> [vector]
+            vectors = {}
+            for line in f:
+                vals = line.rstrip().split(' ')
+                word = vals[0]
+                vec = vals[1:]
+                vectors[word] = [float(x) for x in vec]
+
+        #Compute size of vocabulary
+        vocab_size = len(words)
+        word2id = {w: idx for idx, w in enumerate(words)}
+        id2word = {idx: w for idx, w in enumerate(words)}
+
+        vector_dim = len(vectors[id2word[0]])
+        #print("Vocab size: " + str(vocab_size))
+        #print("Vector dimension: " + str(vector_dim))
+
+        #Create a numpy matrix to hold word vectors
+        W = np.zeros((vocab_size, vector_dim))
+        for word, v in vectors.items():
+            if word == '<unk>':
+                continue
+            W[word2id[word], :] = v
+
+        #Normalize each word vector to unit length
+        W_norm = np.zeros(W.shape)
+        d = (np.sum(W ** 2, 1) ** (0.5))
+        W_norm = (W.T / d).T
+
+        return W_norm, word2id
+
+
+    def create_observation_vect(self, env:FrotzEnv) -> list:
+        currState = env.get_state()
+        gameState = currState[8].decode()
+        if gameState.startswith("Copyright"):
+            index = gameState.index("West")
+            gameState = gameState[index:]
+        onlyTxt = re.sub('\n', ' ', gameState)
+        onlyTxt = re.sub('[,?!.:;\'\"]', '', onlyTxt)
+        onlyTxt = re.sub('\s+', ' ', onlyTxt)
+        onlyTxt = onlyTxt.lower()
+        #print(onlyTxt)
+        onlyTxt = onlyTxt[:len(onlyTxt)-1]
+        observation = onlyTxt
+
+        obs_split = observation.split(' ')
+        avg_vect = []
+        vect_size = 50
+
+        i=0
+        while i < vect_size:
+            avg_vect.append(0)
+            i+=1
+
+        for word in obs_split:
+            if(self.word2id.get(word) is not None):
+                id = self.word2id.get(word)
+                norm_Vect = self.vocab_vectors[id]
+
+                i=0
+                for vect in norm_Vect:
+                    curr = avg_vect[i]
+                    val = vect + curr
+                    avg_vect[i] = val
+                    i+=1
+            else:
+                print("Word not in the vocab: " + word)
+
+        totalVal = 0
+        for val in avg_vect:
+            totalVal += val
+
+        i=0
+        while i<vect_size:
+            val = avg_vect[i]
+            avg_val = (val/totalVal)
+            avg_vect[i] = avg_val
+            i+=1
+
+        return(avg_vect)
