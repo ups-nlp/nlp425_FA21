@@ -58,7 +58,7 @@ class MonteAgent(Agent):
         simulation_length = 20
 
         # Maximum number of nodes to generate in the tree each time a move is made
-        max_nodes = 200
+        max_nodes = 40
 
         #current number of generated nodes
         count = 0

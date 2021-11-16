@@ -70,12 +70,12 @@ def best_child(parent, exploration, use_bound = True):
         # if there is a tie for best child, randomly pick one
         if child_value == max_val:
             bestLs.append(child)
-            max_val = child_value
+            
         #if it's calue is greater than the best so far, it will be our best so far
         elif child_value > max_val:
             bestLs = [child]
             max_val = child_value
-    return bestLs[random.randint(0, len(bestLs) - 1)]
+    return random.choice(bestLs)
 
 
 
@@ -93,10 +93,8 @@ def expand_node(parent, env):
     # Get possible unexplored actions
     actions = parent.new_actions 
 
-    # Pick a random unexplored action
-    rand_index = floor(len(actions)*random.random())
     #print(len(actions), rand_index)
-    action = actions[rand_index]
+    action = random.choice(actions)
 
     # Remove that action from the unexplored action list and update parent
     actions.remove(action)
@@ -148,9 +146,8 @@ def default_policy(new_node, env, sim_length):
         #Once an action is explored, remove from the available actions list
         # Select a random action from this state
         actions = env.get_valid_actions()
-        index = random.randint(0, len(actions))
         # Take that action, updating env to a new state
-        env.step(actions[index-1])
+        env.step(random.choice(actions))
 
     #return the reward received by reaching terminal state 
     # (add 10 to score to counteract the -10 punishment for dying)
