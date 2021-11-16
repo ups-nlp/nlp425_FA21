@@ -45,6 +45,8 @@ class MonteAgent(Agent):
         # This constant balances tree exploration with exploitation of ideal nodes
         self.explore_const = 1.0/sqrt(2)
 
+        self.reward = mcts_agent.AdditiveReward()
+
 
 
     def take_action(self, env: FrotzEnv, history: list) -> str:
@@ -71,7 +73,7 @@ class MonteAgent(Agent):
             # Create a new node on the tree
             new_node = mcts_agent.tree_policy(self.root, env, self.explore_const)
             # Determine the simulated value of the new node
-            delta = mcts_agent.default_policy(new_node, env, simulation_length)
+            delta = mcts_agent.default_policy(new_node, env, simulation_length, self.reward)
             # Propogate the simulated value back up the tree
             mcts_agent.backup(new_node, delta)
             # reset the state of the game when done with one simulation
