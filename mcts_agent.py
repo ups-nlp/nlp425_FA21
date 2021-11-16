@@ -124,7 +124,7 @@ def expand_node(parent, env):
     #     return new_node
 
 
-def default_policy(new_node, env, sim_length):
+def default_policy(new_node, env, sim_length, rewardPolicy):
     """
     The default_policy represents a simulated exploration of the tree from
     the passed-in node to a terminal state.
@@ -133,14 +133,14 @@ def default_policy(new_node, env, sim_length):
     """
     #if node is already terminal, return 0
     if(env.game_over()):
-        return 0
+        return rewardPolicy.terminalNode(env)
     # While the game is not over and we have not run out of moves, keep exploring
     while (not env.game_over()) and (not env.victory()): #and (env.get_moves() < sim_length):
 
         # if we have reached the limit for exploration
         if(env.get_moves() < sim_length):
             #return the reward received by reaching terminal state
-            return env.get_score()/env.get_max_score()
+            return rewardPolicy.simulationLimit(env)
 
         #INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         #Once an action is explored, remove from the available actions list
@@ -151,7 +151,7 @@ def default_policy(new_node, env, sim_length):
 
     #return the reward received by reaching terminal state 
     # (add 10 to score to counteract the -10 punishment for dying)
-    return (env.get_score()+10)/env.get_max_score()
+    return rewardPolicy.simulationTerminal(env)
 
 def backup(node, delta):
     """
@@ -168,7 +168,6 @@ def backup(node, delta):
         node.sim_value += delta
         # Traverse up the tree
         node = node.get_parent()
-
 
 
 
@@ -232,16 +231,39 @@ class Node:
 
 
 
-############################### STUFF TO RUN DOWN SIMULATION BELOW
+class Reward:
+    """Interface for a Reward"""
 
-def reward(curr, terminal):
-    """
-    The reward method calculates the change in the score of the game from
-    the current state to the end of the simulation.
-    """
-    return terminal.get_score()-curr
+    def terminalNode(env) -> int:
+        """ The case when we start the simulation at a terminal state """
+        raise NotImplementedError
 
-#######################
+    def simulationLimit(env) -> int:
+        """ The case when we reach the simulation depth limit """
+        raise NotImplementedError
+
+    def simulationTerminal(env) -> int:
+        """ The case when we reach a terminal stae in the simulation """
+        raise NotImplementedError
+
+
+
+class AdditiveReward(Reward):
+    """This Reward Policy returns values between 0 and 1 
+    for the state inputted state.
+
+    Args:
+        Reward: Reward Class Interface
+    """
+    def terminalNode(env):
+        return 0
+
+    def simulationLimit(env):
+        return env.get_score()/env.get_max_score()
+
+    def simulationTerminal(env):
+        """Add 10 to the score so it is non-negative"""
+        return (env.get_score()+10)/env.get_max_score()
 
    
 
