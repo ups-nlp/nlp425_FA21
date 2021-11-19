@@ -117,7 +117,7 @@ def get_nouns(input):
 
 # This method will create actions phrases given a list of nouns and a list of verbs
 # Return action_phrases - The list of valid actions.
-create_action_phrases(list_of_verbs, list_of_nouns):
+def create_action_phrases(list_of_verbs, list_of_nouns):
 	action_phrases = []
 
 	# Putting them together	
@@ -126,26 +126,51 @@ create_action_phrases(list_of_verbs, list_of_nouns):
 			phrase =  verb + " " +  noun
 			action_phrases.append(phrase)
 
+	# Include a standalone list of verbs
+	for verb in list_of_verbs:
+		action_phrases.append(verb)
+
+	# Create a method that will implicity create an inventory for the player
+	# This will require
+	# 	To add to inventory: Check the last action taken and parse the first word
+	#		to see if its take, if it is. Then add the second word to the noun list.
+	#	To remove an item: Check if the last action taken's first word is drop. If
+	#		if is. Then remove the second word  from the inventory noun list.
+
 	return action_phrases
 
 # The method that will be called when a list of valid actions is needed.
+# This is being run from play.py, for now, so that we can get current observations.
 # @ game_observation - The current game observation.
 # @ history - A list of all the game observations.
-def get_valid_actions(game_observation, history):
+def get_valid_actions(observation, gamefile):
+	env = FrotzEnv(gamefile)
 
-	# Add get_directions once its been cleaned up & add  to the return
-	list = get_nouns(game_observation)
-	return list
+	# Making the action phrases
+	action_phrases = create_action_phrases(get_verbs(env), get_nouns(observation))
+
+	return action_phrases
+
+# This method creates a list of verbs that will be used in to create action phrases.
+# @ environment - The environment
+def get_verbs(environment):
+	walkthrough  = environment.get_walkthrough()
+	verblist = []
+	for x in walkthrough:
+		newadd = x.split(' ')
+		if newadd[0] not in ['N', 'Ne', 'Nw', 'S', 'Se', 'Sw', 'E', 'W', 'U', 'D'] and newadd[0].lower() not in verblist:
+			verblist.append(newadd[0].lower())
+
+	return verblist
 
 # ====== Main Method =======
+# NOT IN USE RIGHT NOW
 if __name__ == "__main__" :
-	#Things to be run from commandline
+	
+	#NOT IN USE RIGHT NOW
 
 	env = FrotzEnv('zork1.z5')
 	info = env.reset()[0]
 
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
-
-	get_directions(input_1)
-	get_nouns(info)
