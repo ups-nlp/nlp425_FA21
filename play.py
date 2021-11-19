@@ -6,6 +6,7 @@ from jericho import FrotzEnv
 from agent import Agent
 from agent import RandomAgent
 from agent import HumanAgent
+from actions import get_valid_actions
 
 import config
 
@@ -32,8 +33,15 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         next_obs, _, done, info = env.step(action_to_take)
 
         history.append((curr_obs, action_to_take))
-
+        
         curr_obs = next_obs
+        
+        print()
+        print('These is an extensive list of possible actions to take.')
+        print()
+        print(get_valid_actions(curr_obs, game_file))
+        print()
+        print()
 
         if config.VERBOSITY > 0:
             print('\n\n=========================================')
