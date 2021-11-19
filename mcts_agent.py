@@ -67,18 +67,33 @@ def best_child(parent, exploration, env: FrotzEnv, reward_policy, use_bound = Tr
         else:
             child_value = reward_policy.select_action(env, child.sim_value, child.visited, parent.visited)
         
+        #print("child_value", child_value)
         # if there is a tie for best child, randomly pick one
-        if child_value == max_val:
+        # if(child_value == max_val) with floats
+        if (abs(child_value - max_val) < 0.000000001):
+            
+            #print("reoccuring best", child_value)
+            #print("next best", child_value)
             bestLs.append(child)
             second_best_score = child_value
             
-        #if it's calue is greater than the best so far, it will be our best so far
+        #if it's value is greater than the best so far, it will be our best so far
         elif child_value > max_val:
+            #print("new best", child_value)
+            #print("next best", max_val)
             second_best_score = max_val
             bestLs = [child]
             max_val = child_value
+        #if it's value is greater than the 2nd best, update our 2nd best
+        elif child_value > second_best_score:
+            #print("best", bestLs[0])
+            #print("new next best", child_value)
+            #print("old next best", second_best_score)
+            second_best_score = child_value
     chosen = random.choice(bestLs)
-    return chosen, abs(child_value - second_best_score) ## Worry about if only 1 node possible infinity?
+    if( not use_bound):
+        print("best, second", max_val, second_best_score)
+    return chosen, abs(max_val - second_best_score) ## Worry about if only 1 node possible infinity?
 
 
 def expand_node(parent, env):
@@ -138,7 +153,7 @@ def default_policy(new_node, env, sim_length, reward_policy):
     if(env.game_over()):
         return reward_policy.terminal_node(env)
     # While the game is not over and we have not run out of moves, keep exploring
-    while (not env.game_over()) and (not env.victory()): #and (env.get_moves() < sim_length):
+    while (not env.game_over()) and (not env.victory()):
 
         # if we have reached the limit for exploration
         if(env.get_moves() < sim_length):
@@ -250,7 +265,7 @@ class Reward:
         """ The case when we reach a terminal stae in the simulation """
         raise NotImplementedError
 
-    def dynamic_sim_len(self, limit, diff) -> int:
+    def dynamic_sim_len(self, max_nodes, sim_limit, diff) -> int:
         """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
         raise NotImplementedError
         
@@ -273,22 +288,32 @@ class Additive_Reward(Reward):
         return 0
 
     def simulation_limit(self, env):
-        return env.get_score()/env.get_max_score()
+        return env.get_score()
 
     def simulation_terminal(self, env):
         """Add 10 to the score so it is non-negative"""
-        return (env.get_score()+10)/env.get_max_score()
+        return (env.get_score()+10)
 
-    def dynamic_sim_len(self, limit, diff) -> int: ## NEEDS LOGIC IMPLEMENTED
-        if(diff == 0):
-            print(1)
-            return limit*2
-        elif(diff < .1):
-            print(2)
-            return limit + (limit/4)
-        else:
-            print(3)
-            return limit
+    def dynamic_sim_len(self, max_nodes, sim_limit, diff) -> int: ## NEEDS LOGIC IMPLEMENTED
+        new_limit = sim_limit
+        new_node_max = max_nodes
+        if(diff < 0.1):
+            if(new_node_max < 1000):
+                new_node_max = max_nodes*2
+
+            
+            if(new_node_max < 10000):
+                new_limit = new_limit*2
+            
+
+        elif(diff > 2):
+            if(new_node_max > 300):
+                new_node_max = floor(max_nodes/2)
+            
+            if(sim_limit > 10):
+                new_limit =  floor(sim_limit/2)
+        
+        return new_node_max, new_limit
 
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
         return child_sim_value/(child_visited*env.get_max_score()) + exploration*sqrt((2*log2(parent_visited))/child_visited)

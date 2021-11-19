@@ -45,6 +45,12 @@ class MonteAgent(Agent):
         # This constant balances tree exploration with exploitation of ideal nodes
         self.explore_const = 1.0/sqrt(2)
 
+        # The length of each monte carlo simulation
+        self.simulation_length = 40
+
+        # Maximum number of nodes to generate in the tree each time a move is made
+        self.max_nodes = 40
+
         self.reward = mcts_agent.Additive_Reward()
 
 
@@ -56,24 +62,18 @@ class MonteAgent(Agent):
         # Train the agent using the Monte Carlo Search Algorithm
         #
 
-        # The length of each monte carlo simulation
-        simulation_length = 20
-
-        # Maximum number of nodes to generate in the tree each time a move is made
-        max_nodes = 40
-
         #current number of generated nodes
         count = 0
         
         #current state of the game. Return to this state each time generating a new node
         curr_state = env.get_state()
-        while(count <= max_nodes):
+        while(count <= self.max_nodes):
             if(count % 10 == 0): 
                 print(count)
             # Create a new node on the tree
             new_node = mcts_agent.tree_policy(self.root, env, self.explore_const, self.reward)
             # Determine the simulated value of the new node
-            delta = mcts_agent.default_policy(new_node, env, simulation_length, self.reward)
+            delta = mcts_agent.default_policy(new_node, env, self.simulation_length, self.reward)
             # Propogate the simulated value back up the tree
             mcts_agent.backup(new_node, delta)
             # reset the state of the game when done with one simulation
@@ -84,16 +84,16 @@ class MonteAgent(Agent):
 
         print(env.get_valid_actions())
         for child in self.root.children:
-            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, "normalized value:", (child.sim_value/child.visited))
+            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, "normalized value:", self.reward.select_action(env, child.sim_value, child.visited, None))
 
         ## Pick the next action
         self.root, score_dif = mcts_agent.best_child(self.root, self.explore_const, env, self.reward, False)
 
         ## Dynamically adjust simulation length based on how sure we are 
-        simulation_length = self.reward.dynamic_sim_len(simulation_length, score_dif)
+        self.max_nodes, self.simulation_length = self.reward.dynamic_sim_len(self.max_nodes, self.simulation_length, score_dif)
 
         print
 
-        print("\n\n------------------ ", score_dif, simulation_length)
+        print("\n\n------------------ ", score_dif, self.max_nodes, self.simulation_length)
 
         return self.root.get_prev_action()
