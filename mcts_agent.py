@@ -30,7 +30,7 @@ def tree_policy(root, env: FrotzEnv, explore_exploit_const):
         #Otherwise, look at the parent's best child
         else:
             # Select the best child of the current node to explore
-            child = best_child(node, explore_exploit_const)
+            child = best_child(node, explore_exploit_const)[0]
             # else, go into the best child
             node = child
             # update the env variable
@@ -56,10 +56,11 @@ def best_child(parent, exploration, use_bound = True):
     parent -- the parent node
     exploration -- the exploration-exploitation constant
     use_bound -- whether you are picking the best child to expand (true) or selecting the best action (false)
-    Return: the best child to explore
+    Return: the best child to explore in an array with the difference in score between the first and second pick
     """
     max_val = -inf
     bestLs = [None]
+    second_best_score = -inf
     for child in parent.get_children():
         # Use the Upper Confidence Bounds for Trees to determine the value for the child or pick the child based on visited
         if(use_bound):
@@ -70,12 +71,15 @@ def best_child(parent, exploration, use_bound = True):
         # if there is a tie for best child, randomly pick one
         if child_value == max_val:
             bestLs.append(child)
+            second_best_score = child_value
             
         #if it's calue is greater than the best so far, it will be our best so far
         elif child_value > max_val:
+            second_best_score = child.sim_value
             bestLs = [child]
             max_val = child_value
-    return random.choice(bestLs)
+    chosen = random.choice(bestLs)
+    return chosen, abs(child_value - second_best_score)
 
 
 
@@ -133,14 +137,14 @@ def default_policy(new_node, env, sim_length, rewardPolicy):
     """
     #if node is already terminal, return 0
     if(env.game_over()):
-        return rewardPolicy.terminalNode(env)
+        return rewardPolicy.terminal_node(env)
     # While the game is not over and we have not run out of moves, keep exploring
     while (not env.game_over()) and (not env.victory()): #and (env.get_moves() < sim_length):
 
         # if we have reached the limit for exploration
         if(env.get_moves() < sim_length):
             #return the reward received by reaching terminal state
-            return rewardPolicy.simulationLimit(env)
+            return rewardPolicy.simulation_limit(env)
 
         #INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         #Once an action is explored, remove from the available actions list
@@ -151,7 +155,7 @@ def default_policy(new_node, env, sim_length, rewardPolicy):
 
     #return the reward received by reaching terminal state 
     # (add 10 to score to counteract the -10 punishment for dying)
-    return rewardPolicy.simulationTerminal(env)
+    return rewardPolicy.simulation_terminal(env)
 
 def backup(node, delta):
     """
@@ -234,36 +238,43 @@ class Node:
 class Reward:
     """Interface for a Reward"""
 
-    def terminalNode(self, env) -> int:
+    def terminal_node(self, env) -> int:
         """ The case when we start the simulation at a terminal state """
         raise NotImplementedError
 
-    def simulationLimit(self, env) -> int:
+    def simulation_limit(self, env) -> int:
         """ The case when we reach the simulation depth limit """
         raise NotImplementedError
 
-    def simulationTerminal(self, env) -> int:
+    def simulation_terminal(self, env) -> int:
         """ The case when we reach a terminal stae in the simulation """
+        raise NotImplementedError
+
+    def dynamic_sim_len(self, limit, diff) -> int:
+        """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
         raise NotImplementedError
 
 
 
-class AdditiveReward(Reward):
+class Additive_Reward(Reward):
     """This Reward Policy returns values between 0 and 1 
     for the state inputted state.
 
     Args:
         Reward: Reward Class Interface
     """
-    def terminalNode(self, env):
+    def terminal_node(self, env):
         return 0
 
-    def simulationLimit(self, env):
+    def simulation_limit(self, env):
         return env.get_score()/env.get_max_score()
 
-    def simulationTerminal(self, env):
+    def simulation_terminal(self, env):
         """Add 10 to the score so it is non-negative"""
         return (env.get_score()+10)/env.get_max_score()
+
+    def dynamic_sim_len(self, limit, diff) -> int: ## NEEDS LOGIC IMPLEMENTED
+        return limit
 
    
 

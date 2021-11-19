@@ -45,7 +45,7 @@ class MonteAgent(Agent):
         # This constant balances tree exploration with exploitation of ideal nodes
         self.explore_const = 1.0/sqrt(2)
 
-        self.reward = mcts_agent.AdditiveReward()
+        self.reward = mcts_agent.Additive_Reward()
 
 
 
@@ -85,5 +85,15 @@ class MonteAgent(Agent):
         print(env.get_valid_actions())
         for child in self.root.children:
             print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, "normalized value:", (child.sim_value/child.visited))
-        self.root = mcts_agent.best_child(self.root, self.explore_const, False)
+
+        ## Pick the next action
+        self.root, score_dif = mcts_agent.best_child(self.root, self.explore_const, False)
+
+        ## Dynamically adjust simulation length based on how sure we are 
+        simulation_length = self.reward.dynamic_sim_len(simulation_length, score_dif)
+
+        print
+
+        print("\n\n------------------ ", score_dif)
+
         return self.root.get_prev_action()
