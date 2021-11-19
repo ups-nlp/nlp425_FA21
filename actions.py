@@ -37,6 +37,11 @@ def get_directions(input_string):
 
 	for s in sentences:
 		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
+
+		for token in s:
+			print(token.text, token.dep_, token.head.text, token.head.pos_,
+            [child for child in token.children])
+
 		for t in s: # for every token in the sentence
 			dict_check = is_in_dict(t.text, directionDict)
 
@@ -70,13 +75,13 @@ def get_directions(input_string):
 			# Token is not in the dictionary, but we suspect it's directional
 			# This has a lot of false positives. Need to refine it more 
 			# Not entirely sure this is within scope of direction finder -- is "here" a direction?
-			#elif t.pos_ is ("ADV" or "ADP") and not t.text in output: 
-			#	print("== not in dict")
-			#	print(t)
-			#	print(t.pos_)
-			#	print(t.lemma_)
-			#	print([t.text for t in t.subtree])
-			#	output.append(t.text)						
+			elif t.pos_ is ("ADV" or "ADP") and not t.text in output: 
+				print("== not in dict")
+				print(t)
+				print(t.pos_)
+				print(t.lemma_)
+				print([t.text for t in t.subtree])
+				output.append(t.text)						
 	print(set(output))
 	return output
 
@@ -117,7 +122,7 @@ def get_nouns(input):
 
 # This method will create actions phrases given a list of nouns and a list of verbs
 # Return action_phrases - The list of valid actions.
-create_action_phrases(list_of_verbs, list_of_nouns):
+def create_action_phrases(list_of_verbs, list_of_nouns):
 	action_phrases = []
 
 	# Putting them together	
@@ -147,5 +152,5 @@ if __name__ == "__main__" :
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
 
-	get_directions(input_1)
-	get_nouns(info)
+	get_directions("You are in a dark and damp cellar with a narrow passageway leading north, and a crawlway to the south. On the west is the bottom of a steep metal ramp which is unclimbable.	")
+	get_nouns(info)2
