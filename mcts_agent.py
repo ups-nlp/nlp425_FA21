@@ -75,7 +75,7 @@ def best_child(parent, exploration, use_bound = True):
             
         #if it's calue is greater than the best so far, it will be our best so far
         elif child_value > max_val:
-            second_best_score = child.sim_value
+            second_best_score = max_val
             bestLs = [child]
             max_val = child_value
     chosen = random.choice(bestLs)
