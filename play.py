@@ -25,7 +25,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
     if config.VERBOSITY > 0:
         print('=========================================')
         print("Initial Observation\n" + curr_obs)
-
+    
     while num_steps > 0 and not done:
 
         # For each step of game play, the agent determines the next action
@@ -34,6 +34,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         action_to_take = agent.take_action(env, history)
 
         # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
+        print(num_steps)
         next_obs, _, done, info = env.step(action_to_take)
 
         history.append((curr_obs, action_to_take))

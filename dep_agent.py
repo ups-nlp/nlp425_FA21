@@ -23,6 +23,8 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
+import tensorflow as tf
+
 
 # In-house modules
 from agent import Agent
@@ -171,8 +173,9 @@ class DEPagent(Agent):
     def everything_else(self, env: FrotzEnv, valid_actions:list, \
                         history:list) -> str:
         """
-        Feed the observation and list of vaild actions into a recurrent
-        neural network that will decided what the next action will be
+        Feed the observation and list of vaild actions into a model
+        (similarity / neural network) that will decided what the next
+        action will be
 
         @param valid_actions
         @param history
@@ -185,20 +188,32 @@ class DEPagent(Agent):
             for combo in history:
                 past_actions.append(combo[1])
         observation = env.get_state()[8]
+
+        # Encode the observation
         query_vec = self.model.encode([observation])[0]
+
+
         # set up for testing all actions
         chosen_action = ""
         best_similarity = 0
-        # for each vaild action, tests its similarity to the observation
+        # for each vaild action, test its similarity to the observation
         for action in valid_actions:
-            sim = dot(query_vec, self.model.encode([action])[0])/(norm(query_vec)*norm(self.model.encode([action])[0]))
-            # chooese action with the best similarity
-            if(best_similarity < sim):
-                if(len(history) !=0 and past_actions.count(action)>1):
+            sim = dot(query_vec, self.model.encode([action])[0]) \
+                      /(norm(query_vec)*norm(self.model.encode([action])[0]))
+            # choose action with the best similarity
+            if (best_similarity < sim):
+                if (len(history) !=0 and past_actions.count(action)>1):
                     continue
                 best_similarity = sim
                 chosen_action = action
         print(" similarity: ", best_similarity)
+        
+        
+        # Or ... run the neural network: The input is the observation, which
+        # has been encoded as query_vec. The output is the result after
+        # running through the NN
+        
+        
         return chosen_action    # action with the best similarity to the observation
 
 
