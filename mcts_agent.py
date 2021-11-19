@@ -280,7 +280,15 @@ class Additive_Reward(Reward):
         return (env.get_score()+10)/env.get_max_score()
 
     def dynamic_sim_len(self, limit, diff) -> int: ## NEEDS LOGIC IMPLEMENTED
-        return limit
+        if(diff == 0):
+            print(1)
+            return limit*2
+        elif(diff < .1):
+            print(2)
+            return limit + (limit/4)
+        else:
+            print(3)
+            return limit
 
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
         return child_sim_value/(child_visited*env.get_max_score()) + exploration*sqrt((2*log2(parent_visited))/child_visited)

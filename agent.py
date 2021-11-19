@@ -94,6 +94,6 @@ class MonteAgent(Agent):
 
         print
 
-        print("\n\n------------------ ", score_dif)
+        print("\n\n------------------ ", score_dif, simulation_length)
 
         return self.root.get_prev_action()
