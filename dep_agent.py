@@ -47,7 +47,7 @@ class DEPagent(Agent):
                           'east':'west', 'west':'east',
                           'up':'down', 'down':'up',
                           'northwest':'southeast', 'southeast':'northwest',
-                          'northeast':'southwest', 'southwest':'southeast'}
+                          'northeast':'southwest', 'southwest':'southeast', 'go':'go'}
 
 
         self.vocab_vectors, self.word2id = self.embed_vocab()
@@ -93,7 +93,7 @@ class DEPagent(Agent):
         @return chosen_action: A string of containing "take all"
 
         """
-        return 'take all'
+        return random.choice(valid_actions)
 
 
     def fighter(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
@@ -107,11 +107,13 @@ class DEPagent(Agent):
 
         @return chosen_action: String containing "kill ____ with ____" or "run"
         """
+        return random.choice(valid_actions)
 
-        inventory = [item.name for item in env.get_inventory()]
-        for action in valid_actions:
-            have_enemy = [enemy in action for enemy in self.enemies]
-            if any(have_enemy):
+        #inventory = [item.name for item in env.get_inventory()]
+        #for action in valid_actions:
+         #   have_enemy = [enemy in action for enemy in self.enemies]
+         #   if any(have_enemy):
+        """   
                 enemy = self.enemies[have_enemy.index(True)]
                 # We are facing an enemy: if we have a weaon, fight with it
                 # if not, run
@@ -121,14 +123,14 @@ class DEPagent(Agent):
                     return 'kill ' + enemy + ' with ' + weapon
                 return 'run'
         return 'run'
-
+        """
 
     def mover(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
         """
         @param valid_actions
         @param history
 
-        The mover will take some set of vaild move actions, cross that will
+        The mover will take some set of valid move actions, cross that will
         other known move actions and will pick one by prioritizing new
         directions
 
@@ -144,7 +146,7 @@ class DEPagent(Agent):
         valid_movements = [action for action in self.movements \
                              if action in valid_actions]
         if not any(valid_movements):
-            return random.choice(valid_actions)
+            return random.choice(valid_actions) 
 
 
         # Check the history for the last movement and don't go in the
@@ -165,13 +167,13 @@ class DEPagent(Agent):
                 valid_movements.remove(double_back)
 
         # Pick randomly from remaining choices
-        return random.choice(valid_movements)
+        return random.choice(valid_movements) 
 
 
     def everything_else(self, env: FrotzEnv, valid_actions:list, \
                         history:list) -> str:
         """
-        Feed the observation and list of vaild actions into a recurrent
+        Feed the observation and list of valid actions into a recurrent
         neural network that will decided what the next action will be
 
         @param valid_actions
@@ -189,7 +191,7 @@ class DEPagent(Agent):
         # set up for testing all actions
         chosen_action = ""
         best_similarity = 0
-        # for each vaild action, tests its similarity to the observation
+        # for each valid action, tests its similarity to the observation
         for action in valid_actions:
             sim = dot(query_vec, self.model.encode([action])[0])/(norm(query_vec)*norm(self.model.encode([action])[0]))
             # chooese action with the best similarity
@@ -217,15 +219,24 @@ class DEPagent(Agent):
         # but for now use the FrotzEnv
         valid_actions = env.get_valid_actions()
 
-        chosen_module = self.decision_maker(valid_actions, history, env)
-        #chosen_module = 3
+        sorted_actions = self.sort_actions(valid_actions)
 
+        chosen_module = self.decision_maker(valid_actions, history, env)
+    
         action_modules = [self.hoarder,
                           self.mover,
                           self.fighter,
                           self.everything_else]
-        action = action_modules[chosen_module](env, valid_actions, history)
 
+        # accounting for empty action lists, if empty just move
+        if len(sorted_actions[0]) == 0 and chosen_module == 0:
+            chosen_module = 1
+        elif len(sorted_actions[2]) == 0 and chosen_module == 2:
+            chosen_module = 1
+        elif len(sorted_actions[3]) == 0 and chosen_module == 3:
+             chosen_module= 1
+             
+        action = action_modules[chosen_module](env, sorted_actions[chosen_module], history)
         return action
 
 
@@ -340,3 +351,88 @@ class DEPagent(Agent):
             i+=1
 
         return(avg_vect)
+
+    # def get_hoarder_actions(self, valid_actions:list) -> list:
+    #     """
+    #         looks through all the valid actions to get all actions that are 
+    #         associated with taking. 
+
+    #         @param valid_actions
+
+    #         @return hoarder_actions, list of hoarder actions
+    #     """
+    #     hoarder_actions = []
+    #     for action in valid_actions:
+    #             if "take" in action:
+    #                 hoarder_actions.append(action)
+        
+    #     return hoarder_actions
+
+    def sort_actions(self, valid_actions:list) -> list:
+        """
+            looks through all the valid actions and sorted them by hoarder, 
+            mover, fighter, or everything else. 
+
+            @param valid_actions
+
+            @return sorted_actions, list of lists of sorted actions
+        """
+        mover_actions = []
+        fighter_actions = []
+        ee_actions = []
+        hoarder_actions = []
+        for action in valid_actions:
+            if action in self.movements:
+               mover_actions.append(action)
+            elif action in self.enemies or action in self.weapons:
+                fighter_actions.append(action)
+            elif "take" in action:
+                hoarder_actions.append(action)
+            else:
+                ee_actions.append(action)
+            
+        sorted_actions=[hoarder_actions,
+                        mover_actions, 
+                        fighter_actions, 
+                        ee_actions]
+        return sorted_actions
+
+    # def get_fighter_actions(self, valid_actions:list) -> list:
+    #     """
+    #         Looks through all the valid action and gets all actions associated with fighting
+
+    #         @param valid_actions
+
+    #         @return fighter_actions
+    #     """
+
+    #     fighter_actions = []
+    #     for action in valid_actions:
+    #         if action in self.enemies or action in self.weapons:
+    #             fighter_actions.append(action)
+
+    #     return fighter_actions
+
+    # def get_ee_actions(self, valid_actions:list) -> list:
+    #     """
+    #         Looks through all valid actions and gets all actions that are not in
+    #         on one of the other three modules
+
+    #         @param valid_actions
+
+    #         @return ee_action
+
+    #     """
+    #     ee_actions = []
+    #     for action in valid_actions:
+    #         if action in self.enemies or action in self.weapons:
+    #             continue
+    #         elif action in self.movements:
+    #             continue
+    #         elif "take" in action:
+    #             continue
+    #         else:
+    #             ee_actions.append(action)
+            
+    #     return ee_actions
+
