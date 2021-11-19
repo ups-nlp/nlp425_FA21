@@ -79,7 +79,7 @@ def best_child(parent, exploration, use_bound = True):
             bestLs = [child]
             max_val = child_value
     chosen = random.choice(bestLs)
-    return chosen, abs(child_value - second_best_score)
+    return chosen, abs(child_value - second_best_score) ## Worry about if only 1 node possible infinity?
 
 
 
