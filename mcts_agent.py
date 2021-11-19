@@ -234,15 +234,15 @@ class Node:
 class Reward:
     """Interface for a Reward"""
 
-    def terminalNode(env) -> int:
+    def terminalNode(self, env) -> int:
         """ The case when we start the simulation at a terminal state """
         raise NotImplementedError
 
-    def simulationLimit(env) -> int:
+    def simulationLimit(self, env) -> int:
         """ The case when we reach the simulation depth limit """
         raise NotImplementedError
 
-    def simulationTerminal(env) -> int:
+    def simulationTerminal(self, env) -> int:
         """ The case when we reach a terminal stae in the simulation """
         raise NotImplementedError
 
@@ -255,13 +255,13 @@ class AdditiveReward(Reward):
     Args:
         Reward: Reward Class Interface
     """
-    def terminalNode(env):
+    def terminalNode(self, env):
         return 0
 
-    def simulationLimit(env):
+    def simulationLimit(self, env):
         return env.get_score()/env.get_max_score()
 
-    def simulationTerminal(env):
+    def simulationTerminal(self, env):
         """Add 10 to the score so it is non-negative"""
         return (env.get_score()+10)/env.get_max_score()
 
