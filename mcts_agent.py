@@ -6,8 +6,7 @@ from math import inf, sqrt, log2, floor
 import random
 from jericho import FrotzEnv
 
-
-def tree_policy(root, env: FrotzEnv, explore_exploit_const):
+def tree_policy(root, env: FrotzEnv, explore_exploit_const, reward_policy):
     """ Travel down the tree to the ideal node to expand on
 
     This function loops down the tree until it finds a
@@ -30,7 +29,7 @@ def tree_policy(root, env: FrotzEnv, explore_exploit_const):
         #Otherwise, look at the parent's best child
         else:
             # Select the best child of the current node to explore
-            child = best_child(node, explore_exploit_const)[0]
+            child = best_child(node, explore_exploit_const, env, reward_policy)[0]
             # else, go into the best child
             node = child
             # update the env variable
@@ -39,7 +38,7 @@ def tree_policy(root, env: FrotzEnv, explore_exploit_const):
     # The node is terminal, so return it
     return node
 
-def best_child(parent, exploration, use_bound = True):
+def best_child(parent, exploration, env: FrotzEnv, reward_policy, use_bound = True):
     """ Select and return the best child of the parent node to explore or the action to take
 
     From the current parent node, we will select the best child node to
@@ -64,9 +63,9 @@ def best_child(parent, exploration, use_bound = True):
     for child in parent.get_children():
         # Use the Upper Confidence Bounds for Trees to determine the value for the child or pick the child based on visited
         if(use_bound):
-            child_value = (child.sim_value/child.visited) + exploration*sqrt((2*log2(parent.visited))/child.visited)
+            child_value = reward_policy.upper_confidence_bounds(env, exploration, child.sim_value, child.visited, parent.visited)
         else:
-            child_value = (child.sim_value/child.visited) #select_action
+            child_value = reward_policy.select_action(env, child.sim_value, child.visited, parent.visited)
         
         # if there is a tie for best child, randomly pick one
         if child_value == max_val:
@@ -80,7 +79,6 @@ def best_child(parent, exploration, use_bound = True):
             max_val = child_value
     chosen = random.choice(bestLs)
     return chosen, abs(child_value - second_best_score) ## Worry about if only 1 node possible infinity?
-
 
 
 def expand_node(parent, env):
@@ -115,6 +113,7 @@ def expand_node(parent, env):
 
     return new_node
 
+
     # # if no new nodes were created, we are at a terminal state
     # if new_node is None:
     #     # set the parent to terminal and return the parent
@@ -128,7 +127,7 @@ def expand_node(parent, env):
     #     return new_node
 
 
-def default_policy(new_node, env, sim_length, rewardPolicy):
+def default_policy(new_node, env, sim_length, reward_policy):
     """
     The default_policy represents a simulated exploration of the tree from
     the passed-in node to a terminal state.
@@ -137,14 +136,14 @@ def default_policy(new_node, env, sim_length, rewardPolicy):
     """
     #if node is already terminal, return 0
     if(env.game_over()):
-        return rewardPolicy.terminal_node(env)
+        return reward_policy.terminal_node(env)
     # While the game is not over and we have not run out of moves, keep exploring
     while (not env.game_over()) and (not env.victory()): #and (env.get_moves() < sim_length):
 
         # if we have reached the limit for exploration
         if(env.get_moves() < sim_length):
             #return the reward received by reaching terminal state
-            return rewardPolicy.simulation_limit(env)
+            return reward_policy.simulation_limit(env)
 
         #INIT. DEFAULT POLICY: explore a random action from the list of available actions.
         #Once an action is explored, remove from the available actions list
@@ -155,7 +154,8 @@ def default_policy(new_node, env, sim_length, rewardPolicy):
 
     #return the reward received by reaching terminal state 
     # (add 10 to score to counteract the -10 punishment for dying)
-    return rewardPolicy.simulation_terminal(env)
+    return reward_policy.simulation_terminal(env)
+
 
 def backup(node, delta):
     """
@@ -253,6 +253,12 @@ class Reward:
     def dynamic_sim_len(self, limit, diff) -> int:
         """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
         raise NotImplementedError
+        
+    def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited) -> int:
+        raise NotImplementedError
+
+    def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited) -> int:
+        raise NotImplementedError
 
 
 
@@ -276,5 +282,8 @@ class Additive_Reward(Reward):
     def dynamic_sim_len(self, limit, diff) -> int: ## NEEDS LOGIC IMPLEMENTED
         return limit
 
-   
+    def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
+        return child_sim_value/(child_visited*env.get_max_score()) + exploration*sqrt((2*log2(parent_visited))/child_visited)
 
+    def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
+        return child_sim_value/(child_visited*env.get_max_score())

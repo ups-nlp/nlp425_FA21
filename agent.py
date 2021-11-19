@@ -71,7 +71,7 @@ class MonteAgent(Agent):
             if(count % 10 == 0): 
                 print(count)
             # Create a new node on the tree
-            new_node = mcts_agent.tree_policy(self.root, env, self.explore_const)
+            new_node = mcts_agent.tree_policy(self.root, env, self.explore_const, self.reward)
             # Determine the simulated value of the new node
             delta = mcts_agent.default_policy(new_node, env, simulation_length, self.reward)
             # Propogate the simulated value back up the tree
@@ -87,7 +87,7 @@ class MonteAgent(Agent):
             print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, "normalized value:", (child.sim_value/child.visited))
 
         ## Pick the next action
-        self.root, score_dif = mcts_agent.best_child(self.root, self.explore_const, False)
+        self.root, score_dif = mcts_agent.best_child(self.root, self.explore_const, env, self.reward, False)
 
         ## Dynamically adjust simulation length based on how sure we are 
         simulation_length = self.reward.dynamic_sim_len(simulation_length, score_dif)
