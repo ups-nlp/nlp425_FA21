@@ -1,6 +1,4 @@
-#@author brayancodes, real-froggy-chair, Julien B.
-# Imports from my jupyter notebook.
-
+# @author brayancodes, real-froggy-chair, Julien B.
 from collections import Counter
 import math
 import random
@@ -20,6 +18,9 @@ def is_in_dict(token, dict):
 				return key
 	return False
 
+# This method creates a list of directions.
+# @ input_string - The game observation.
+# @ return - Returns a set of.
 def get_directions(input_string):
 	#Extremely rudimentary dictionary containing direction info 
 	directionDict = {
@@ -167,4 +168,3 @@ if __name__ == "__main__" :
 
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
-	get_directions(info)
