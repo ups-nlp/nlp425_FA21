@@ -1,4 +1,4 @@
-#@author brayancodes, real-froggy-chair
+#@author brayancodes, real-froggy-chair, Julien B.
 # Imports from my jupyter notebook.
 
 from collections import Counter
@@ -86,25 +86,8 @@ def get_directions(input_string):
 	print(set(output))
 	return set(output)
 
-	# There should be a way to use the subtree we have to parse for modifier
-	# E.g. "west of a white house", the "of" tells us the house is the subject and west is adverb
-	# Using this we can decide that we need to go east to reach the house 
-	# Can't just decide to go west because it says west 
-		
-
-	# Plan for later:
-	# Read parse tree to understand relationship between direction and object
-	# E.x. differentiate "West of house" means going east goes to house
-	# v.s. "to the north" means going north follows that path 
-
-# Test Input from Zork 1
-input_1 = "You are facing the south side of a white house. There is no door here, and all the windows are boarded."
-input_2 = "You are behind the white house. A path leads into the forest to the east. In one corner of the house there is a small window which is slightly ajar."
-input_3 = "You are in the kitchen of the white house. A table seems to have been used recently for the preparation of food. A passage leads to the west and a dark staircase can be seen leading upward. A dark chimney leads down and to the east is a small window which is open."
-input_4 = "You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room."
-input_5 = "With a great effort, the rug is moved to one side of the room, revealing the dusty cover of a closed trap door."
-
-# ===== get_nouns ======
+# This method creates a list of nouns based on the observation using spacy POS tagging.
+# @ input - The game observation.
 def get_nouns(input):
 	# Giving spacey the sentence
 	doc = nlp(input)
@@ -123,7 +106,7 @@ def get_nouns(input):
 
 # This method will create actions phrases given a list of nouns and a list of verbs
 # Return action_phrases - The list of valid actions.
-def create_action_phrases(list_of_verbs, list_of_nouns):
+def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions):
 	action_phrases = []
 
 	# Putting them together	
@@ -135,6 +118,10 @@ def create_action_phrases(list_of_verbs, list_of_nouns):
 	# Include a standalone list of verbs
 	for verb in list_of_verbs:
 		action_phrases.append(verb)
+
+	# Integrating Ben's directions here
+	for direction in list_of_directions:
+		action_phrases.append(direction)
 
 	# Create a method that will implicity create an inventory for the player
 	# This will require
@@ -153,7 +140,7 @@ def get_valid_actions(observation, gamefile):
 	env = FrotzEnv(gamefile)
 
 	# Making the action phrases
-	action_phrases = create_action_phrases(get_verbs(env), get_nouns(observation))
+	action_phrases = create_action_phrases(get_verbs(env), get_nouns(observation), get_directions(observation))
 
 	return action_phrases
 
