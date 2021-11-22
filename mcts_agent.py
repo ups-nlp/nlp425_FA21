@@ -2,7 +2,7 @@
 An implementation of the UCT algorithm for text-based games
 """
 
-from math import inf, sqrt, log2, floor
+from math import inf, sqrt, log2, floor,e
 import random
 from jericho import FrotzEnv
 
@@ -274,6 +274,74 @@ class Reward:
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited) -> int:
         raise NotImplementedError
+
+class Softmax_Reward:
+    """Softmax reward returns values from 0 to .5 for the state. 
+    This implementation assumes that every score between the loss state and the max score
+    are possible.
+    """
+
+    def terminal_node(self, env):
+        """ The case when we start the simulation at a terminal state """
+        return 0
+
+    def simulation_limit(self, env):
+        """ The case when we reach the simulation depth limit """
+        return env.get_score()
+
+    def simulation_terminal(self, env):
+        """ The case when we reach a terminal state in the simulation """
+        raise (env.get_score()+10)
+
+    def dynamic_sim_len(self, max_nodes, sim_limit, diff):
+        """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
+        raise NotImplementedError
+
+    def softmax_calc(self,minScore,maxScore):
+        total = 0
+        for i in range (minScore,maxScore+1):
+            total = total+(e**i)
+        return total
+
+        
+    def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
+        denom = self.softmax_calc(-10,env.get_max_score())
+        return e**(child_sim_value)/(child_visited*denom)+ exploration*sqrt((2*log2(parent_visited))/child_visited)
+
+    def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
+        denom = self.softmax_calc(-10,env.get_max_score())
+        return e**(child_sim_value)/(child_visited*denom)
+
+class Generalized_Softmax_Reward:
+    """Generalized Softmax reward returns values from 0 to 1 for the state. 
+    This implementation assumes that every score between the loss state and the max score
+    are possible.
+    """
+
+    def terminal_node(self, env):
+        """ The case when we start the simulation at a terminal state """
+        return 0
+
+    def simulation_limit(self, env):
+        """ The case when we reach the simulation depth limit """
+        return env.get_score()
+
+    def simulation_terminal(self, env):
+        """ The case when we reach a terminal state in the simulation """
+        raise (env.get_score()+10)
+
+    def dynamic_sim_len(self, max_nodes, sim_limit, diff):
+        """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
+        raise NotImplementedError
+    
+    def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
+        denom = e**(env.get_score())
+        return e**(child_sim_value)/(child_visited*denom)+ exploration*sqrt((2*log2(parent_visited))/child_visited)
+
+    def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
+        denom = e**(env.get_score())
+        return e**(child_sim_value)/(child_visited*denom)
+        
 
 
 
