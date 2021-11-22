@@ -56,29 +56,8 @@ class DEPagent(Agent):
 
         #NEURAL NET STUFF HERE
 
-
-
-
-        # Train model
-        # The history is a list of (observation, action) tuples
-        #model= []
-        #curr_obs, info = env.reset()
-        #done = False
-        #env.reset(True)
-        #winning_actions = len(env.get_walkthrough())
-        #for action in winning_actions:
-            # For each step of game play, the agent determines the next action
-            # based on env and the history of observations and actions
-            # env is the environment from Frotz
-         #   action_to_take = action
-            # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
-         #   next_obs, _, done, info = env.step(action_to_take)
-
-         #   history.append((curr_obs, action_to_take))
-
-         #   curr_obs = next_obs
-
-        self.model = SentenceTransformer('multi-qa-mpnet-base-dot-v1')
+        # set model for sentance transformers
+        self.model = SentenceTransformer('all-MiniLM-L6-v2')
         #env.reset()
 
 
@@ -234,6 +213,7 @@ class DEPagent(Agent):
         # but for now use the FrotzEnv
         valid_actions = env.get_valid_actions()
 
+        # get sorted actions: in order: Hoarder, mover, fighter, and everything else. 
         sorted_actions = self.sort_actions(valid_actions)
 
         chosen_module = self.decision_maker(valid_actions, history, env)
@@ -243,7 +223,7 @@ class DEPagent(Agent):
                           self.fighter,
                           self.everything_else]
 
-        # accounting for empty action lists, if empty just move
+        # accounting for empty action lists, if empty, pick mover module
         if len(sorted_actions[0]) == 0 and chosen_module == 0:
             chosen_module = 1
         elif len(sorted_actions[2]) == 0 and chosen_module == 2:
@@ -252,6 +232,7 @@ class DEPagent(Agent):
              chosen_module= 1
              
         action = action_modules[chosen_module](env, sorted_actions[chosen_module], history)
+        print("Action: ", action)
         return action
 
 
@@ -367,21 +348,6 @@ class DEPagent(Agent):
 
         return(avg_vect)
 
-    # def get_hoarder_actions(self, valid_actions:list) -> list:
-    #     """
-    #         looks through all the valid actions to get all actions that are 
-    #         associated with taking. 
-
-    #         @param valid_actions
-
-    #         @return hoarder_actions, list of hoarder actions
-    #     """
-    #     hoarder_actions = []
-    #     for action in valid_actions:
-    #             if "take" in action:
-    #                 hoarder_actions.append(action)
-        
-    #     return hoarder_actions
 
     def sort_actions(self, valid_actions:list) -> list:
         """
@@ -396,58 +362,25 @@ class DEPagent(Agent):
         fighter_actions = []
         ee_actions = []
         hoarder_actions = []
+        # for each action
         for action in valid_actions:
+            # check if action aligns with movements
             if action in self.movements:
                mover_actions.append(action)
+            # check if action contains any enemies or weapons
             elif action in self.enemies or action in self.weapons:
                 fighter_actions.append(action)
+            # check if action contains "take"
             elif "take" in action:
                 hoarder_actions.append(action)
+            # else add to everything else action list
             else:
                 ee_actions.append(action)
-            
+        # create list of lists 
         sorted_actions=[hoarder_actions,
                         mover_actions, 
                         fighter_actions, 
                         ee_actions]
         return sorted_actions
 
-    # def get_fighter_actions(self, valid_actions:list) -> list:
-    #     """
-    #         Looks through all the valid action and gets all actions associated with fighting
-
-    #         @param valid_actions
-
-    #         @return fighter_actions
-    #     """
-
-    #     fighter_actions = []
-    #     for action in valid_actions:
-    #         if action in self.enemies or action in self.weapons:
-    #             fighter_actions.append(action)
-
-    #     return fighter_actions
-
-    # def get_ee_actions(self, valid_actions:list) -> list:
-    #     """
-    #         Looks through all valid actions and gets all actions that are not in
-    #         on one of the other three modules
-
-    #         @param valid_actions
-
-    #         @return ee_action
-
-    #     """
-    #     ee_actions = []
-    #     for action in valid_actions:
-    #         if action in self.enemies or action in self.weapons:
-    #             continue
-    #         elif action in self.movements:
-    #             continue
-    #         elif "take" in action:
-    #             continue
-    #         else:
-    #             ee_actions.append(action)
-            
-    #     return ee_actions
-
+    
