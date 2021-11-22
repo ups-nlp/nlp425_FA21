@@ -1,0 +1,17 @@
+north north
+front north
+ahead north
+south south
+behind south
+back south
+east east
+right east
+west west
+left west
+up up
+upward up
+upwards up
+upstairs up
+down down
+beneath down
+below down

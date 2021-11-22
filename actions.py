@@ -22,16 +22,18 @@ def is_in_dict(token, dict):
 # @ input_string - The game observation.
 # @ return - Returns a set of.
 def get_directions(input_string):
-	#Extremely rudimentary dictionary containing direction info 
-	directionDict = {
-		"north" : {'north', 'front', 'ahead'},
-		"south" : {'south', 'behind', 'back'},
-		"east"  : {'east', 'right'},
-		"west"  : {'west', 'left'},
-		"up"	: {'upward', 'upwards', 'upstairs', 'up'},
-		"down"  : {'below', 'beneath', 'down'}
-	} 
 
+	## Reading in directionality information from file to create hashmap
+	directionDict = dict()
+
+	with open('directions.txt', 'r') as f:
+		lines = f.readlines()
+		for line in lines:
+			line = line.strip().split(' ')
+			directionDict[line[0]] = line[1]
+	print(directionDict)
+
+	# Now for tokenization 
 	output = []
 	doc = nlp(input_string.lower()) #run information from game through the nlp pipeline
 	sentences = (doc.sents)
@@ -39,15 +41,14 @@ def get_directions(input_string):
 	for s in sentences:
 		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
 
-		for token in s:
-			print(token.text, token.dep_, token.head.text, token.head.pos_,
-            [child for child in token.children])
+		#bugtesting stuff here:
+		#for token in s:
+		#	print(token.text, token.dep_, token.head.text, token.head.pos_,
+        #   [child for child in token.children])
 
 		for t in s: # for every token in the sentence
-			dict_check = is_in_dict(t.text, directionDict)
-
-			if dict_check is not False:
-				direction = dict_check
+			if t.text in directionDict:
+				direction = directionDict[t.text]
 
 				# SPRINT 2  
 				# This builds a subtree around a directional word, allowing us to analyze that tree alone
@@ -168,3 +169,5 @@ if __name__ == "__main__" :
 
 	#cleans out the copyright info for pipeline
 	info = info.split('\n', maxsplit = 4)[-1].strip()
+
+	get_directions(info)
