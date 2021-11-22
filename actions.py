@@ -1,5 +1,14 @@
-# @author brayancodes, real-froggy-chair, Julien B.
-from collections import Counter
+"""Replaces the get_valid_actions() call in the Frotz enviornment.
+
+Subdivided into get_directions(), get_nouns(), and get_verbs(), which do what they say they do.
+We then pair up all these into a giant potential actions list, that is processed through a probability
+layer to determine if a given combo is possible (e.g. 'open forest' is not likely valid and is eliminated).
+
+Authors: real-froggy-chair, brayancodes, Julien B.
+Class: CS425 Fall 2021
+Last Compile Date: 11/22/2021"""
+
+# TODO: eliminate unnecesary imports 
 import math
 import random
 import numpy as np
@@ -11,17 +20,12 @@ from jericho import FrotzEnv
 
 nlp = spacy.load('en_core_web_lg')
 
-def is_in_dict(token, dict):
-	for key in dict.keys():
-		for value in dict[key]:
-			if token == value:
-				return key
-	return False
-
-# This method creates a list of directions.
-# @ input_string - The game observation.
-# @ return - Returns a set of.
 def get_directions(input_string):
+	"""Creates a set of predicted directionality for a given string input.
+
+	Takes a given input string from the enviornment and runs it through Spacy
+	to tokenize it. Tokenized string is then compared against a directionality dictionary
+	to determine base direction (e.g. 'upwards' -> 'up') and outputs direciton as a set."""
 
 	## Reading in directionality information from file to create hashmap
 	directionDict = dict()
@@ -31,6 +35,7 @@ def get_directions(input_string):
 		for line in lines:
 			line = line.strip().split(' ')
 			directionDict[line[0]] = line[1]
+		f.close()
 	print(directionDict)
 
 	# Now for tokenization 
@@ -42,9 +47,9 @@ def get_directions(input_string):
 		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
 
 		#bugtesting stuff here:
-		#for token in s:
-		#	print(token.text, token.dep_, token.head.text, token.head.pos_,
-        #   [child for child in token.children])
+		for token in s:
+			print(token.text, token.dep_, token.head.text, token.head.pos_,
+           [child for child in token.children])
 
 		for t in s: # for every token in the sentence
 			if t.text in directionDict:
@@ -59,6 +64,7 @@ def get_directions(input_string):
 				if 'of' in p_st:
 					print("== of found")
 					print("opposite of " + direction)
+					# This version of python does not have switches so using this
 					if direction == 'east':
 						output.append('west')
 					elif direction == 'west':
@@ -77,14 +83,14 @@ def get_directions(input_string):
 			# Token is not in the dictionary, but we suspect it's directional
 			# This has a lot of false positives. Need to refine it more 
 			# Not entirely sure this is within scope of direction finder -- is "here" a direction?
-			#elif t.pos_ is ("ADV" or "ADP") and not t.text in output: 
-			#	print("== not in dict")
-			#	print(t)
-			#	print(t.pos_)
-			#	print(t.lemma_)
-			#	print([t.text for t in t.subtree])
-			#	print("ROOT IS: " + [chunk.root for chunk in t.subtree.as_doc().nouns_chunks])
-			#	output.append(t.text)						
+			"""elif t.pos_ is ("ADV" or "ADP") and not t.text in output: 
+				print("== not in dict")
+				print(t)
+				print(t.pos_)
+				print(t.lemma_)
+				print([t.text for t in t.subtree])
+				print("ROOT IS: " + [chunk.root for chunk in t.subtree.as_doc().nouns_chunks])
+				output.append(t.text)"""						
 	print(set(output))
 	return set(output)
 
