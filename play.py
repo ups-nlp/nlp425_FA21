@@ -27,10 +27,6 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         print("Initial Observation\n" + curr_obs)
     
     while num_steps > 0 and not done:
-
-        # For each step of game play, the agent determines the next action
-        # based on env and the history of observations and actions
-        # env is the environment from Frotz
         action_to_take = agent.take_action(env, history)
 
         # info is a dictionary (i.e. hashmap) of {'moves':int, 'score':int}
