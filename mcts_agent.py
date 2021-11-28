@@ -188,9 +188,6 @@ def backup(node, delta):
         # Traverse up the tree
         node = node.get_parent()
 
-
-
-
 class Node:
     """
     This Node class represents a state of the game. Each node holds the following:
@@ -247,8 +244,6 @@ class Node:
     def is_expanded(self):
         #print("is expanded: ", len(self.new_actions), len(self.children))
         return (len(self.children) == self.max_children)
-
-
 
 class Reward:
     """Interface for a Reward"""
@@ -341,9 +336,6 @@ class Generalized_Softmax_Reward:
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
         denom = e**(env.get_score())
         return e**(child_sim_value)/(child_visited*denom)
-        
-
-
 
 class Additive_Reward(Reward):
     """This Reward Policy returns values between 0 and 1 
