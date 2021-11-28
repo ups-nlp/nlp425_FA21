@@ -94,10 +94,16 @@ def get_directions(input_string):
 	print(set(output))
 	return set(output)
 
-# This method creates a list of nouns based on the observation using spacy POS tagging.
-# @ input - The game observation.
 def get_nouns(input):
-	# Giving spacey the sentence
+	'''This method creates a list of nouns based on the observation using spacey POS tagging.
+
+	Keyword arguments:
+	input -- The game observation
+
+	Return:
+	nouns -- The list of generated nouns from the game observation
+	'''
+
 	doc = nlp(input)
 	sentences = (doc.sents)
 
@@ -112,9 +118,17 @@ def get_nouns(input):
 		index += 1
 	return nouns
 
-# This method will create actions phrases given a list of nouns and a list of verbs
-# Return action_phrases - The list of valid actions.
 def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions):
+	'''This method will create the varios types of action phrases.
+
+	Keyword arguments:
+	list_of_verbs -- A list of verbs to use for action phrases
+	list_of_nouns -- A list of nouns to use for action phrases
+	list_of_directions -- A list of directions to use for action phrases
+
+	Return:
+	action_phrases -- A list of valid action phrases
+	'''
 	action_phrases = []
 
 	# Putting them together	
@@ -131,20 +145,20 @@ def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions):
 	for direction in list_of_directions:
 		action_phrases.append(direction)
 
-	# Create a method that will implicity create an inventory for the player
-	# This will require
-	# 	To add to inventory: Check the last action taken and parse the first word
-	#		to see if its take, if it is. Then add the second word to the noun list.
-	#	To remove an item: Check if the last action taken's first word is drop. If
-	#		if is. Then remove the second word  from the inventory noun list.
+	# Use inventory items on nouns
 
 	return action_phrases
 
-# The method that will be called when a list of valid actions is needed.
-# This is being run from play.py, for now, so that we can get current observations.
-# @ game_observation - The current game observation.
-# @ history - A list of all the game observations.
 def get_valid_actions(observation, gamefile):
+	'''This method will call create action phrases; called when a list of action phrases is needed.
+
+	Keyword arguments:
+	game_observation -- The current game observation
+	history -- A list of all the game observations
+
+	Return:
+	action_phrases -- A list of all the valid action phrases
+	'''
 	env = FrotzEnv(gamefile)
 
 	# Making the action phrases
@@ -155,6 +169,14 @@ def get_valid_actions(observation, gamefile):
 # This method creates a list of verbs that will be used in to create action phrases.
 # @ environment - The environment
 def get_verbs(environment):
+	'''This method will create a list of verbs based on the environment walkthrough.
+
+	Keyword arguments:
+	environment -- The game environment
+
+	Return:
+	verblist -- A list of valid verbs
+	'''
 	walkthrough  = environment.get_walkthrough()
 	verblist = []
 	for x in walkthrough:
@@ -164,12 +186,9 @@ def get_verbs(environment):
 
 	return verblist
 
-# ====== Main Method =======
-# NOT IN USE RIGHT NOW
 if __name__ == "__main__" :
-	
-	#NOT IN USE RIGHT NOW
-
+	'''The main method. Currently not in use.
+	'''
 	env = FrotzEnv('zork1.z5')
 	info = env.reset()[0]
 
