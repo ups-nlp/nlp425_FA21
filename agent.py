@@ -38,9 +38,13 @@ class HumanAgent(Agent):
 class MonteAgent(Agent):
     """"Monte Carlo Search Tree Player"""
 
+    node_path = []
+
     def __init__(self, env: FrotzEnv, num_steps: int):
         # create root node with the initial state
         self.root = mcts_agent.Node(None, None, env.get_valid_actions())
+
+        self.node_path.append(self.root)
 
         # This constant balances tree exploration with exploitation of ideal nodes
         self.explore_const = 1.0/sqrt(2)
@@ -89,10 +93,10 @@ class MonteAgent(Agent):
         ## Pick the next action
         self.root, score_dif = mcts_agent.best_child(self.root, self.explore_const, env, self.reward, False)
 
+        self.node_path.append(self.root)
+
         ## Dynamically adjust simulation length based on how sure we are 
         self.max_nodes, self.simulation_length = self.reward.dynamic_sim_len(self.max_nodes, self.simulation_length, score_dif)
-
-        print
 
         print("\n\n------------------ ", score_dif, self.max_nodes, self.simulation_length)
 

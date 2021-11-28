@@ -40,9 +40,47 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         num_steps -= 1
 
     print('\n\n============= HISTORY OF ACTIONS TAKEN =============')
-    for _, action in history:
-        print(action)
+    #for _, action in history:
+    #    print(action)
 
+    ####################################
+    
+
+    test_input = "-----"
+
+    while test_input != "":
+        
+        print("\n")
+
+        if(input == ""):
+            break
+
+        node_history = agent.node_path
+        for i in range(0, len(history)):
+            print(i, "-", history[i][1])
+
+        print("\n")
+
+        test_input = input("Enter the number of the node you wish to explore. Press enter to stop")
+
+        print("\n")
+
+        if(int(test_input) >= 0 and int(test_input) < len(history)):
+            node = node_history[int(test_input)]
+            
+            print("-------", node.get_prev_action(), "-------")
+            
+            print("Sim-value:", node.sim_value)
+            
+            print("Visited:", node.visited)
+            
+            print("Unexplored Children:", node.new_actions)
+            
+            print("Children:")
+            
+            children = node.get_children()
+            for child in children:
+                print("-", child.get_prev_action(), "with value", child.sim_value, "visited", child.visited)
 
 if __name__ == "__main__":
     # Use a parser for the command line arguments
