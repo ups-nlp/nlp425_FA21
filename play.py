@@ -45,8 +45,13 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
     ####################################
     
+    depth = 0
+
+    cur_node = agent.root
 
     test_input = "-----"
+
+    node_history = agent.node_path
 
     while test_input != "":
         
@@ -55,32 +60,43 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         if(input == ""):
             break
 
-        node_history = agent.node_path
-        for i in range(0, len(history)):
-            print(i, "-", history[i][1])
+        print("Current Depth:", depth)
+
+        for i in range(0, len(node_history)):
+            if depth == 0:
+                print(i, "-", node_history[i].get_prev_action())
+            else:
+                print(i, "-", node_history[i].get_prev_action())
 
         print("\n")
 
-        test_input = input("Enter the number of the node you wish to explore. Press enter to stop")
+        test_input = input("Enter the number of the node you wish to explore. Press enter to stop, -1 to go up a layer")
 
         print("\n")
 
-        if(int(test_input) >= 0 and int(test_input) < len(history)):
-            node = node_history[int(test_input)]
+        if(int(test_input) >= 0 and int(test_input) < len(node_history)):
+            depth += 1
+            cur_node = node_history[int(test_input)]
             
-            print("-------", node.get_prev_action(), "-------")
+            print("-------", cur_node.get_prev_action(), "-------")
             
-            print("Sim-value:", node.sim_value)
+            print("Sim-value:", cur_node.sim_value)
             
-            print("Visited:", node.visited)
+            print("Visited:", cur_node.visited)
             
-            print("Unexplored Children:", node.new_actions)
+            print("Unexplored Children:", cur_node.new_actions)
             
             print("Children:")
             
-            children = node.get_children()
-            for child in children:
-                print("-", child.get_prev_action(), "with value", child.sim_value, "visited", child.visited)
+            node_history = cur_node.get_children()
+            for i in range(0, len(node_history)):
+                print(node_history[i].get_prev_action(), "with value", node_history[i].sim_value, "visited", node_history[i].visited)
+        elif int(test_input) == -1:
+            depth -= 1
+            cur_node = cur_node.parent
+            if depth == 0:
+                node_history = agent.node_path
+
 
 if __name__ == "__main__":
     # Use a parser for the command line arguments
