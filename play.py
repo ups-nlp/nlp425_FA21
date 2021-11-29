@@ -97,6 +97,19 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
             if depth == 0:
                 node_history = agent.node_path
 
+            print("-------", cur_node.get_prev_action(), "-------")
+            
+            print("Sim-value:", cur_node.sim_value)
+            
+            print("Visited:", cur_node.visited)
+            
+            print("Unexplored Children:", cur_node.new_actions)
+            
+            print("Children:")
+
+            for i in range(0, len(node_history)):
+                print(node_history[i].get_prev_action(), "with value", node_history[i].sim_value, "visited", node_history[i].visited)
+
 
 if __name__ == "__main__":
     # Use a parser for the command line arguments
