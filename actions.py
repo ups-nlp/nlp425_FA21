@@ -203,16 +203,17 @@ def get_verbs(environment):
 	environment -- The game environment
 
 	Return:
-	verblist -- A list of valid verbs
+	verbset -- A set of valid verbs
 	'''
 	walkthrough  = environment.get_walkthrough()
-	verblist = []
+	verbset = {}
+	verbset = set()
 	for x in walkthrough:
 		newadd = x.split(' ')
-		if newadd[0] not in ['N', 'Ne', 'Nw', 'S', 'Se', 'Sw', 'E', 'W', 'U', 'D'] and newadd[0].lower() not in verblist:
-			verblist.append(newadd[0].lower())
+		if newadd[0] not in ['N', 'Ne', 'Nw', 'S', 'Se', 'Sw', 'E', 'W', 'U', 'D']:
+			verbset.add(newadd[0].lower())
 
-	return verblist
+	return verbset
 
 if __name__ == "__main__" :
 	'''The main method. Currently not in use.
