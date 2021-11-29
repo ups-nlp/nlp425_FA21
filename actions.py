@@ -118,13 +118,14 @@ def get_nouns(input):
 		index += 1
 	return nouns
 
-def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions):
+def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions, inventory):
 	'''This method will create the varios types of action phrases.
 
 	Keyword arguments:
 	list_of_verbs -- A list of verbs to use for action phrases
 	list_of_nouns -- A list of nouns to use for action phrases
 	list_of_directions -- A list of directions to use for action phrases
+	inventory -- A list of the player's inventory
 
 	Return:
 	action_phrases -- A list of valid action phrases
@@ -146,28 +147,56 @@ def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions):
 		action_phrases.append(direction)
 
 	# Use inventory items on nouns
+	for item in inventory:
+		for noun in list_of_nouns:
+			phrase = "use " + item + " on " + noun
+			action_phrases.append(phrase)
 
 	return action_phrases
 
-def get_valid_actions(observation, gamefile):
+def get_valid_actions(observation, game_environment):
 	'''This method will call create action phrases; called when a list of action phrases is needed.
 
 	Keyword arguments:
-	game_observation -- The current game observation
-	history -- A list of all the game observations
+	observation -- The current game observation
+	game_environment -- A list of all the game observations
 
 	Return:
 	action_phrases -- A list of all the valid action phrases
 	'''
-	env = FrotzEnv(gamefile)
+	# Get the inventory
+	inventory = game_environment.get_inventory() # This is a jericho object
+
+	# Parse the inventory objects for the inventory items
+	inventory_items = parse_inventory(inventory)
 
 	# Making the action phrases
-	action_phrases = create_action_phrases(get_verbs(env), get_nouns(observation), get_directions(observation))
+	action_phrases = create_action_phrases(get_verbs(game_environment), get_nouns(observation), get_directions(observation), inventory_items)
 
 	return action_phrases
 
-# This method creates a list of verbs that will be used in to create action phrases.
-# @ environment - The environment
+def parse_inventory(list_of_inventory_objs):
+	'''This method turns inventory objects into a list of inventory item strings.
+
+	Keyword arguments:
+	list_of_inventory_objs -- A list of jericho inventory objects
+
+	Return:
+	list_of_items -- A list of strings representing the items in the players inventory
+	'''
+
+	list_of_items = []
+
+	for item in list_of_inventory_objs:
+		string = str(item) # obj -> string
+		# Operations to parse the, now a string, inventory object.
+		list_of_tokens = string.split("Parent")
+		inventory_item = list_of_tokens[0].split(" ", 1)
+		list_of_items.append(inventory_item[1][:-1])
+	
+	return list_of_items
+
+
 def get_verbs(environment):
 	'''This method will create a list of verbs based on the environment walkthrough.
 
@@ -189,10 +218,10 @@ def get_verbs(environment):
 if __name__ == "__main__" :
 	'''The main method. Currently not in use.
 	'''
-	env = FrotzEnv('zork1.z5')
-	info = env.reset()[0]
+	#env = FrotzEnv('zork1.z5')
+	#info = env.reset()[0]
 
 	#cleans out the copyright info for pipeline
-	info = info.split('\n', maxsplit = 4)[-1].strip()
+	#info = info.split('\n', maxsplit = 4)[-1].strip()
 
-	get_directions(info)
+	#get_directions(info)
