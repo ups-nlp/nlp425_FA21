@@ -55,7 +55,7 @@ class MonteAgent(Agent):
         # Maximum number of nodes to generate in the tree each time a move is made
         self.max_nodes = 40
 
-        self.reward = mcts_agent.Additive_Reward()
+        self.reward = mcts_agent.Dynamic_Reward()
 
 
 

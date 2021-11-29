@@ -4,6 +4,8 @@ An implementation of the UCT algorithm for text-based games
 
 from math import inf, sqrt, log2, floor,e
 import random
+import sys
+import numpy as np
 from jericho import FrotzEnv
 
 def tree_policy(root, env: FrotzEnv, explore_exploit_const, reward_policy):
@@ -290,7 +292,25 @@ class Softmax_Reward:
 
     def dynamic_sim_len(self, max_nodes, sim_limit, diff):
         """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
-        raise NotImplementedError
+        new_limit = sim_limit
+        new_node_max = max_nodes
+        if(diff < 0.1):
+            if(new_node_max < 1000):
+                new_node_max = max_nodes*2
+
+            
+            if(new_node_max < 10000):
+                new_limit = new_limit*2
+            
+
+        elif(diff > 2):
+            if(new_node_max > 300):
+                new_node_max = floor(max_nodes/2)
+            
+            if(sim_limit > 10):
+                new_limit =  floor(sim_limit/2)
+        
+        return new_node_max, new_limit
 
     def softmax_calc(self,minScore,maxScore):
         total = 0
@@ -300,12 +320,27 @@ class Softmax_Reward:
 
         
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
-        denom = self.softmax_calc(-10,env.get_max_score())
-        return e**(child_sim_value)/(child_visited*denom)+ exploration*sqrt((2*log2(parent_visited))/child_visited)
+        if env.get_score() >= np.log(sys.maxsize):
+            denom = np.log(sys.maxsize)
+        else:
+            denom = self.softmax_calc(-10,env.get_max_score())
+        if child_sim_value >= np.log(sys.maxsize):
+            num = np.log(sys.maxsize)
+        else:
+            num = child_sim_value
+        
+        return (e**(num))/(child_visited*denom)+ exploration*sqrt((2*log2(parent_visited))/child_visited)
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
-        denom = self.softmax_calc(-10,env.get_max_score())
-        return e**(child_sim_value)/(child_visited*denom)
+        if env.get_score() >= np.log(sys.maxsize):
+            denom = np.log(sys.maxsize)
+        else:
+            denom = self.softmax_calc(-10,env.get_max_score())
+        if child_sim_value >= np.log(sys.maxsize):
+            num = np.log(sys.maxsize)
+        else:
+            num = child_sim_value
+        return (e**(num))/(child_visited*denom)
 
 class Generalized_Softmax_Reward:
     """Generalized Softmax reward returns values from 0 to 1 for the state. 
@@ -327,15 +362,53 @@ class Generalized_Softmax_Reward:
 
     def dynamic_sim_len(self, max_nodes, sim_limit, diff):
         """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
-        raise NotImplementedError
+        new_limit = sim_limit
+        new_node_max = max_nodes
+        if(diff < 0.1):
+            if(new_node_max < 1000):
+                new_node_max = max_nodes*2
+
+            
+            if(new_node_max < 10000):
+                new_limit = new_limit*2
+            
+
+        elif(diff > 2):
+            if(new_node_max > 300):
+                new_node_max = floor(max_nodes/2)
+            
+            if(sim_limit > 10):
+                new_limit =  floor(sim_limit/2)
+        
+        return new_node_max, new_limit
     
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
-        denom = e**(env.get_score())
-        return e**(child_sim_value)/(child_visited*denom)+ exploration*sqrt((2*log2(parent_visited))/child_visited)
+        if env.get_score() >= np.log(sys.maxsize):
+            denom = np.log(sys.maxsize)
+        else:
+            denom = e**(env.get_score())
+        if child_sim_value >= np.log(sys.maxsize):
+            num = np.log(sys.maxsize)
+        else:
+            num = child_sim_value
+        try:
+            return (1/child_visited)*(e**(num-denom)) + exploration*sqrt((2*log2(parent_visited))/child_visited)
+        except OverflowError:
+            print("max size = ",sys.maxsize," num = ",num," denom = ",denom)
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
-        denom = e**(env.get_score())
-        return e**(child_sim_value)/(child_visited*denom)
+        if env.get_score() >= np.log(sys.maxsize):
+            denom = np.log(sys.maxsize)
+        else:
+            denom = e**(env.get_score())
+        if child_sim_value >= np.log(sys.maxsize):
+            num = np.log(sys.maxsize)
+        else:
+            num = child_sim_value
+        try:
+            return (1/child_visited)*(e**(num-denom))
+        except OverflowError:
+            print("max size = ",sys.maxsize," num = ",num," denom = ",denom)
 
 class Additive_Reward(Reward):
     """This Reward Policy returns values between 0 and 1 
@@ -380,3 +453,48 @@ class Additive_Reward(Reward):
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
         return child_sim_value/(child_visited*env.get_max_score())
+
+class Dynamic_Reward:
+    """Dynamic Reward  scales the reward returned in a simulation by the length of the simulation,
+        so a reward reached earlier in the game will have a higher score than the same state
+         reached later."""
+
+    def terminal_node(self, env) -> int:
+        """ The case when we start the simulation at a terminal state """
+        return 0
+
+    def simulation_limit(self, env) -> int:
+        """ The case when we reach the simulation depth limit """
+        return (env.get_score()/(env.get_moves()+1))
+
+    def simulation_terminal(self, env) -> int:
+        """ The case when we reach a terminal stae in the simulation """
+        return ((env.get_score()+10)/(env.get_moves()+1))
+
+    def dynamic_sim_len(self, max_nodes, sim_limit, diff) -> int:
+        """ Given the current simulation depth limit and the difference between the picked and almost picked 'next action' return what the new sim depth is """
+        new_limit = sim_limit
+        new_node_max = max_nodes
+        if(diff < 0.1):
+            if(new_node_max < 1000):
+                new_node_max = max_nodes*2
+
+            
+            if(new_node_max < 10000):
+                new_limit = new_limit*2
+            
+
+        elif(diff > 2):
+            if(new_node_max > 300):
+                new_node_max = floor(max_nodes/2)
+            
+            if(sim_limit > 10):
+                new_limit =  floor(sim_limit/2)
+        
+        return new_node_max, new_limit
+        
+    def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited) -> int:
+        return child_sim_value/(child_visited*env.get_max_score()) + exploration*sqrt((2*log2(parent_visited))/child_visited)
+
+    def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited) -> int:
+       return (1/(env.get_moves()+1))*(child_sim_value/(child_visited*env.get_max_score()))
