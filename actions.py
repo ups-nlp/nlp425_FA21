@@ -27,7 +27,7 @@ def get_directions(input_string):
 	to tokenize it. Tokenized string is then compared against a directionality dictionary
 	to determine base direction (e.g. 'upwards' -> 'up') and outputs direciton as a set."""
 
-	## Reading in directionality information from file to create hashmap
+	# Reading in directionality information from file to create hashmap
 	directionDict = dict()
 
 	with open('directions.txt', 'r') as f:
@@ -36,22 +36,21 @@ def get_directions(input_string):
 			line = line.strip().split(' ')
 			directionDict[line[0]] = line[1]
 		f.close()
-	print(directionDict)
+	#print(directionDict)
 
-	# Now for tokenization 
 	output = []
-	doc = nlp(input_string.lower()) #run information from game through the nlp pipeline
+	doc = nlp(input_string.lower()) # run information from game through the nlp pipeline
 	sentences = (doc.sents)
 
 	for s in sentences:
 		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
 
-		#bugtesting stuff here:
+		#BUGTEST: Prints out current token information
 		for token in s:
 			print(token.text, token.dep_, token.head.text, token.head.pos_,
            [child for child in token.children])
 
-		for t in s: # for every token in the sentence
+		for t in s: 
 			if t.text in directionDict:
 				direction = directionDict[t.text]
 
@@ -59,11 +58,11 @@ def get_directions(input_string):
 				# This builds a subtree around a directional word, allowing us to analyze that tree alone
 				subtree = t.subtree
 				p_st = [t.text for t in subtree] # iterable text version of subtree
-				print(p_st)
+				#print(p_st)
 
 				if 'of' in p_st:
-					print("== of found")
-					print("opposite of " + direction)
+					#print("== of found")
+					#print("opposite of " + direction)
 					# This version of python does not have switches so using this
 					if direction == 'east':
 						output.append('west')
@@ -74,8 +73,8 @@ def get_directions(input_string):
 					elif direction == 'south':
 						output.append('north')
 				else:
-					print("== no of")
-					print(direction)
+					#print("== no of")
+					#print(direction)
 					output.append(direction)
 
 				break # okay now move onto the next token  
@@ -91,7 +90,7 @@ def get_directions(input_string):
 				print([t.text for t in t.subtree])
 				print("ROOT IS: " + [chunk.root for chunk in t.subtree.as_doc().nouns_chunks])
 				output.append(t.text)"""						
-	print(set(output))
+	#print(set(output))
 	return set(output)
 
 def get_nouns(input):
