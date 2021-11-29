@@ -46,9 +46,9 @@ def get_directions(input_string):
 		s = s.as_doc() # this processes the sentence as a doc, so we can iterate through tokens
 
 		#BUGTEST: Prints out current token information
-		for token in s:
+		"""for token in s:
 			print(token.text, token.dep_, token.head.text, token.head.pos_,
-           [child for child in token.children])
+           [child for child in token.children])"""
 
 		for t in s: 
 			if t.text in directionDict:
