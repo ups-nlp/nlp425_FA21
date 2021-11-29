@@ -51,6 +51,11 @@ class DEPagent(Agent):
                           'northwest':'southeast', 'southeast':'northwest',
                           'northeast':'southwest', 'southwest':'southeast', 'go':'go'}
 
+        # index of the current observation in the enviroment
+        self.OBSERVATION_INDEX = 8
+
+        # Number of past action to check
+        self.PAST_ACTIONS_CHECK = 3
 
         self.vocab_vectors, self.word2id = self.embed_vocab()
 
@@ -58,9 +63,7 @@ class DEPagent(Agent):
 
         # set model for sentance transformers
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
-        #env.reset()
-
-
+    
     def hoarder(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
         """
         Determine what action the hoarder would take.
@@ -74,7 +77,8 @@ class DEPagent(Agent):
         @return chosen_action: A string of containing "take all"
 
         """
-        return random.choice(valid_actions)
+        #return random.choice(valid_actions)
+        return self.get_action(env, valid_actions, history)
 
 
     def fighter(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
@@ -88,7 +92,8 @@ class DEPagent(Agent):
 
         @return chosen_action: String containing "kill ____ with ____" or "run"
         """
-        return random.choice(valid_actions)
+        #return random.choice(valid_actions)
+        return self.get_action(env, valid_actions, history)
 
         #inventory = [item.name for item in env.get_inventory()]
         #for action in valid_actions:
@@ -148,7 +153,8 @@ class DEPagent(Agent):
                 valid_movements.remove(double_back)
 
         # Pick randomly from remaining choices
-        return random.choice(valid_movements) 
+        #return random.choice(valid_movements) 
+        return self.get_action(env, valid_movements, history)
 
 
     def everything_else(self, env: FrotzEnv, valid_actions:list, \
@@ -164,6 +170,7 @@ class DEPagent(Agent):
         @return chosen_action: A String containing a new action
         """
         # get list of past actions
+        """
         if len(history) != 0:
             past_actions = []
             for combo in history:
@@ -189,14 +196,14 @@ class DEPagent(Agent):
                 chosen_action = action
         print(" similarity: ", best_similarity)
         
-        
+        """
         # Or ... run the neural network: The input is the observation, which
         # has been encoded as query_vec. The output is the result after
         # running through the NN
         
         
-        return chosen_action    # action with the best similarity to the observation
-
+        #return chosen_action    # action with the best similarity to the observation
+        return self.get_action(env, valid_actions, history)
 
 
     def take_action(self, env: FrotzEnv, history: list) -> str:
@@ -232,7 +239,6 @@ class DEPagent(Agent):
              chosen_module= 1
              
         action = action_modules[chosen_module](env, sorted_actions[chosen_module], history)
-        print("Action: ", action)
         return action
 
 
@@ -382,5 +388,31 @@ class DEPagent(Agent):
                         fighter_actions, 
                         ee_actions]
         return sorted_actions
+    
+    def get_action(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
+        # get list of past actions
+        past_actions = []
+        if len(history) > self.PAST_ACTIONS_CHECK:
+            for combo in history[self.PAST_ACTIONS_CHECK]:
+                past_actions.append(combo[1])
+        observation = env.get_state()[8]
+
+        # Encode the observation
+        query_vec = self.model.encode([observation])[0]
+
+        # set up for testing all actions
+        chosen_action = ""
+        best_similarity = 0
+        # for each vaild action, test its similarity to the observation
+        for action in valid_actions:
+            if (len(history) !=0 and action in past_actions):
+                continue
+            sim = dot(query_vec, self.model.encode([action])[0]) \
+                      /(norm(query_vec)*norm(self.model.encode([action])[0]))
+            # choose action with the best similarity
+            if (best_similarity < sim):
+                best_similarity = sim
+                chosen_action = action
+        return chosen_action
 
     
