@@ -113,7 +113,9 @@ def get_nouns(input):
 	index = 0
 	for word in pos:# This is finding the indexes for the nouns.
 		if word == 'NOUN':
-			nouns.append(text[index])
+			# Remove cardinal directions from the list of nouns
+			if text[index] != 'west' and text[index] != 'south' and text[index] != 'east' and text[index] != 'north':
+				nouns.append(text[index])
 		index += 1
 	return nouns
 
