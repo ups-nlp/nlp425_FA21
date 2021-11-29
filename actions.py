@@ -119,7 +119,7 @@ def get_nouns(input):
 	return nouns
 
 def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions, inventory):
-	'''This method will create the varios types of action phrases.
+	'''This method will create the various types of action phrases.
 
 	Keyword arguments:
 	list_of_verbs -- A list of verbs to use for action phrases
@@ -159,7 +159,7 @@ def get_valid_actions(observation, game_environment):
 
 	Keyword arguments:
 	observation -- The current game observation
-	game_environment -- A list of all the game observations
+	game_environment -- The game environment being used in play.py
 
 	Return:
 	action_phrases -- A list of all the valid action phrases
