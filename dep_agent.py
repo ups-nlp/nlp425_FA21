@@ -87,9 +87,13 @@ class DEPagent(Agent):
             trainingInputs.append(obs_vect)
             trainingOutputs.append(module)
 
+        
+        np_input = np.aray(trainingInputs)
+        np_output = np.array(trainingOutputs)
+
 
         '''
-        train_obs, test_obs, train_labels, test_labels = train_test_split(obs, labels, test_size = 0.2, random_state =1)
+        train_obs, test_obs, train_labels, test_labels = train_test_split(np_input, np_output, test_size = 0.2, random_state =1)
 
         #Hyperparameters
         epochs = 20
