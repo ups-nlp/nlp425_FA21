@@ -69,9 +69,11 @@ class DEPagent(Agent):
 
         self.vocab_vectors, self.word2id = self.embed_vocab()
 
-        #NEURAL NET STUFF HERE
+        #Decisionmaker NEURAL NET
         trainingInputs = []
         trainingOutputs = []
+
+        #file containing the observation, action, and module of that action from the walkthrough
         dm_training_data = open("./data/dm_training_data.txt")
         for line in dm_training_data:
             list = line.split(',')
@@ -85,11 +87,7 @@ class DEPagent(Agent):
             trainingInputs.append(obs_vect)
             trainingOutputs.append(module)
 
-            trainingData.append(dataLine)
 
-        for line in trainingData:
-
-            print(line)
         '''
         train_obs, test_obs, train_labels, test_labels = train_test_split(obs, labels, test_size = 0.2, random_state =1)
 
@@ -389,7 +387,6 @@ class DEPagent(Agent):
 
 
 
-
     def create_vect(self, observation:str) -> list:
         """
         Takes an observation and returns a 50 dimensional vector representation of it
@@ -401,11 +398,12 @@ class DEPagent(Agent):
         obs_split = observation.split(' ')
         num_words = 0
 
-
+        #Creates an empty list of size 50 to be filled in
         vect_size = 50
         avg_vect = [0] * vect_size
 
         for word in obs_split:
+            #Check if the word is in our vocab, if it is add it to the vector
             if(self.word2id.get(word) is not None):
                 id = self.word2id.get(word)
                 norm_vect = self.vocab_vectors[id]
@@ -434,9 +432,12 @@ class DEPagent(Agent):
         onlyTxt = re.sub('[,?!.:;\'\"]', '', onlyTxt)
         onlyTxt = re.sub('\s+', ' ', onlyTxt)
         onlyTxt = onlyTxt.lower()
-        #print(onlyTxt)
+
+        #Remove the newline character
         onlyTxt = onlyTxt[:len(onlyTxt)-1]
         observation = onlyTxt
+
+        #Call the create_vect method to turn the string into a list representing a vector
         avg_vect = self.create_vect(observation)
 
         return(avg_vect)
