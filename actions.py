@@ -115,7 +115,7 @@ def get_nouns(input):
 		if word == 'NOUN':
 			# Remove cardinal directions from the list of nouns
 			if text[index] != 'west' and text[index] != 'south' and text[index] != 'east' and text[index] != 'north':
-				nouns.append(text[index])
+				nouns.append(text[index])2tyuiop-=;
 		index += 1
 	return nouns
 
@@ -152,6 +152,9 @@ def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions, inve
 		for noun in list_of_nouns:
 			phrase = "use " + item + " on " + noun
 			action_phrases.append(phrase)
+
+	# Adding look as a default valid action
+	action_phrases.append('look')
 
 	return action_phrases
 
