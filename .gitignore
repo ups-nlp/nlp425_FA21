@@ -7,3 +7,4 @@ __pycache__
 #Files to be kept locally only
 my_driver.py
 test_player.py
+z-machine-games-master/*
