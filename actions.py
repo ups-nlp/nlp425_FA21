@@ -6,7 +6,7 @@ layer to determine if a given combo is possible (e.g. 'open forest' is not likel
 
 Authors: real-froggy-chair, brayancodes, Julien B.
 Class: CS425 Fall 2021
-Last working Compile Date: 11/28/2021"""
+Last working Compile Date: 12/01/2021"""
 
 # TODO: eliminate unnecesary imports 
 import math

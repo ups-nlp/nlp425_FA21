@@ -40,8 +40,6 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         history.append((curr_obs, action_to_take))
         
         curr_obs = next_obs.split("\n", 1)[1]
-
-        print(action_to_take)
         
         print()
         print('This is an extensive list of possible actions to take:')
