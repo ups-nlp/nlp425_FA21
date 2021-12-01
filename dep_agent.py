@@ -324,6 +324,7 @@ class DEPagent(Agent):
 
         @param valid_actions
         @param history
+        @param environment
 
         Creates an embedding of all the words in the previous observation,
         runs that through a neural network that ranks how much we should use
@@ -343,6 +344,13 @@ class DEPagent(Agent):
 
 
     def embed_vocab(self) -> (list, dict):
+        """
+        Reads in the vocab and vector GloVemaster files in from the data folder.
+        Returns a dictionary matching a word to an index and a list of the vectors
+
+        @return list: A normalized list of vectors, one for each word
+        @return dict: A dictionary with a word as a key and the id for the list as the value
+        """
         with open("./data/vocab.txt", 'r') as f:
             #Read in the list of words
             words = [word.rstrip().split(' ')[0] for word in f.readlines()]
@@ -383,6 +391,13 @@ class DEPagent(Agent):
 
 
     def create_vect(self, observation:str) -> list:
+        """
+        Takes an observation and returns a 50 dimensional vector representation of it
+
+        @param str: a string containing an observation
+
+        @return list: A list representing a 50 dimensional normalized vector
+        """
         obs_split = observation.split(' ')
         num_words = 0
 
@@ -406,6 +421,12 @@ class DEPagent(Agent):
 
 
     def create_observation_vect(self, env:FrotzEnv) -> list:
+        """
+        Takes the gamestate and returns a vector representing the previous observation
+
+        @param env: the current gamestate
+        @return list: A normalized vector representing the previous observation
+        """
         currState = env.get_state()
         gameState = currState[8].decode()
 
@@ -456,6 +477,15 @@ class DEPagent(Agent):
         return sorted_actions
 
     def get_action(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
+        """
+        Gets the closest possible action to the observation
+
+        @param FrotzEnv: the game environment
+        @param list: the list of all valid actions
+        @param list: the game history
+
+        @return str: Returns the action closest to the observation
+        """
         # get list of past actions
         past_actions = []
         if len(history) > self.PAST_ACTIONS_CHECK:
