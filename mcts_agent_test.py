@@ -2,6 +2,8 @@ from agent import mcts_agent
 from jericho import FrotzEnv
 from math import inf, sqrt, log2, floor,e
 import random
+import sys
+import numpy as np
 
 class Test:
     # Create the environment
@@ -12,9 +14,12 @@ class Test:
 
 
     def test_node(self,root):
+        # check the root has no parent and is initially terminal
         assert self.root.get_parent() is None
         assert self.root.is_terminal()==0
         new_actions = []
+
+        #check the node expands properly and adds children properly
         node1 = mcts_agent.Node(root, "n", new_actions)
         node2 = mcts_agent.Node(root, "e", new_actions)
         node3 = mcts_agent.Node(root, "s", new_actions)
@@ -25,6 +30,32 @@ class Test:
         self.root.add_child(node4)
         assert self.root.is_expanded()==1
         assert self.root.get_children() == [node1,node2,node3,node4]
+
+        #check the node stores its previous action
+        assert node1.get_prev_action() == "n"
+
+    def test_softmax(self,root, env):
+        assert mcts_agent.Softmax_Reward().simulation_limit()==0
+        assert mcts_agent.Softmax_Reward().select_action(env,0,1,1)== (1/(np.log(sys.maxsize)))
+        assert mcts_agent.Softmax_Reward().simulation_terminal()==10
+
+    def test_generalized_softmax(self,root,env):
+        assert mcts_agent.Generalized_Softmax_Reward().simulation_limit()==0
+        assert mcts_agent.Generalized_Softmax_Reward().select_action(env,0,1,1)== (1/1)
+        assert mcts_agent.Generalized_Softmax_Reward().simulation_terminal()==10  
+
+    def test_additive(self,root,env):
+        assert mcts_agent.Additive_Reward().simulation_limit()==0
+        assert mcts_agent.Additive_Reward().select_action(env,0,1,1)== 0
+        assert mcts_agent.Additive_Reward().simulation_terminal()==10  
+
+    def test_dynamic(self,root,env):
+        assert mcts_agent.Dynamic_Reward().simulation_limit()==0
+        assert mcts_agent.Dynamic_Reward().select_action(env,0,1,1)== 0
+        assert mcts_agent.Dynamic_Reward().simulation_terminal()==10
+
+
+
 
     def test_expand_child(self, actions):
         assert mcts_agent.expand_node(self.root, self.env).get_prev_action() in actions # just checks to make sure that the action that was expanded existed in the list of possible actions

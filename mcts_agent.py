@@ -332,7 +332,7 @@ class Softmax_Reward:
         return (e**(num))/(child_visited*denom)+ exploration*sqrt((2*log2(parent_visited))/child_visited)
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
-        if env.get_score() >= np.log(sys.maxsize):
+        if env.get_max_score() >= np.log(sys.maxsize):
             denom = np.log(sys.maxsize)
         else:
             denom = self.softmax_calc(-10,env.get_max_score())
@@ -497,4 +497,4 @@ class Dynamic_Reward:
         return child_sim_value/(child_visited*env.get_max_score()) + exploration*sqrt((2*log2(parent_visited))/child_visited)
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited) -> int:
-       return (1/(env.get_moves()+1))*(child_sim_value/(child_visited*env.get_max_score()))
+       return (child_sim_value/(child_visited*env.get_max_score()))
