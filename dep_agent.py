@@ -25,6 +25,16 @@ from torchvision import datasets, transforms
 
 import tensorflow as tf
 
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+import pandas as pd
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.optimizers import Adam
+from sklearn.model_selection import train_test_split
+from matplotlib import pyplot as plt
+
+from operator import add
+from operator import truediv
 
 # In-house modules
 from agent import Agent
@@ -60,10 +70,75 @@ class DEPagent(Agent):
         self.vocab_vectors, self.word2id = self.embed_vocab()
 
         #NEURAL NET STUFF HERE
+        trainingInputs = []
+        trainingOutputs = []
+        dm_training_data = open("./data/dm_training_data.txt")
+        for line in dm_training_data:
+            list = line.split(',')
+            observation = list[0]
+            obs_vect = self.create_vect(observation)
+
+            action = list[1]
+            module = list[2]
+            module = re.sub('\n', '', module)
+
+            trainingInputs.append(obs_vect)
+            trainingOutputs.append(module)
+
+            trainingData.append(dataLine)
+
+        for line in trainingData:
+
+            print(line)
+        '''
+        train_obs, test_obs, train_labels, test_labels = train_test_split(obs, labels, test_size = 0.2, random_state =1)
+
+        #Hyperparameters
+        epochs = 20
+        batch_size = 32
+        hidden_lyr1_nodes = 64
+        hidden_lyr2_nodes = 64
+        learning_rate = 0.005
+        input_size = 50
+        output_size = 4
+
+        # Build the model
+        model = Sequential([
+          Dense(hidden_lyr1_nodes, activation='relu', input_shape=(input_size,)),
+          Dense(hidden_lyr2_nodes, activation='relu'),
+          Dense(output_size, activation='softmax'),
+        ])
+
+        # Compile the model.
+        model.compile(
+          optimizer=Adam(lr=learning_rate),
+          loss='categorical_crossentropy',
+          metrics=['accuracy'],
+        )
+
+        # Train the model. The use of to_categorical converts the indices to the
+        # actions to one-hot vectors
+        history = model.fit(train_obs,
+                            to_categorical(train_labels),
+                            verbose = 0,
+                            validation_split = 0.2, # split data in 80/20 sets
+                            epochs=epochs,
+                            batch_size=batch_size)
+
+
+        # Plot the accuracy of the model as it trains
+        plt.plot(history.history['accuracy'])
+        plt.xlabel('epochs')
+        plt.ylabel('accuracy')
+
+        # Evaluate the model.
+        # output: accuracy is 0.425 on test set
+        model.evaluate(test_obs, to_categorical(test_labels))
+        '''
 
         # set model for sentance transformers
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
-    
+
     def hoarder(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
         """
         Determine what action the hoarder would take.
@@ -99,7 +174,7 @@ class DEPagent(Agent):
         #for action in valid_actions:
          #   have_enemy = [enemy in action for enemy in self.enemies]
          #   if any(have_enemy):
-        """   
+        """
                 enemy = self.enemies[have_enemy.index(True)]
                 # We are facing an enemy: if we have a weaon, fight with it
                 # if not, run
@@ -132,7 +207,7 @@ class DEPagent(Agent):
         valid_movements = [action for action in self.movements \
                              if action in valid_actions]
         if not any(valid_movements):
-            return random.choice(valid_actions) 
+            return random.choice(valid_actions)
 
 
         # Check the history for the last movement and don't go in the
@@ -153,7 +228,7 @@ class DEPagent(Agent):
                 valid_movements.remove(double_back)
 
         # Pick randomly from remaining choices
-        #return random.choice(valid_movements) 
+        #return random.choice(valid_movements)
         return self.get_action(env, valid_movements, history)
 
 
@@ -195,13 +270,13 @@ class DEPagent(Agent):
                 best_similarity = sim
                 chosen_action = action
         print(" similarity: ", best_similarity)
-        
+
         """
         # Or ... run the neural network: The input is the observation, which
         # has been encoded as query_vec. The output is the result after
         # running through the NN
-        
-        
+
+
         #return chosen_action    # action with the best similarity to the observation
         return self.get_action(env, valid_actions, history)
 
@@ -220,11 +295,11 @@ class DEPagent(Agent):
         # but for now use the FrotzEnv
         valid_actions = env.get_valid_actions()
 
-        # get sorted actions: in order: Hoarder, mover, fighter, and everything else. 
+        # get sorted actions: in order: Hoarder, mover, fighter, and everything else.
         sorted_actions = self.sort_actions(valid_actions)
 
         chosen_module = self.decision_maker(valid_actions, history, env)
-    
+
         action_modules = [self.hoarder,
                           self.mover,
                           self.fighter,
@@ -237,7 +312,7 @@ class DEPagent(Agent):
             chosen_module = 1
         elif len(sorted_actions[3]) == 0 and chosen_module == 3:
              chosen_module= 1
-             
+
         action = action_modules[chosen_module](env, sorted_actions[chosen_module], history)
         return action
 
@@ -261,6 +336,7 @@ class DEPagent(Agent):
 
         vector = self.create_observation_vect(env)
 
+        sorted_actions = self.sort_actions(valid_actions)
 
         chosen_module = random.randint(0, 3)
         return chosen_module
@@ -304,12 +380,35 @@ class DEPagent(Agent):
         return W_norm, word2id
 
 
+
+
+    def create_vect(self, observation:str) -> list:
+        obs_split = observation.split(' ')
+        num_words = 0
+
+
+        vect_size = 50
+        avg_vect = [0] * vect_size
+
+        for word in obs_split:
+            if(self.word2id.get(word) is not None):
+                id = self.word2id.get(word)
+                norm_vect = self.vocab_vectors[id]
+                avg_vect = list(map(add, avg_vect, norm_vect))
+                num_words +=1
+            else:
+                print("Word not in the vocab: " + word)
+
+        avg_vect = list(map(truediv, avg_vect, num_words))
+
+        return(avg_vect)
+
+
+
     def create_observation_vect(self, env:FrotzEnv) -> list:
         currState = env.get_state()
         gameState = currState[8].decode()
-        if gameState.startswith("Copyright"):
-            index = gameState.index("West")
-            gameState = gameState[index:]
+
         onlyTxt = re.sub('\n', ' ', gameState)
         onlyTxt = re.sub('[,?!.:;\'\"]', '', onlyTxt)
         onlyTxt = re.sub('\s+', ' ', onlyTxt)
@@ -317,48 +416,15 @@ class DEPagent(Agent):
         #print(onlyTxt)
         onlyTxt = onlyTxt[:len(onlyTxt)-1]
         observation = onlyTxt
-
-        obs_split = observation.split(' ')
-        avg_vect = []
-        vect_size = 50
-
-        i=0
-        while i < vect_size:
-            avg_vect.append(0)
-            i+=1
-
-        for word in obs_split:
-            if(self.word2id.get(word) is not None):
-                id = self.word2id.get(word)
-                norm_Vect = self.vocab_vectors[id]
-
-                i=0
-                for vect in norm_Vect:
-                    curr = avg_vect[i]
-                    val = vect + curr
-                    avg_vect[i] = val
-                    i+=1
-            else:
-                print("Word not in the vocab: " + word)
-
-        totalVal = 0
-        for val in avg_vect:
-            totalVal += val
-
-        i=0
-        while i<vect_size:
-            val = avg_vect[i]
-            avg_val = (val/totalVal)
-            avg_vect[i] = avg_val
-            i+=1
+        avg_vect = self.create_vect(observation)
 
         return(avg_vect)
 
 
     def sort_actions(self, valid_actions:list) -> list:
         """
-            looks through all the valid actions and sorted them by hoarder, 
-            mover, fighter, or everything else. 
+            looks through all the valid actions and sorted them by hoarder,
+            mover, fighter, or everything else.
 
             @param valid_actions
 
@@ -382,13 +448,13 @@ class DEPagent(Agent):
             # else add to everything else action list
             else:
                 ee_actions.append(action)
-        # create list of lists 
+        # create list of lists
         sorted_actions=[hoarder_actions,
-                        mover_actions, 
-                        fighter_actions, 
+                        mover_actions,
+                        fighter_actions,
                         ee_actions]
         return sorted_actions
-    
+
     def get_action(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
         # get list of past actions
         past_actions = []
@@ -414,5 +480,3 @@ class DEPagent(Agent):
                 best_similarity = sim
                 chosen_action = action
         return chosen_action
-
-    
