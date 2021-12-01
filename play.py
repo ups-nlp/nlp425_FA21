@@ -42,7 +42,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
         curr_obs = next_obs.split("\n", 1)[1]
         
         print()
-        print('These is an extensive list of possible actions to take.')
+        print('This is an extensive list of possible actions to take:')
         print()
         print(get_valid_actions(curr_obs, env))
         print()

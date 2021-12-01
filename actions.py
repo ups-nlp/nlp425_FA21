@@ -115,7 +115,7 @@ def get_nouns(input):
 		if word == 'NOUN':
 			# Remove cardinal directions from the list of nouns
 			if text[index] != 'west' and text[index] != 'south' and text[index] != 'east' and text[index] != 'north':
-				nouns.append(text[index])2tyuiop-=;
+				nouns.append(text[index])
 		index += 1
 	return nouns
 
