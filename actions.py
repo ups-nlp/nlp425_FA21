@@ -158,7 +158,7 @@ def create_action_phrases(list_of_verbs, list_of_nouns, list_of_directions, inve
 
 	return action_phrases
 
-def get_valid_actions(observation, game_environment):
+def get_valid_actions(observation, game_environment, history):
 	'''This method will call create action phrases; called when a list of action phrases is needed.
 
 	Keyword arguments:
@@ -173,6 +173,13 @@ def get_valid_actions(observation, game_environment):
 
 	# Parse the inventory objects for the inventory items
 	inventory_items = parse_inventory(inventory)
+
+	# Determine if the last action taken was a "take" to now simulate a look
+	if len(history) > 0: # Check if there any actions taken
+		last_action = history[len(history)-1][1] # The last action
+		last_verb = last_action.split(" ", 1)[0] # The verb of the last action
+		if last_verb == 'take':
+			observation = history[len(history)-1][0] # Simulate a look
 
 	# Making the action phrases
 	action_phrases = create_action_phrases(get_verbs(game_environment), get_nouns(observation), get_directions(observation), inventory_items)
