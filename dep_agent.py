@@ -87,9 +87,9 @@ class DEPagent(Agent):
             trainingInputs.append(obs_vect)
             trainingOutputs.append(module)
 
-        
-        np_input = np.aray(trainingInputs)
-        np_output = np.array(trainingOutputs)
+
+        #np_input = np.aray(trainingInputs)
+        #np_output = np.array(trainingOutputs)
 
 
         '''
@@ -416,7 +416,8 @@ class DEPagent(Agent):
             else:
                 print("Word not in the vocab: " + word)
 
-        avg_vect = list(map(truediv, avg_vect, num_words))
+        words = [num_words] * vect_size
+        avg_vect = list(map(truediv, avg_vect, words))
 
         return(avg_vect)
 
