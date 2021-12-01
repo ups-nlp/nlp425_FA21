@@ -25,6 +25,11 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
     if config.VERBOSITY > 0:
         print('=========================================')
         print("Initial Observation\n" + curr_obs)
+        curr_obs = curr_obs.split("\n\n", 1)[1]
+        print()
+        print('These is an extensive list of possible actions to take.')
+        print()
+        print(get_valid_actions(curr_obs.split("\n", 1)[1], env))
 
     while num_steps > 0 and not done:
         action_to_take = agent.take_action(env, history)
@@ -34,7 +39,7 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
         history.append((curr_obs, action_to_take))
         
-        curr_obs = next_obs
+        curr_obs = next_obs.split("\n", 1)[1]
         
         print()
         print('These is an extensive list of possible actions to take.')
