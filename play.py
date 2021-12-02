@@ -51,6 +51,8 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
 
     test_input = "-----"
 
+    chosen_path = agent.node_path
+
     node_history = agent.node_path
 
     while test_input != "":
@@ -91,11 +93,13 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
             node_history = cur_node.get_children()
             for i in range(0, len(node_history)):
                 print(node_history[i].get_prev_action(), "with value", node_history[i].sim_value, "visited", node_history[i].visited)
-        elif int(test_input) == -1:
+        elif test_input == "-1":
             depth -= 1
-            cur_node = cur_node.parent
             if depth == 0:
                 node_history = agent.node_path
+            else:
+                cur_node = cur_node.parent
+                node_history = cur_node.get_children()
 
             print("-------", cur_node.get_prev_action(), "-------")
             
@@ -108,7 +112,12 @@ def play_game(agent: Agent, game_file: str, num_steps: int):
             print("Children:")
 
             for i in range(0, len(node_history)):
-                print(node_history[i].get_prev_action(), "with value", node_history[i].sim_value, "visited", node_history[i].visited)
+                if node_history[i] in chosen_path:
+                    was_taken = True
+                else:
+                    was_taken = False
+
+                print(node_history[i].get_prev_action(), "with value", node_history[i].sim_value, "visited", node_history[i].visited, "was_chosen?", was_taken)
 
 
 if __name__ == "__main__":
