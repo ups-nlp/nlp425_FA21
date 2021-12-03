@@ -198,11 +198,13 @@ class Node:
     children -- a list of the children of this node
     sim_value -- the simulated value of the node
     visited -- the number of times this node has been visited
-    terminal -- a boolean indicating if this node is terminal
+    max_children -- the total number of children this node could have
+    new_actions -- a list of the unexplored actions at this node
 
     Keyword arguments:
     parent -- it's parent node
     prev_act -- the previous action taken to get to this node
+    new_actions -- a list of all the unexplored actions at this node
     """
 
     def __init__(self, parent, prev_act, new_actions):
@@ -214,8 +216,11 @@ class Node:
         self.max_children = len(new_actions)
         self.new_actions = new_actions
 
-    # The node is terminal if it has no children and no possible children
     def is_terminal(self):
+        """ Returns true if the node is terminal
+        Returns:
+            boolean: true if the max number of children is 0
+        """
         return self.max_children == 0
 
     def print(self, level):
@@ -242,9 +247,11 @@ class Node:
     def get_children(self):
         return self.children
 
-    # Return true if it has expanded all possible actions AND has at least 1 child
     def is_expanded(self):
-        #print("is expanded: ", len(self.new_actions), len(self.children))
+        """ Returns true if the number of child is equal to the max number of children.
+        Returns:
+            boolean: true if the number of child is equal to the max number of children
+        """
         return (len(self.children) == self.max_children)
 
 class Reward:
