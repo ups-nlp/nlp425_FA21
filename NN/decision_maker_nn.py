@@ -6,16 +6,25 @@ Created on Fri Dec 3 12:19:30 2021
 @author: Eric Markewitz
 """
 
+import sys
+sys.path.append('../')
+#print(sys.path)
+from dep_agent import DEPagent
+
+
 #Decisionmaker NEURAL NET
 trainingInputs = []
 trainingOutputs = []
 
 #file containing the observation, action, and module of that action from the walkthrough
 dm_training_data = open("../data/dm_training_data.txt")
+
+
+
 for line in dm_training_data:
     list = line.split(',')
     observation = list[0]
-    obs_vect = self.create_vect(observation)
+    obs_vect = create_vect(observation)
 
     action = list[1]
     module = list[2]

@@ -66,7 +66,7 @@ class DEPagent(Agent):
         # Number of past action to check
         self.PAST_ACTIONS_CHECK = 3
 
-        self.vocab_vectors, self.word2id = self.embed_vocab()
+        self.vocab_vectors, self.word2id = embed_vocab()
 
         #Find the NN files that will save weights to a file
         #create_dm_nn(self.vocab_vectors, self.word2id)
@@ -234,49 +234,6 @@ class DEPagent(Agent):
         return chosen_module
 
 
-    def embed_vocab(self) -> (list, dict):
-        """
-        Reads in the vocab and vector GloVemaster files in from the data folder.
-        Returns a dictionary matching a word to an index and a list of the vectors
-
-        @return list: A normalized list of vectors, one for each word
-        @return dict: A dictionary with a word as a key and the id for the list as the value
-        """
-        with open("./data/vocab.txt", 'r') as f:
-            #Read in the list of words
-            words = [word.rstrip().split(' ')[0] for word in f.readlines()]
-
-        with open("./data/vectors.txt", 'r') as f:
-            #word --> [vector]
-            vectors = {}
-            for line in f:
-                vals = line.rstrip().split(' ')
-                word = vals[0]
-                vec = vals[1:]
-                vectors[word] = [float(x) for x in vec]
-
-        #Compute size of vocabulary
-        vocab_size = len(words)
-        word2id = {w: idx for idx, w in enumerate(words)}
-        id2word = {idx: w for idx, w in enumerate(words)}
-
-        vector_dim = len(vectors[id2word[0]])
-        #print("Vocab size: " + str(vocab_size))
-        #print("Vector dimension: " + str(vector_dim))
-
-        #Create a numpy matrix to hold word vectors
-        W = np.zeros((vocab_size, vector_dim))
-        for word, v in vectors.items():
-            if word == '<unk>':
-                continue
-            W[word2id[word], :] = v
-
-        #Normalize each word vector to unit length
-        W_norm = np.zeros(W.shape)
-        d = (np.sum(W ** 2, 1) ** (0.5))
-        W_norm = (W.T / d).T
-
-        return W_norm, word2id
 
 
 
@@ -409,3 +366,48 @@ class DEPagent(Agent):
                 chosen_action = action
         # return the action with the closest similarity
         return chosen_action
+
+
+def embed_vocab() -> (list, dict):
+    """
+    Reads in the vocab and vector GloVemaster files in from the data folder.
+    Returns a dictionary matching a word to an index and a list of the vectors
+
+    @return list: A normalized list of vectors, one for each word
+    @return dict: A dictionary with a word as a key and the id for the list as the value
+    """
+    with open("./data/vocab.txt", 'r') as f:
+        #Read in the list of words
+        words = [word.rstrip().split(' ')[0] for word in f.readlines()]
+
+    with open("./data/vectors.txt", 'r') as f:
+        #word --> [vector]
+        vectors = {}
+        for line in f:
+            vals = line.rstrip().split(' ')
+            word = vals[0]
+            vec = vals[1:]
+            vectors[word] = [float(x) for x in vec]
+
+    #Compute size of vocabulary
+    vocab_size = len(words)
+    word2id = {w: idx for idx, w in enumerate(words)}
+    id2word = {idx: w for idx, w in enumerate(words)}
+
+    vector_dim = len(vectors[id2word[0]])
+    #print("Vocab size: " + str(vocab_size))
+    #print("Vector dimension: " + str(vector_dim))
+
+    #Create a numpy matrix to hold word vectors
+    W = np.zeros((vocab_size, vector_dim))
+    for word, v in vectors.items():
+        if word == '<unk>':
+            continue
+        W[word2id[word], :] = v
+
+    #Normalize each word vector to unit length
+    W_norm = np.zeros(W.shape)
+    d = (np.sum(W ** 2, 1) ** (0.5))
+    W_norm = (W.T / d).T
+
+    return W_norm, word2id
