@@ -57,10 +57,9 @@ for i,action in enumerate(actions):
     labels[i] = unique_actions.index(action)
 
 
-# Divide in training and testing sets
+# Divide into training and testing sets
 train_obs, test_obs, \
-train_labels, test_labels = train_test_split(obs, labels,
-                                             test_size = 0.2,
+train_labels, test_labels = train_test_split(obs, labels, test_size = 0.2,
                                              random_state = 1)
 
 
