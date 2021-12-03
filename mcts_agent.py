@@ -299,7 +299,7 @@ class Softmax_Reward:
                 new_node_max = max_nodes*2
 
             
-            if(new_node_max < 10000):
+            if(sim_limit < 10000):
                 new_limit = new_limit*2
             
 
@@ -369,7 +369,7 @@ class Generalized_Softmax_Reward:
                 new_node_max = max_nodes*2
 
             
-            if(new_node_max < 10000):
+            if(sim_limit < 10000):
                 new_limit = new_limit*2
             
 
@@ -435,7 +435,7 @@ class Additive_Reward(Reward):
                 new_node_max = max_nodes*2
 
             
-            if(new_node_max < 10000):
+            if(sim_limit < 10000):
                 new_limit = new_limit*2
             
 
@@ -480,7 +480,7 @@ class Dynamic_Reward:
                 new_node_max = max_nodes*2
 
             
-            if(new_node_max < 10000):
+            if(sim_limit < 10000):
                 new_limit = new_limit*2
             
 
