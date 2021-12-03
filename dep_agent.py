@@ -492,11 +492,14 @@ class DEPagent(Agent):
 
         @return str: Returns the action closest to the observation
         """
-        # get list of past actions
+        # get list of select number of past actions
+        # to prevent repeated the same action within that spread
         past_actions = []
         if len(history) > self.PAST_ACTIONS_CHECK:
             for combo in history[self.PAST_ACTIONS_CHECK]:
                 past_actions.append(combo[1])
+
+        # get the oberservation
         observation = env.get_state()[8]
 
         # Encode the observation
@@ -515,4 +518,5 @@ class DEPagent(Agent):
             if (best_similarity < sim):
                 best_similarity = sim
                 chosen_action = action
+        # return the action with the closest similarity
         return chosen_action
