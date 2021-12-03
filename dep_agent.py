@@ -172,22 +172,6 @@ class DEPagent(Agent):
         #return random.choice(valid_actions)
         return self.get_action(env, valid_actions, history)
 
-        #inventory = [item.name for item in env.get_inventory()]
-        #for action in valid_actions:
-         #   have_enemy = [enemy in action for enemy in self.enemies]
-         #   if any(have_enemy):
-        """
-                enemy = self.enemies[have_enemy.index(True)]
-                # We are facing an enemy: if we have a weaon, fight with it
-                # if not, run
-                have_weapons = [weapon in inventory for weapon in self.weapons]
-                if any(have_weapons):
-                    weapon = self.weapons[have_weapons.index(True)]
-                    return 'kill ' + enemy + ' with ' + weapon
-                return 'run'
-        return 'run'
-        """
-
     def mover(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
         """
         @param valid_actions
@@ -245,34 +229,6 @@ class DEPagent(Agent):
         @param history
 
         @return chosen_action: A String containing a new action
-        """
-        # get list of past actions
-        """
-        if len(history) != 0:
-            past_actions = []
-            for combo in history:
-                past_actions.append(combo[1])
-        observation = env.get_state()[8]
-
-        # Encode the observation
-        query_vec = self.model.encode([observation])[0]
-
-
-        # set up for testing all actions
-        chosen_action = ""
-        best_similarity = 0
-        # for each vaild action, test its similarity to the observation
-        for action in valid_actions:
-            sim = dot(query_vec, self.model.encode([action])[0]) \
-                      /(norm(query_vec)*norm(self.model.encode([action])[0]))
-            # choose action with the best similarity
-            if (best_similarity < sim):
-                if (len(history) !=0 and past_actions.count(action)>1):
-                    continue
-                best_similarity = sim
-                chosen_action = action
-        print(" similarity: ", best_similarity)
-
         """
         # Or ... run the neural network: The input is the observation, which
         # has been encoded as query_vec. The output is the result after
