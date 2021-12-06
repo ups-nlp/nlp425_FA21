@@ -97,7 +97,6 @@ def best_child(parent, exploration, env: FrotzEnv, reward_policy, use_bound = Tr
         print("best, second", max_val, second_best_score)
     return chosen, abs(max_val - second_best_score) ## Worry about if only 1 node possible infinity?
 
-
 def expand_node(parent, env):
     """
     Expand this node
@@ -143,7 +142,6 @@ def expand_node(parent, env):
     #     # Return a newly created node to-be-explored
     #     return new_node
 
-
 def default_policy(new_node, env, sim_length, reward_policy):
     """
     The default_policy represents a simulated exploration of the tree from
@@ -153,26 +151,34 @@ def default_policy(new_node, env, sim_length, reward_policy):
     """
     #if node is already terminal, return 0
     if(env.game_over()):
-        return reward_policy.terminal_node(env)
+        return 0
+
+    running_score = env.get_score()
+    count = 0
     # While the game is not over and we have not run out of moves, keep exploring
     while (not env.game_over()) and (not env.victory()):
-
+        count += 1
         # if we have reached the limit for exploration
         if(env.get_moves() > sim_length):
             #return the reward received by reaching terminal state
-            return reward_policy.simulation_limit(env)
+            #return reward_policy.simulation_limit(env)
+            return running_score
 
-        #INIT. DEFAULT POLICY: explore a random action from the list of available actions.
-        #Once an action is explored, remove from the available actions list
-        # Select a random action from this state
+        #Get the list of valid actions from this state
         actions = env.get_valid_actions()
-        # Take that action, updating env to a new state
+
+        # Take a random action from the list of available actions
+        before = env.get_score()
         env.step(random.choice(actions))
+        after = env.get_score()
+        
+        #if there was an increase in the score, add it to the running total
+        if((after-before) > 0):
+            running_score += (after-before)/count
 
-    #return the reward received by reaching terminal state 
-    # (add 10 to score to counteract the -10 punishment for dying)
-    return reward_policy.simulation_terminal(env)
-
+    #return the reward received by reaching terminal state
+    #return reward_policy.simulation_terminal(env)
+    return running_score
 
 def backup(node, delta):
     """
@@ -189,6 +195,41 @@ def backup(node, delta):
         node.sim_value += delta
         # Traverse up the tree
         node = node.get_parent()
+
+def dynamic_sim_len(max_nodes, sim_limit, diff) -> int:
+        """Given the current simulation depth limit and the difference between 
+        the picked and almost picked 'next action' return what the new sim depth and max nodes are.
+        
+        Keyword arguments:
+        max_nodes (int): The max number of nodes to generate before the agent makes a move
+        sim_limit (int): The max number of moves to make during a simulation before stopping
+        diff (float): The difference between the scores of the best action and the 2nd best action
+
+        Returns: 
+            int: The new max number of nodes to generate before the agent makes a move
+            int: The new max number of moves to make during a simulation before stopping
+        """        
+        if(diff == 0):
+            sim_limit = 100
+            #if(max_nodes < 300):
+                #max_nodes = max_nodes*2
+
+        if(diff < 0.001):
+            if(sim_limit < 100):
+                sim_limit = sim_limit*2
+            max_nodes = max_nodes+10
+
+            
+            
+            
+        elif(diff > .1):
+            #if(max_nodes > 100):
+                #max_nodes = floor(max_nodes/2)
+            if(sim_limit > 12):
+                sim_limit =  floor(sim_limit/2)
+            
+        
+        return max_nodes, sim_limit
 
 class Node:
     """
@@ -286,21 +327,6 @@ class Reward:
             int: The score for the new node
         """
         raise NotImplementedError
-
-    def dynamic_sim_len(self, max_nodes, sim_limit, diff) -> int:
-        """Given the current simulation depth limit and the difference between 
-        the picked and almost picked 'next action' return what the new sim depth and max nodes are.
-        
-        Keyword arguments:
-        max_nodes (int): The max number of nodes to generate before the agent makes a move
-        sim_limit (int): The max number of moves to make during a simulation before stopping
-        diff (float): The difference between the scores of the best action and the 2nd best action
-
-        Returns: 
-            int: The new max number of nodes to generate before the agent makes a move
-            int: The new max number of moves to make during a simulation before stopping
-        """
-        raise NotImplementedError
         
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited) -> int:
         """ This method calculates and returns the upper confidence bounds for a given child node on the tree.
@@ -369,39 +395,6 @@ class Softmax_Reward(Reward):
             int: The score for the new node
         """
         raise (env.get_score()+10)
-
-    def dynamic_sim_len(self, max_nodes, sim_limit, diff):
-        """Given the current simulation depth limit and the difference between 
-        the picked and almost picked 'next action' return what the new sim depth and max nodes are.
-        
-        Keyword arguments:
-        max_nodes (int): The max number of nodes to generate before the agent makes a move
-        sim_limit (int): The max number of moves to make during a simulation before stopping
-        diff (float): The difference between the scores of the best action and the 2nd best action
-
-        Returns: 
-            int: The new max number of nodes to generate before the agent makes a move
-            int: The new max number of moves to make during a simulation before stopping
-        """
-        new_limit = sim_limit
-        new_node_max = max_nodes
-        if(diff < 0.1):
-            if(new_node_max < 1000):
-                new_node_max = max_nodes*2
-
-            
-            if(sim_limit < 10000):
-                new_limit = new_limit*2
-            
-
-        elif(diff > 2):
-            if(new_node_max > 300):
-                new_node_max = floor(max_nodes/2)
-            
-            if(sim_limit > 10):
-                new_limit =  floor(sim_limit/2)
-        
-        return new_node_max, new_limit
 
     def softmax_calc(self,minScore,maxScore):
         total = 0
@@ -497,40 +490,7 @@ class Generalized_Softmax_Reward(Reward):
             int: The score for the new node
         """
         raise (env.get_score()+10)
-
-    def dynamic_sim_len(self, max_nodes, sim_limit, diff):
-        """Given the current simulation depth limit and the difference between 
-        the picked and almost picked 'next action' return what the new sim depth and max nodes are.
-        
-        Keyword arguments:
-        max_nodes (int): The max number of nodes to generate before the agent makes a move
-        sim_limit (int): The max number of moves to make during a simulation before stopping
-        diff (float): The difference between the scores of the best action and the 2nd best action
-
-        Returns: 
-            int: The new max number of nodes to generate before the agent makes a move
-            int: The new max number of moves to make during a simulation before stopping
-        """        
-        new_limit = sim_limit
-        new_node_max = max_nodes
-        if(diff < 0.1):
-            if(new_node_max < 1000):
-                new_node_max = max_nodes*2
-
-            
-            if(sim_limit < 10000):
-                new_limit = new_limit*2
-            
-
-        elif(diff > 2):
-            if(new_node_max > 300):
-                new_node_max = floor(max_nodes/2)
-            
-            if(sim_limit > 10):
-                new_limit =  floor(sim_limit/2)
-        
-        return new_node_max, new_limit
-    
+   
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
         """ This method calculates and returns the upper confidence bounds for a given child node on the tree.
 
@@ -624,39 +584,6 @@ class Additive_Reward(Reward):
         """
         return (env.get_score()+10)
 
-    def dynamic_sim_len(self, max_nodes, sim_limit, diff) -> int:
-        """Given the current simulation depth limit and the difference between 
-        the picked and almost picked 'next action' return what the new sim depth and max nodes are.
-        
-        Keyword arguments:
-        max_nodes (int): The max number of nodes to generate before the agent makes a move
-        sim_limit (int): The max number of moves to make during a simulation before stopping
-        diff (float): The difference between the scores of the best action and the 2nd best action
-
-        Returns: 
-            int: The new max number of nodes to generate before the agent makes a move
-            int: The new max number of moves to make during a simulation before stopping
-        """
-        new_limit = sim_limit
-        new_node_max = max_nodes
-        if(diff < 0.1):
-            if(new_node_max < 1000):
-                new_node_max = max_nodes*2
-
-            
-            if(sim_limit < 10000):
-                new_limit = new_limit*2
-            
-
-        elif(diff > 2):
-            if(new_node_max > 300):
-                new_node_max = floor(max_nodes/2)
-            
-            if(sim_limit > 10):
-                new_limit =  floor(sim_limit/2)
-        
-        return new_node_max, new_limit
-
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited):
         """ This method calculates and returns the upper confidence bounds for a given child node on the tree.
 
@@ -673,7 +600,11 @@ class Additive_Reward(Reward):
         Returns:
             int: The upper confidence bounds for the child node
         """
-        return child_sim_value/(child_visited*env.get_max_score()) + exploration*sqrt((2*log2(parent_visited))/child_visited)
+        score = env.get_score()
+        if(score == 0):
+            score = 1
+        #print(child_sim_value/(child_visited*score),  exploration*sqrt((2*log2(parent_visited))/child_visited))
+        return child_sim_value/(child_visited*score) + 1.5*exploration*sqrt((2*log2(parent_visited))/child_visited)
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
         """ This method calculates and returns the average score for a given child node on the tree.
@@ -690,7 +621,10 @@ class Additive_Reward(Reward):
         Returns:
             int: The average score for the child node
         """
-        return child_sim_value/(child_visited*env.get_max_score())
+        score = env.get_score()
+        if(score == 0):
+            score = 1
+        return child_sim_value/(child_visited*score)
 
 class Dynamic_Reward(Reward):
     """Dynamic Reward  scales the reward returned in a simulation by the length of the simulation,
@@ -726,39 +660,6 @@ class Dynamic_Reward(Reward):
             int: The score for the new node
         """
         return ((env.get_score()+10)/(env.get_moves()+1))
-
-    def dynamic_sim_len(self, max_nodes, sim_limit, diff) -> int:
-        """Given the current simulation depth limit and the difference between 
-        the picked and almost picked 'next action' return what the new sim depth and max nodes are.
-        
-        Keyword arguments:
-        max_nodes (int): The max number of nodes to generate before the agent makes a move
-        sim_limit (int): The max number of moves to make during a simulation before stopping
-        diff (float): The difference between the scores of the best action and the 2nd best action
-
-        Returns: 
-            int: The new max number of nodes to generate before the agent makes a move
-            int: The new max number of moves to make during a simulation before stopping
-        """        
-        new_limit = sim_limit
-        new_node_max = max_nodes
-        if(diff < 0.1):
-            if(new_node_max < 1000):
-                new_node_max = max_nodes*2
-
-            
-            if(sim_limit < 10000):
-                new_limit = new_limit*2
-            
-
-        elif(diff > 2):
-            if(new_node_max > 300):
-                new_node_max = floor(max_nodes/2)
-            
-            if(sim_limit > 10):
-                new_limit =  floor(sim_limit/2)
-        
-        return new_node_max, new_limit
         
     def upper_confidence_bounds(self, env: FrotzEnv, exploration, child_sim_value, child_visited, parent_visited) -> int:
         """ This method calculates and returns the upper confidence bounds for a given child node on the tree.

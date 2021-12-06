@@ -51,12 +51,12 @@ class MonteAgent(Agent):
         self.explore_const = 1.0/sqrt(2)
 
         # The length of each monte carlo simulation
-        self.simulation_length = 40
+        self.simulation_length = 15
 
         # Maximum number of nodes to generate in the tree each time a move is made
-        self.max_nodes = 40
+        self.max_nodes = 200
 
-        self.reward = mcts_agent.Dynamic_Reward()
+        self.reward = mcts_agent.Additive_Reward()
 
 
 
@@ -110,7 +110,7 @@ class MonteAgent(Agent):
         self.node_path.append(self.root)
 
         ## Dynamically adjust simulation length based on how sure we are 
-        self.max_nodes, self.simulation_length = self.reward.dynamic_sim_len(self.max_nodes, self.simulation_length, score_dif)
+        self.max_nodes, self.simulation_length = mcts_agent.dynamic_sim_len(self.max_nodes, self.simulation_length, score_dif)
 
         print("\n\n------------------ ", score_dif, self.max_nodes, self.simulation_length)
 
