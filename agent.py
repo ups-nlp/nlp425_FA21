@@ -4,7 +4,9 @@ Agents for playing text-based games
 
 import random
 from jericho import FrotzEnv
+from math import sqrt
 import mcts_agent
+import time
 
 
 class Agent:
@@ -37,12 +39,24 @@ class HumanAgent(Agent):
 class MonteAgent(Agent):
     """"Monte Carlo Search Tree Player"""
 
+    node_path = []
+
     def __init__(self, env: FrotzEnv, num_steps: int):
         # create root node with the initial state
         self.root = mcts_agent.Node(None, None, env.get_valid_actions())
 
+        self.node_path.append(self.root)
+
         # This constant balances tree exploration with exploitation of ideal nodes
-        self.explore_const = 2
+        self.explore_const = 1.0/sqrt(2)
+
+        # The length of each monte carlo simulation
+        self.simulation_length = 15
+
+        # Maximum number of nodes to generate in the tree each time a move is made
+        self.max_nodes = 200
+
+        self.reward = mcts_agent.Additive_Reward()
 
 
 
@@ -53,35 +67,51 @@ class MonteAgent(Agent):
         # Train the agent using the Monte Carlo Search Algorithm
         #
 
-        # The length of each monte carlo simulation
-        simulation_length = 10
-
-        # Maximum number of nodes to generate in the tree each time a move is made
-        max_nodes = 100
-
         #current number of generated nodes
         count = 0
-        
+
+        # time at sim start
+        start_time = time.time()
+
+        # how many seconds have elapsed since sim start
+        seconds_elapsed = 0
+
+        # loose time limit for simulation phase
+        time_limit = 1000000000000000000000
+
+        # minimum number of nodes per simulation phase
+        minimum = 120
+
         #current state of the game. Return to this state each time generating a new node
-        self.currState = env.get_state()
-        while(count <= max_nodes):
-            if(count % 10 == 0): 
+        curr_state = env.get_state()
+        while(count <= self.max_nodes): # and (seconds_elapsed < time_limit or count <= minimum)):
+            seconds_elapsed = time.time() - start_time
+            if(count % 100 == 0): 
                 print(count)
             # Create a new node on the tree
-            new_node = mcts_agent.tree_policy(self.root, env, self.explore_const)
+            new_node = mcts_agent.tree_policy(self.root, env, self.explore_const, self.reward)
             # Determine the simulated value of the new node
-            delta = mcts_agent.default_policy(new_node, env, simulation_length)
+            delta = mcts_agent.default_policy(new_node, env, self.simulation_length, self.reward)
             # Propogate the simulated value back up the tree
             mcts_agent.backup(new_node, delta)
             # reset the state of the game when done with one simulation
-            env.set_state(self.currState)
+            env.reset()
+            env.set_state(curr_state)
             count += 1
 
 
         print(env.get_valid_actions())
         for child in self.root.children:
-            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value)
+            print(child.get_prev_action(), ", count:", child.visited, ", value:", child.sim_value, "normalized value:", self.reward.select_action(env, child.sim_value, child.visited, None))
 
-        self.root = mcts_agent.best_child(self.root, self.explore_const, False)
-        print(self.root)
+        ## Pick the next action
+        self.root, score_dif = mcts_agent.best_child(self.root, self.explore_const, env, self.reward, False)
+
+        self.node_path.append(self.root)
+
+        ## Dynamically adjust simulation length based on how sure we are 
+        self.max_nodes, self.simulation_length = mcts_agent.dynamic_sim_len(self.max_nodes, self.simulation_length, score_dif)
+
+        print("\n\n------------------ ", score_dif, self.max_nodes, self.simulation_length)
+
         return self.root.get_prev_action()

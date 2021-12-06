@@ -1,0 +1,1113 @@
+	<root>
+	>open mailbox
+	>>take leaflet
+	>>>close mailbox
+	>>>>open mailbox
+	>>>>>close mailbox
+	>>>>>put down leaflet
+	>>>>>north
+	>>>>>put leaflet in mailbox
+	>>>>>south
+	>>>>>west
+	>>>>put down leaflet
+	>>>>>open mailbox
+	>>>>>take leaflet
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>put down leaflet
+	>>>>take leaflet
+	>>>>>close mailbox
+	>>>>>put down leaflet
+	>>>>>north
+	>>>>>put leaflet in mailbox
+	>>>>>south
+	>>>>>west
+	>>>>close mailbox
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>south
+	>>>>>west
+	>>>>>south
+	>>>>>east
+	>>>>west
+	>>>>>go around trees
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>north
+	>>>>put down leaflet
+	>>>>>take leaflet
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>east
+	>>>>north
+	>>>>>up
+	>>>>>put down leaflet
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>put leaflet in mailbox
+	>>>>take leaflet
+	>>>>>close mailbox
+	>>>>>put down leaflet
+	>>>>>north
+	>>>>>put leaflet in mailbox
+	>>>>>south
+	>>>>>west
+	>>>>close mailbox
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>south
+	>>>>west
+	>>>south
+	>>>>put down leaflet
+	>>>>>take leaflet
+	>>>>>>put down leaflet
+	>>>>>>west
+	>>>>>>south
+	>>>>>>east
+	>>>>>west
+	>>>>>south
+	>>>>>east
+	>>>>west
+	>>>>>close mailbox
+	>>>>>put down leaflet
+	>>>>>north
+	>>>>>put leaflet in mailbox
+	>>>>>south
+	>>>>>west
+	>>>>south
+	>>>>>put down leaflet
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>west
+	>>>>put down leaflet
+	>>>>>take leaflet
+	>>>>>go around trees
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>>go around trees
+	>>>>north
+	>>>>south
+	>>>>east
+	>>close mailbox
+	>>>open mailbox
+	>>>>take leaflet
+	>>>>close mailbox
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>north
+	>>>south
+	>>>>west
+	>>>>south
+	>>>>east
+	>>>west
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>east
+	>>north
+	>>>east
+	>>>>open window
+	>>>>>west
+	>>>>>>jump
+	>>>>>>east
+	>>>>>>open sack
+	>>>>>>open bottle
+	>>>>>>take sack
+	>>>>>>take bottle
+	>>>>>>take all
+	>>>>>>up
+	>>>>>>close window
+	>>>>>>west
+	>>>>>close window
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>>south
+	>>>>>west
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>east
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>north
+	>>>>up
+	>>>>>down
+	>>>>>take nest
+	>>>>>take egg
+	>>>>>take on egg
+	>>>>>close nest
+	>>>>go around forest
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>west
+	>>>>take leaflet
+	>>>>>close mailbox
+	>>>>>put down leaflet
+	>>>>>north
+	>>>>>put leaflet in mailbox
+	>>>>>south
+	>>>>>west
+	>>>>close mailbox
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>south
+	>>>>west
+	>>south
+	>>>west
+	>>>>take leaflet
+	>>>>>close mailbox
+	>>>>>put down leaflet
+	>>>>>north
+	>>>>>put leaflet in mailbox
+	>>>>>south
+	>>>>>west
+	>>>>close mailbox
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>south
+	>>>>>west
+	>>>>>south
+	>>>>>east
+	>>>>west
+	>>>south
+	>>>>go around trees
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>west
+	>>>>>go around trees
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>>northwest
+	>>>east
+	>>>>open window
+	>>>>>west
+	>>>>>close window
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>>south
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>east
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>west
+	>>>go around trees
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>north
+	>>>>take leaves
+	>>>>pull leaves
+	>>>>>take leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>east
+	>>>south
+	>>>>go around trees
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>northwest
+	>>>east
+	>>>>up
+	>>>>>down
+	>>>>>take nest
+	>>>>>take egg
+	>>>>>take on egg
+	>>>>>close nest
+	>>>>go around forest
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>>east
+	>north
+	>>east
+	>>>open window
+	>>>>west
+	>>>>close window
+	>>>>>open window
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>>south
+	>>>>>west
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>east
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>south
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>south
+	>>>>>go around trees
+	>>>>>>up
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>north
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>>>open window
+	>>>>>>west
+	>>>>>>close window
+	>>>>>>south
+	>>>>>>north
+	>>>>>>east
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>north
+	>>>>east
+	>>>>>open window
+	>>>>>>west
+	>>>>>>close window
+	>>>>>>south
+	>>>>>>north
+	>>>>>>east
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>>north
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>>open mailbox
+	>>>>>>take leaflet
+	>>>>>>close mailbox
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>east
+	>>>>go around forest
+	>>>>>go around trees
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>west
+	>>>>east
+	>>>>>east
+	>>>>>jump
+	>>>>>west
+	>>>>>northwest
+	>>north
+	>>>up
+	>>>>down
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>take nest
+	>>>>>down
+	>>>>>take egg
+	>>>>>take on egg
+	>>>>>close nest
+	>>>>>put down nest
+	>>>>>put down egg
+	>>>>>shake nest
+	>>>>>throw nest at tree
+	>>>>>throw nest at egg
+	>>>>>throw egg at tree
+	>>>>>open egg with nest
+	>>>>take egg
+	>>>>take on egg
+	>>>>close nest
+	>>>go around forest
+	>>>>go around forest
+	>>>>>go around trees
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>north
+	>>>>take leaves
+	>>>>>put down leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>pull leaves
+	>>>>>take leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>south
+	>>>>east
+	>>>>>open window
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>>north
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>west
+	>>>>go around trees
+	>>>>north
+	>>>>>take leaves
+	>>>>>pull leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>east
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>south
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>east
+	>>>>>north
+	>>west
+	>>>open mailbox
+	>>>>take leaflet
+	>>>>>close mailbox
+	>>>>>put down leaflet
+	>>>>>north
+	>>>>>put leaflet in mailbox
+	>>>>>south
+	>>>>>west
+	>>>>close mailbox
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>north
+	>>>>south
+	>>>>>west
+	>>>>>south
+	>>>>>east
+	>>>>west
+	>>>>>go around trees
+	>>>>>north
+	>>>>>>take leaves
+	>>>>>>pull leaves
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>south
+	>>>>>east
+	>>>north
+	>>>>east
+	>>>>>open window
+	>>>>>>west
+	>>>>>>close window
+	>>>>>>south
+	>>>>>>north
+	>>>>>>east
+	>>>>>south
+	>>>>>>west
+	>>>>>>>open mailbox
+	>>>>>>>north
+	>>>>>>>south
+	>>>>>>>west
+	>>>>>>south
+	>>>>>>>go around trees
+	>>>>>>>north
+	>>>>>>>west
+	>>>>>>>northwest
+	>>>>>>east
+	>>>>>north
+	>>>>>>east
+	>>>>>>north
+	>>>>>>west
+	>>>>>east
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>north
+	>>>>>up
+	>>>>>>down
+	>>>>>>take nest
+	>>>>>>take egg
+	>>>>>>take on egg
+	>>>>>>close nest
+	>>>>>go around forest
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>>east
+	>>>>>>north
+	>>>>>>west
+	>>>>>south
+	>>>>>west
+	>>>south
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>south
+	>>>>>go around trees
+	>>>>>>up
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>>>go around trees
+	>>>>>>north
+	>>>>>>south
+	>>>>>>east
+	>>>>>northwest
+	>>>>>>west
+	>>>>>>south
+	>>>>>>east
+	>>>>east
+	>>>>>open window
+	>>>>>south
+	>>>>>>west
+	>>>>>>south
+	>>>>>>east
+	>>>>>north
+	>>>>>>east
+	>>>>>>north
+	>>>>>>west
+	>>>>>east
+	>>>west
+	>>>>go around trees
+	>>>>north
+	>>>>>take leaves
+	>>>>>pull leaves
+	>>>>>>take leaves
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>>go around trees
+	>>>>>>up
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>>>up
+	>>>>>>down
+	>>>>>>take nest
+	>>>>>>take egg
+	>>>>>>take on egg
+	>>>>>>close nest
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>south
+	>>west
+	>>>open mailbox
+	>>>>take leaflet
+	>>>>close mailbox
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>south
+	>>>>west
+	>>>north
+	>>>>east
+	>>>>north
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>>open mailbox
+	>>>>>>take leaflet
+	>>>>>>close mailbox
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>south
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>>>open window
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>west
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>>>up
+	>>>>>go around forest
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>south
+	>>>go around trees
+	>>>>up
+	>>>>go around forest
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>>take leaves
+	>>>>>pull leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>north
+	>>>>go around forest
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>west
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>east
+	>>>northwest
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>east
+	>>>open window
+	>>>>west
+	>>>>>jump
+	>>>>>east
+	>>>>>open sack
+	>>>>>open bottle
+	>>>>>take sack
+	>>>>>take bottle
+	>>>>>take all
+	>>>>>up
+	>>>>>close window
+	>>>>>west
+	>>>>close window
+	>>>>south
+	>>>>>west
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>>east
+	>>>>>north
+	>>>>>west
+	>>>>east
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>south
+	>>>>west
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>>go around forest
+	>>>>>>north
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>>>open window
+	>>>>>>west
+	>>>>>>close window
+	>>>>>>south
+	>>>>>>north
+	>>>>>>east
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>north
+	>>>>east
+	>>>>>open window
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>>north
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>east
+	>>>>go around forest
+	>>>>>go around trees
+	>>>>>>go around trees
+	>>>>>>south
+	>>>>>>west
+	>>>>>>east
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>west
+	>>>>>open window
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>>>east
+	>>>>>east
+	>>>>>jump
+	>>>>>west
+	>>>>>northwest
+	>west
+	>>go around trees
+	>>>go around trees
+	>>>>go around trees
+	>>>>north
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>northwest
+	>>>south
+	>>>>go around forest
+	>>>>>go around trees
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>west
+	>>>>up
+	>>>>>down
+	>>>>>take nest
+	>>>>>take egg
+	>>>>>take on egg
+	>>>>>close nest
+	>>>>go around forest
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>east
+	>>>>north
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>north
+	>>>take leaves
+	>>>>put down leaves
+	>>>>south
+	>>>>>up
+	>>>>>put down leaves
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>east
+	>>>pull leaves
+	>>>>take leaves
+	>>>>>put down leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>south
+	>>>>up
+	>>>>go around forest
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>west
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>>take leaves
+	>>>>>pull leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>east
+	>>>east
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>south
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>>east
+	>>south
+	>>>go around trees
+	>>>>up
+	>>>>>down
+	>>>>>take nest
+	>>>>>take egg
+	>>>>>take on egg
+	>>>>>close nest
+	>>>>go around forest
+	>>>>north
+	>>>>>take leaves
+	>>>>>pull leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>north
+	>>>>go around forest
+	>>>>>go around trees
+	>>>>>north
+	>>>>>south
+	>>>>>east
+	>>>>north
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>west
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>east
+	>>>northwest
+	>>>>west
+	>>>>>open mailbox
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>south
+	>>>>east
+	>>>>>open window
+	>>>>>>west
+	>>>>>>close window
+	>>>>>>south
+	>>>>>>north
+	>>>>>>east
+	>>>>>south
+	>>>>>north
+	>>>>>east
+	>>east
+	>>>up
+	>>>>down
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>take nest
+	>>>>take egg
+	>>>>take on egg
+	>>>>close nest
+	>>>go around forest
+	>>>>go around forest
+	>>>>north
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>north
+	>>>>take leaves
+	>>>>>put down leaves
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>pull leaves
+	>>>>south
+	>>>>west
+	>>>>east
+	>>>south
+	>>>>east
+	>>>>north
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>west
+	>>>west
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>north
+	>>>>south
+	>>>>east
+	>>>east
+	>>>>go around trees
+	>>>>>go around trees
+	>>>>>north
+	>>>>>west
+	>>>>>northwest
+	>>>>south
+	>>>>west
+	>>>>>up
+	>>>>>go around forest
+	>>>>>north
+	>>>>>south
+	>>>>>west
+	>>>>>east
+	>>>>east
