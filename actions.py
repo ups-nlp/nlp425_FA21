@@ -227,6 +227,10 @@ def get_verbs(environment):
 
 	return verbset
 
+def validation(actions):
+	'''A method that draws probability values from our English databases to clean
+	unlikely valid actions before submitting.'''
+
 if __name__ == "__main__" :
 	'''The main method. Currently not in use.
 	'''
