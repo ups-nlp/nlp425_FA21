@@ -77,14 +77,14 @@ class MonteAgent(Agent):
         seconds_elapsed = 0
 
         # loose time limit for simulation phase
-        time_limit = 1000000000000000000000
+        time_limit = 300
 
         # minimum number of nodes per simulation phase
-        minimum = 120
+        minimum = len(env.get_valid_actions()) * 5
 
         #current state of the game. Return to this state each time generating a new node
         curr_state = env.get_state()
-        while(count <= self.max_nodes): # and (seconds_elapsed < time_limit or count <= minimum)):
+        while(seconds_elapsed < time_limit or count <= minimum):
             seconds_elapsed = time.time() - start_time
             if(count % 100 == 0): 
                 print(count)
