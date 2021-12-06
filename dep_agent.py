@@ -237,38 +237,6 @@ class DEPagent(Agent):
 
 
 
-    def create_vect(self, observation:str) -> list:
-        """
-        Takes an observation and returns a 50 dimensional vector representation of it
-
-        @param str: a string containing an observation
-
-        @return list: A list representing a 50 dimensional normalized vector
-        """
-        obs_split = observation.split(' ')
-        num_words = 0
-
-        #Creates an empty list of size 50 to be filled in
-        vect_size = 50
-        avg_vect = [0] * vect_size
-
-        for word in obs_split:
-            #Check if the word is in our vocab, if it is add it to the vector
-            if(self.word2id.get(word) is not None):
-                id = self.word2id.get(word)
-                norm_vect = self.vocab_vectors[id]
-                avg_vect = list(map(add, avg_vect, norm_vect))
-                num_words +=1
-            else:
-                print("Word not in the vocab: " + word)
-
-        words = [num_words] * vect_size
-        avg_vect = list(map(truediv, avg_vect, words))
-
-        return(avg_vect)
-
-
-
     def create_observation_vect(self, env:FrotzEnv) -> list:
         """
         Takes the gamestate and returns a vector representing the previous observation
@@ -289,7 +257,7 @@ class DEPagent(Agent):
         observation = onlyTxt
 
         #Call the create_vect method to turn the string into a list representing a vector
-        avg_vect = self.create_vect(observation)
+        avg_vect = self.create_vect(self.vocab_vectors, self.word2id, observation)
 
         return(avg_vect)
 
@@ -411,3 +379,36 @@ def embed_vocab() -> (list, dict):
     W_norm = (W.T / d).T
 
     return W_norm, word2id
+
+
+def create_vect(vocab_vectors:list, word2id:dict, observation:str) -> list:
+    """
+    Takes an observation and returns a 50 dimensional vector representation of it
+
+    @param list: a list containing the vectors in the vocab which are represented by lists
+    @param dict: a dictionary linking a word to a vector
+    @param str: a string containing an observation
+
+    @return list: A list representing a 50 dimensional normalized vector
+    """
+    obs_split = observation.split(' ')
+    num_words = 0
+
+    #Creates an empty list of size 50 to be filled in
+    vect_size = 50
+    avg_vect = [0] * vect_size
+
+    for word in obs_split:
+        #Check if the word is in our vocab, if it is add it to the vector
+        if(word2id.get(word) is not None):
+            id = word2id.get(word)
+            norm_vect = vocab_vectors[id]
+            avg_vect = list(map(add, avg_vect, norm_vect))
+            num_words +=1
+        else:
+            print("Word not in the vocab: " + word)
+
+    words = [num_words] * vect_size
+    avg_vect = list(map(truediv, avg_vect, words))
+
+    return(avg_vect)
