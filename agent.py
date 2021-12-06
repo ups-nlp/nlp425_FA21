@@ -6,6 +6,7 @@ import random
 from jericho import FrotzEnv
 from math import sqrt
 import mcts_agent
+import time
 
 
 class Agent:
@@ -68,10 +69,23 @@ class MonteAgent(Agent):
 
         #current number of generated nodes
         count = 0
-        
+
+        # time at sim start
+        start_time = time.time()
+
+        # how many seconds have elapsed since sim start
+        seconds_elapsed = 0
+
+        # loose time limit for simulation phase
+        time_limit = 1000000000000000000000
+
+        # minimum number of nodes per simulation phase
+        minimum = 120
+
         #current state of the game. Return to this state each time generating a new node
         curr_state = env.get_state()
-        while(count <= self.max_nodes):
+        while(count <= self.max_nodes): # and (seconds_elapsed < time_limit and count <= minimum)):
+            seconds_elapsed = time.time() - start_time
             if(count % 100 == 0): 
                 print(count)
             # Create a new node on the tree

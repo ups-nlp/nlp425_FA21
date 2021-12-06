@@ -158,7 +158,7 @@ def default_policy(new_node, env, sim_length, reward_policy):
     while (not env.game_over()) and (not env.victory()):
 
         # if we have reached the limit for exploration
-        if(env.get_moves() < sim_length):
+        if(env.get_moves() > sim_length):
             #return the reward received by reaching terminal state
             return reward_policy.simulation_limit(env)
 
@@ -794,3 +794,78 @@ class Dynamic_Reward(Reward):
             int: The average score for the child node
         """
         return (child_sim_value/(child_visited*env.get_max_score()))
+
+def node_explore(agent):
+    depth = 0
+
+    cur_node = agent.root
+
+    test_input = "-----"
+
+    chosen_path = agent.node_path
+
+    node_history = agent.node_path
+
+    while test_input != "":
+    
+        print("\n")
+
+        if(input == ""):
+            break
+
+        print("Current Depth:", depth)
+
+        for i in range(0, len(node_history)):
+            if depth == 0:
+                print(i, "-", node_history[i].get_prev_action())
+            else:
+                print(i, "-", node_history[i].get_prev_action())
+
+        print("\n")
+
+        test_input = input("Enter the number of the node you wish to explore. Press enter to stop, -1 to go up a layer")
+
+        print("\n")
+
+        if(int(test_input) >= 0 and int(test_input) < len(node_history)):
+            depth += 1
+            cur_node = node_history[int(test_input)]
+        
+            print("-------", cur_node.get_prev_action(), "-------")
+        
+            print("Sim-value:", cur_node.sim_value)
+        
+            print("Visited:", cur_node.visited)
+        
+            print("Unexplored Children:", cur_node.new_actions)
+        
+            print("Children:")
+        
+            node_history = cur_node.get_children()
+            for i in range(0, len(node_history)):
+                print(node_history[i].get_prev_action(), "with value", node_history[i].sim_value, "visited", node_history[i].visited)
+        elif test_input == "-1":
+            depth -= 1
+            if depth == 0:
+                node_history = agent.node_path
+            else:
+                cur_node = cur_node.parent
+                node_history = cur_node.get_children()
+
+            print("-------", cur_node.get_prev_action(), "-------")
+        
+            print("Sim-value:", cur_node.sim_value)
+        
+            print("Visited:", cur_node.visited)
+        
+            print("Unexplored Children:", cur_node.new_actions)
+        
+            print("Children:")
+
+            for i in range(0, len(node_history)):
+                if node_history[i] in chosen_path:
+                    was_taken = True
+                else:
+                    was_taken = False
+
+                print(node_history[i].get_prev_action(), "with value", node_history[i].sim_value, "visited", node_history[i].visited, "was_chosen?", was_taken)
