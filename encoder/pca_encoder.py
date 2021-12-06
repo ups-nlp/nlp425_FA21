@@ -15,7 +15,7 @@ from matplotlib import pyplot as plt
 
 
 # The input file
-INPUT_FILE = 'data/frotz_builtin_walkthrough.csv'
+INPUT_FILE = '../data/frotz_builtin_walkthrough.csv'
 
 # Read in the data
 df = pd.read_csv(INPUT_FILE)
@@ -31,27 +31,27 @@ points = (df['Points']).values               # The points earned by the action
 # This encoder produces vectors of length 768: multi-qa-mpnet-base-dot-v1
 # This one produces vectors of length 3xx: all-MiniLM-L6-v2
 sentenceTransformer = SentenceTransformer('multi-qa-mpnet-base-dot-v1')
-inputs = np.array([sentenceTransformer.encode([x])[0] for x in observations])
+st_encoded = np.array([sentenceTransformer.encode([x])[0] for x in observations])
 pca = PCA(n_components=50)
-proj_down = pca.fit_transform(inputs)
+proj_down = pca.fit_transform(st_encoded)
 
 
 # Plot the inputs to see what they look like
 
 ifig = 4
 plt.figure(ifig); plt.clf()
-plt.plot(np.arange(np.shape(inputs)[0]), inputs)
+plt.plot(np.arange(np.shape(st_encoded)[0]), st_encoded)
 plt.xlabel('observation')
 plt.ylabel('value')
-plt.title('Each curve represents the values for a particular feature')
+plt.title('Original: each curve represents the values for a particular feature')
 plt.show()
     
 ifig += 1
 plt.figure(ifig); plt.clf()
-plt.plot(np.arange(np.shape(inputs)[1]), inputs.T)
+plt.plot(np.arange(np.shape(st_encoded)[1]), st_encoded.T)
 plt.xlabel('feature')
 plt.ylabel('value')
-plt.title('Each curve represents the values for a particular observation')
+plt.title('Original: each curve represents the values for a particular observation')
     
     # Plot the encoded data, just to see what it looks like
 ifig += 1
@@ -59,14 +59,14 @@ plt.figure(ifig); plt.clf()
 plt.plot(np.arange(np.shape(proj_down)[0]), proj_down)
 plt.xlabel('observation')
 plt.ylabel('value')
-plt.title('Each curve represents the values for a particular feature')
+plt.title('Encoded: each curve represents the values for a particular feature')
     
 ifig += 1
 plt.figure(ifig); plt.clf()
 plt.plot(np.arange(np.shape(proj_down)[1]), proj_down.T, '.-')
 plt.xlabel('feature')
 plt.ylabel('value')
-plt.title('Each curve represents the values for a particular observation')
+plt.title('Encoded: each curve represents the values for a particular observation')
 """
     # Plot a particular test case at index i
 i = 0

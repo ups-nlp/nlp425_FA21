@@ -111,7 +111,7 @@ def test_model(x_test):
 plot_figures = False
 
 # The input file
-INPUT_FILE = 'data/frotz_builtin_walkthrough.csv'
+INPUT_FILE = '../data/frotz_builtin_walkthrough.csv'
 
 # Read in the data
 df = pd.read_csv(INPUT_FILE)
@@ -129,10 +129,7 @@ points = (df['Points']).values               # The points earned by the action
 sentenceTransformer = SentenceTransformer('multi-qa-mpnet-base-dot-v1')
 inputs = np.array([sentenceTransformer.encode([x])[0] for x in observations])
 
-# Normalize the data to values between 0 and 1
-#TODO this is commented out
-#inputs = (inputs - np.min(inputs))
-#inputs = inputs/np.max(inputs)
+# Note that we DO NOT normalize the data to values between 0 and 1
 
 # Get the lengths of our variables
 n_inputs = np.shape(inputs)[0]
@@ -191,27 +188,25 @@ history = autoencoder.fit(x_train, x_train, epochs = epochs,
 x_encoded = encoder.predict(inputs)
 x_decoded = decoder.predict(x_encoded)    
 
-#TODO make this into a method in a class and put in an external file to be imported
-# diff = np.zeros((np.shape(inputs)))
-# for i,x in enumerate(x_decoded):
-#     for j in range(encoded):
-#         diff[j] = sum(np.abs(x[:,j]-x_train[:,i]))
-#     mindiff[i] = min(diff)  #mindiff of i should be i
+#TODO make this into a method in a class and put in an external file to be
+# imported so Diggy can use it too
+diff = np.zeros((np.shape(inputs)))
+mindiff = np.zeros(n_inputs)
+for i,x in enumerate(x_decoded):
+    for j in range(encoded):
+        diff[j] = sum(np.abs(x[:,j] - x_train[:,i]))
+    mindiff[i] = min(diff)  #mindiff of i should be i
 
 
-# In the following, the reload does not work:
-encoder.save_weights("encoder_weights.h5")
-reconstructed_encoder = keras.models.load_model("model.h5")
+# # In the following, the reload does not work:
+# encoder.save_weights("encoder_weights.h5")
+# reconstructed_encoder = keras.models.load_model("model.h5")
 
 
-# Try loading in and using the model on the walkthrough
-# autoencoder.save_weights('model.h5')
-autoencoder.save('model.h5')
-reconstructed_model = keras.models.load_model("model.h5")
-
-# I don't know how to rebuild the encoder
-# Therefore for now I suppose I will do all of this in the ee_module
-# every time.
+# # Try loading in and using the model on the walkthrough
+# # autoencoder.save_weights('model.h5')
+# autoencoder.save('model.h5')
+# reconstructed_model = keras.models.load_model("model.h5")
 
 
 if plot_figures:
