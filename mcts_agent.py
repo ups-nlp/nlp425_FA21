@@ -215,8 +215,8 @@ def dynamic_sim_len(max_nodes, sim_limit, diff) -> int:
                 #max_nodes = max_nodes*2
 
         if(diff < 0.001):
-            if(sim_limit < 100):
-                sim_limit = sim_limit*2
+            if(sim_limit < 1000):
+                sim_limit = sim_limit*1.25
             max_nodes = max_nodes+10
 
             
@@ -226,7 +226,7 @@ def dynamic_sim_len(max_nodes, sim_limit, diff) -> int:
             #if(max_nodes > 100):
                 #max_nodes = floor(max_nodes/2)
             if(sim_limit > 12):
-                sim_limit =  floor(sim_limit/2)
+                sim_limit =  floor(sim_limit/1.25)
             
         
         return max_nodes, sim_limit
@@ -604,7 +604,7 @@ class Additive_Reward(Reward):
         if(score == 0):
             score = 1
         #print(child_sim_value/(child_visited*score),  exploration*sqrt((2*log2(parent_visited))/child_visited))
-        return child_sim_value/(child_visited*score) + 1.5*exploration*sqrt((2*log2(parent_visited))/child_visited)
+        return child_sim_value/(child_visited*score) + 1.75*exploration*sqrt((2*log2(parent_visited))/child_visited)
 
     def select_action(self, env: FrotzEnv, child_sim_value, child_visited, parent_visited):
         """ This method calculates and returns the average score for a given child node on the tree.
