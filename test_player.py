@@ -84,23 +84,23 @@ num_moves = 100
 curr_obs, history, env = set_up_game(ai_agent, game_file)
 
 
-# Test of hoarder - keep taking stuff until we fill up the inventory
-pre_actions = ['open mailbox', 'take leaflet', 'north','east','open window',
-               'go in', 'take all', 'west', 'take all','east',
-               'turn on lantern', 'up', 'take all', 'down', 'west',
-               'move rug', 'open trap door','down','north']
-#               'kill troll with sword', 'take all','drop leaflet',
-#               'drop brown sack', 'take axe']
+# # Test of hoarder - keep taking stuff until we fill up the inventory
+# pre_actions = ['open mailbox', 'take leaflet', 'north','east','open window',
+#                'go in', 'take all', 'west', 'take all','east',
+#                'turn on lantern', 'up', 'take all', 'down', 'west',
+#                'move rug', 'open trap door','down','north']
+# #               'kill troll with sword', 'take all','drop leaflet',
+# #               'drop brown sack', 'take axe']
 
-# When we have too much stuff (7-8 items), we get the message:
-# "Your load is too heavy"
-# But it depends on the weight of the item to be picked up!
+# # When we have too much stuff (7-8 items), we get the message:
+# # "Your load is too heavy"
+# # But it depends on the weight of the item to be picked up!
 
 
-# Take the prescribed actions
-while len(pre_actions) > 0:
-    action_to_take = pre_actions.pop(0)
-    curr_obs, history, env = game_step(action_to_take, curr_obs, history, env)
+# # Take the prescribed actions
+# while len(pre_actions) > 0:
+#     action_to_take = pre_actions.pop(0)
+#     curr_obs, history, env = game_step(action_to_take, curr_obs, history, env)
  
 
 # Let the agent take over

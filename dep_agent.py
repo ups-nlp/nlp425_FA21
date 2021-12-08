@@ -235,7 +235,7 @@ class DEPagent(Agent):
         sorted_actions = self.sort_actions(valid_actions)
 
 
-        prediction = self.reconstructed_model.predict(vector)
+        prediction = self.reconstructed_model.predict(np_vector)
         print(type(prediction))
 
 
