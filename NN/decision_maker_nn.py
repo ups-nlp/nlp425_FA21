@@ -155,7 +155,7 @@ model.compile(
 # actions to one-hot vectors
 history = model.fit(train_obs,
                     to_categorical(train_labels),
-                    verbose = 0,
+                    verbose = 1,
                     validation_split = 0.2, # split data in 80/20 sets
                     epochs=epochs,
                     batch_size=batch_size)
