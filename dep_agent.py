@@ -16,25 +16,21 @@ from jericho import FrotzEnv
 from numpy import dot
 from numpy.linalg import norm
 from sentence_transformers import SentenceTransformer
-
-import os
-import torch
-from torch import nn
-from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
-
 import tensorflow as tf
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-import pandas as pd
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.optimizers import Adam
-from sklearn.model_selection import train_test_split
-from matplotlib import pyplot as plt
-
 from operator import add
 from operator import truediv
+#from tensorflow.keras.models import Sequential
+#from tensorflow.keras.layers import Dense
+#import pandas as pd
+#from tensorflow.keras.utils import to_categorical
+#from tensorflow.keras.optimizers import Adam
+#from sklearn.model_selection import train_test_split
+#from matplotlib import pyplot as plt
+#import os
+#import torch
+#from torch import nn
+#from torch.utils.data import DataLoader
+#from torchvision import datasets, transforms
 
 # In-house modules
 from agent import Agent
