@@ -229,15 +229,21 @@ class DEPagent(Agent):
         """
 
         vector = self.create_observation_vect(env)
-        np_vector = np.array(vector)
+        np_vector = np.array([vector])
 
 
         sorted_actions = self.sort_actions(valid_actions)
 
-
+        #print(np_vector)
+        #print(type(np_vector))
+        #print(np_vector.shape)
+        #print(type(self.reconstructed_model))
         prediction = self.reconstructed_model.predict(np_vector)
-        print(type(prediction))
 
+        sorted_prediction = np.ndarray.argsort(prediction)
+        reverse_sorted_prediction = sorted_prediction.flip()
+        print(prediction)
+        print(reverse_sorted_prediction)
 
         chosen_module = random.randint(0, 3)
         return chosen_module
