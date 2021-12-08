@@ -169,3 +169,5 @@ plt.ylabel('accuracy')
 # Evaluate the model.
 # output: accuracy is 0.425 on test set
 model.evaluate(test_obs, to_categorical(test_labels))
+
+model.save('./dm_nn')

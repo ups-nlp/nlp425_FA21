@@ -70,6 +70,8 @@ class DEPagent(Agent):
 
         #Find the NN files that will save weights to a file
         #create_dm_nn(self.vocab_vectors, self.word2id)
+        self.reconstructed_model = tf.keras.models.load_model('./NN/dm_nn')
+
 
         # set model for sentence transformers
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -227,8 +229,15 @@ class DEPagent(Agent):
         """
 
         vector = self.create_observation_vect(env)
+        np_vector = np.array(vector)
+
 
         sorted_actions = self.sort_actions(valid_actions)
+
+
+        prediction = self.reconstructed_model.predict(vector)
+        print(type(prediction))
+
 
         chosen_module = random.randint(0, 3)
         return chosen_module
@@ -257,7 +266,7 @@ class DEPagent(Agent):
         observation = onlyTxt
 
         #Call the create_vect method to turn the string into a list representing a vector
-        avg_vect = self.create_vect(self.vocab_vectors, self.word2id, observation)
+        avg_vect = create_vect(self.vocab_vectors, self.word2id, observation)
 
         return(avg_vect)
 
