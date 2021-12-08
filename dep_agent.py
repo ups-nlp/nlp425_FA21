@@ -239,7 +239,11 @@ class DEPagent(Agent):
         #print(np_vector.shape)
         #print(type(self.reconstructed_model))
         prediction = self.reconstructed_model.predict(np_vector)
+
+        sorted_prediction = np.ndarray.argsort(prediction)
+        reverse_sorted_prediction = sorted_prediction.flip()
         print(prediction)
+        print(reverse_sorted_prediction)
 
 
         chosen_module = random.randint(0, 3)
