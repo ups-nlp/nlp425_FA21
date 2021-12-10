@@ -4,7 +4,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
-#import pandas as pd
+import pandas as pd
 
 
 class PCAencoder:
@@ -21,6 +21,7 @@ class PCAencoder:
         
         # Project back up to compare to original inputs
         self.proj_up = self.pca.inverse_transform(self.proj_down)
+        
         
     def st_encode(self, obs):
         """Run the encoder on input data"""
@@ -43,7 +44,6 @@ class PCAencoder:
         # Perform the PCA transform to reduce the number of features
         return self.pca.transform(st_encoded)
         
-    
     
     def plot_inputs(self):
         """Plot the inputs to see what they look like"""
@@ -146,6 +146,38 @@ class PCAencoder:
         plt.plot(st_encoded[iinput,:] - proj_up[iinput,:])
         plt.xlabel('feature')
         plt.ylabel('original - reconstructed')
+        
+    def save_to_file(self, fname):
+        """Write the obs to a CSV file"""
+        np.savetxt(fname, self.proj_down, delimiter = ',')
+        
+        
+        
+if __name__ == "__main__":
+    """Create an instance of the PCAencoder"""
+
+    # Read in the data from the walkthrough    
+    INPUT_FILE = 'data/frotz_builtin_walkthrough.csv'
+    df = pd.read_csv(INPUT_FILE)
+    observations = (df['Observation']).values
+    actions = (df['Action']).values              # The labels, or correct answers
+
+    # Create the PCA encoder
+    pcaEncoder = PCAencoder(observations)
+    
+    # Check the shapes of things
+    print('There are', len(observations), 'observations')
+          
+    rows = np.shape(pcaEncoder.proj_down)[0]
+    cols = np.shape(pcaEncoder.proj_down)[1]
+    print('The encoded observations are:', str(rows), 'x', str(cols))
+    print('E.g.', str(rows) , 'observations each of length', str(cols))
+    print('There are', len(actions), 'actions')
+
+    # Save the encoded inputs to a file
+    #pcaEncoder.save_to_file('data/encoded_observations.csv')
+        
+  
     
         
     
