@@ -19,9 +19,12 @@ from sentence_transformers import SentenceTransformer
 import tensorflow as tf
 from operator import add
 from operator import truediv
+from tensorflow.keras import models
+import pickle
+import pandas as pd
+
 #from tensorflow.keras.models import Sequential
 #from tensorflow.keras.layers import Dense
-#import pandas as pd
 #from tensorflow.keras.utils import to_categorical
 #from tensorflow.keras.optimizers import Adam
 #from sklearn.model_selection import train_test_split
@@ -34,14 +37,17 @@ from operator import truediv
 
 # In-house modules
 from agent import Agent
+from pca_encoder import PCAencoder
 
 
 class DEPagent(Agent):
     """Agent created by Danielle, Eric, and Penny."""
 
     def __init__(self):
-        """ Initialze the class by setting instance variables for enemies,
-        weapons, and movements """
+        """
+        Initialize the class by setting instance variables for enemies,
+        weapons, and movements
+        """
 
         # Lists of enemies and weapons
         # Perhaps these should use intelligence to build up?
@@ -54,7 +60,8 @@ class DEPagent(Agent):
                           'east':'west', 'west':'east',
                           'up':'down', 'down':'up',
                           'northwest':'southeast', 'southeast':'northwest',
-                          'northeast':'southwest', 'southwest':'southeast', 'go':'go'}
+                          'northeast':'southwest', 'southwest':'southeast', 
+                          'go':'go'}
 
         # index of the current observation in the enviroment
         self.OBSERVATION_INDEX = 8
@@ -63,14 +70,27 @@ class DEPagent(Agent):
         self.PAST_ACTIONS_CHECK = 3
 
         self.vocab_vectors, self.word2id = embed_vocab()
-
+        
         #Find the NN files that will save weights to a file
-        #create_dm_nn(self.vocab_vectors, self.word2id)
         self.reconstructed_model = tf.keras.models.load_model('./NN/dm_nn')
-
 
         # set model for sentence transformers
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        
+        # Load in the EE model (where should this happen?)
+        self.ee_model = models.load_model('NN/ee_neural_network_model.pb')
+        
+        # We need the unique actions for the ee neural network
+        with open('NN/unique_actions.pkl', 'rb') as fid:
+            self.unique_actions = pickle.load(fid)
+            
+        # The training file to use to create the autoencoder for the
+        # Everything Else module. Hard-wiring for now
+        INPUT_FILE = 'data/frotz_builtin_walkthrough.csv'
+        df = pd.read_csv(INPUT_FILE)
+        self.observations = (df['Observation']).values    # The inputs
+        self.pcaEncoder = PCAencoder(self.observations)
+
 
     def hoarder(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
         """
@@ -85,7 +105,6 @@ class DEPagent(Agent):
         @return chosen_action: A string of containing "take all"
 
         """
-        #return random.choice(valid_actions)
         return self.get_action(env, valid_actions, history)
 
 
@@ -100,7 +119,6 @@ class DEPagent(Agent):
 
         @return chosen_action: String containing "kill ____ with ____" or "run"
         """
-        #return random.choice(valid_actions)
         return self.get_action(env, valid_actions, history)
 
     def mover(self, env:FrotzEnv, valid_actions:list, history:list) -> str:
@@ -122,7 +140,7 @@ class DEPagent(Agent):
             return valid_actions[0]
 
         valid_movements = [action for action in self.movements \
-                             if action in valid_actions]
+                           if action in valid_actions]
         if not any(valid_movements):
             return random.choice(valid_actions)
 
@@ -144,8 +162,6 @@ class DEPagent(Agent):
             if double_back in valid_movements and len(valid_movements)>1:
                 valid_movements.remove(double_back)
 
-        # Pick randomly from remaining choices
-        #return random.choice(valid_movements)
         return self.get_action(env, valid_movements, history)
 
 
@@ -154,21 +170,24 @@ class DEPagent(Agent):
         """
         Feed the observation and list of vaild actions into a model
         (similarity / neural network) that will decide what the next
-        action will be
-
+        action will be.
+        @param env The enviroment
         @param valid_actions
         @param history
-
         @return chosen_action: A String containing a new action
         """
-        # Or ... run the neural network: The input is the observation, which
-        # has been encoded as query_vec. The output is the result after
-        # running through the NN
+        
+        # Autoencode the observation
+        encoded_obs = self.pcaEncoder.encode(np.array([history[-1][0]]))
 
+        # Run the neural network to choose an action
+        predict = self.ee_model.predict(encoded_obs)
+        
+        # Get the index to the maximum and the associated action
+        chosen_action = self.unique_actions[np.argmax(predict)]
 
-        #return chosen_action    # action with the best similarity to the observation
-        return self.get_action(env, valid_actions, history)
-
+        return chosen_action
+        
 
     def take_action(self, env: FrotzEnv, history: list) -> str:
         """
@@ -200,9 +219,11 @@ class DEPagent(Agent):
         elif len(sorted_actions[2]) == 0 and chosen_module == 2:
             chosen_module = 1
         elif len(sorted_actions[3]) == 0 and chosen_module == 3:
-             chosen_module= 1
+             chosen_module = 1
 
-        action = action_modules[chosen_module](env, sorted_actions[chosen_module], history)
+        action = action_modules[chosen_module](env, 
+                                               sorted_actions[chosen_module], 
+                                               history)
         return action
 
 
@@ -237,13 +258,13 @@ class DEPagent(Agent):
         prediction = self.reconstructed_model.predict(np_vector)
 
         sorted_prediction = np.ndarray.argsort(prediction)
-        reverse_sorted_prediction = sorted_prediction.flip()
-        print(prediction)
-        print(reverse_sorted_prediction)
+        #reverse_sorted_prediction = sorted_prediction.flip()
+        #print(prediction)
+        #print(reverse_sorted_prediction)
 
         chosen_module = random.randint(0, 3)
         return chosen_module
-
+        
 
 
 
@@ -275,12 +296,12 @@ class DEPagent(Agent):
 
     def sort_actions(self, valid_actions:list) -> list:
         """
-            looks through all the valid actions and sorted them by hoarder,
-            mover, fighter, or everything else.
+        looks through all the valid actions and sorted them by hoarder,
+        mover, fighter, or everything else.
 
-            @param valid_actions
+        @param valid_actions
 
-            @return sorted_actions, list of lists of sorted actions
+        @return sorted_actions, list of lists of sorted actions
         """
         mover_actions = []
         fighter_actions = []

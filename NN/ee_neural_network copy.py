@@ -15,6 +15,12 @@ https://towardsdatascience.com/addressing-the-difference-between-keras-validatio
 """
 
 
+import sys
+if '../' not in sys.path:
+    sys.path.append('../')
+
+from pca_encoder import PCAencoder
+
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -26,7 +32,7 @@ from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
 
 # # # # # # # # # #      Read in the data      # # # # # # # # # #
-INPUT_FILE = 'data/frotz_builtin_walkthrough.csv'
+INPUT_FILE = '../data/frotz_builtin_walkthrough.csv'
 df = pd.read_csv(INPUT_FILE)
 observations = (df['Observation']).values    # The inputs
 actions = (df['Action']).values              # The labels, or correct answers
@@ -91,8 +97,8 @@ history = model.fit(train_obs,
                     to_categorical(train_labels),
                     verbose = 0,
                     validation_split = 0.2, # split data in 80/20 sets
-                    epochs=epochs,
-                    batch_size=batch_size)
+                    epochs = epochs,
+                    batch_size = batch_size)
 
 
 # Plot the accuracy of the model as it trains
