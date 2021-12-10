@@ -177,8 +177,11 @@ class DEPagent(Agent):
         @return chosen_action: A String containing a new action
         """
         
+        # The current observation is not in the history yet! Get from here:
+        curr_obs = str(env.get_state()[-1])
+
         # Autoencode the observation
-        encoded_obs = self.pcaEncoder.encode(np.array([history[-1][0]]))
+        encoded_obs = self.pcaEncoder.encode(np.array([curr_obs]))
 
         # Run the neural network to choose an action
         predict = self.ee_model.predict(encoded_obs)
@@ -206,7 +209,7 @@ class DEPagent(Agent):
         # get sorted actions: in order: Hoarder, mover, fighter, and everything else.
         sorted_actions = self.sort_actions(valid_actions)
 
-        chosen_module = self.decision_maker(valid_actions, history, env)
+        chosen_module = self.decision_maker(valid_actions, env)
 
         action_modules = [self.hoarder,
                           self.mover,
@@ -227,13 +230,11 @@ class DEPagent(Agent):
         return action
 
 
-    def decision_maker(self, valid_actions:list, history:list, env: FrotzEnv) -> int:
+    def decision_maker(self, valid_actions:list, env: FrotzEnv) -> int:
         """
-        Decide which choice to take randomly for now
-        this needs some intelligence
+        Decide which choice to take.
 
         @param valid_actions
-        @param history
         @param environment
 
         Creates an embedding of all the words in the previous observation,

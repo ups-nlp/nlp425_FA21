@@ -114,10 +114,32 @@ epochs = 50
 batch_size = 10
 hidden_layer1_nodes = 50
 hidden_layer2_nodes = 0
-learnrate = 0.005
+learning_rate = 0.005
 
-loss, accuracy, history, model = build_model(epochs, batch_size, 
-                                             30, 20, learnrate)
+
+model = Sequential()
+model.add(Dense(hidden_layer1_nodes, activation = 'sigmoid', 
+                input_shape=(n_features,)))
+model.add(Dense(n_actions, activation = 'softmax'))
+    
+    
+# Compile the model. The loss function was categorical_crossentropy, now
+# using MSE
+model.compile(optimizer = Adam(lr = learning_rate),
+              loss = 'MSE',
+              metrics=['accuracy'])
+
+# Train the model. The use of to_categorical converts the action-indices to 
+# one-hot vectors
+history = model.fit(train_obs,
+                    train_labels,
+                    verbose = 0,
+                    validation_split = 0.2, # split data in 80/20 sets
+                    epochs = epochs,
+                    batch_size = batch_size)
+
+loss, accuracy = model.evaluate(test_obs, test_labels)
+
 
 
 predictions = model.predict(train_obs)

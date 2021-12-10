@@ -9,14 +9,8 @@ from matplotlib import pyplot as plt
 
 class PCAencoder:
 
-    # def __init__(self, INPUT_FILE):
-    #     # The input file
-        
-    #     # Read in the data
-    #     df = pd.read_csv(INPUT_FILE)
-    #     self.obs = (df['Observation']).values    # The inputs
-        
     def __init__(self, observations):
+        """ Initialize by training the model using the observations """
         self.obs = observations
         # Encode observations as numerical vectors
         self.st_encoded = self.st_encode(self.obs)
@@ -30,7 +24,6 @@ class PCAencoder:
         
     def st_encode(self, obs):
         """Run the encoder on input data"""
-        
         # Encode the observations
         # The inputs are size: inputs x features: (396 x 768)
         # The inputs vary from -1.2 to 1.4, so they are already pretty well
