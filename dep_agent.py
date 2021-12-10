@@ -78,7 +78,7 @@ class DEPagent(Agent):
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
         
         # Load in the EE model (where should this happen?)
-        self.ee_model = models.load_model('NN/ee_neural_network_model.pb')
+        self.ee_model = models.load_model('NN/ee_neural_network_model')
         
         # We need the unique actions for the ee neural network
         with open('NN/unique_actions.pkl', 'rb') as fid:

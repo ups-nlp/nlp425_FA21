@@ -119,7 +119,7 @@ plot_result(0)
 plot_result(2)
 plot_result(3)
 plt.legend()
-plt.title('Probability determined by NN for Observations')
+plt.title('Probability determined by NN for Observations. Legend=predicted, true')
 
 plt.subplot(4,1,2)
 plot_result(4)
@@ -139,7 +139,6 @@ plot_result(10)
 plot_result(11)
 plot_result(12)
 plt.legend()
-
 plt.xlabel('Action')
 
 # Evaluate the model.
@@ -148,7 +147,7 @@ model.evaluate(test_obs, test_labels)
 
 # # # # #   SAVE THE RESULTS   # # # # # # #
 # Save the model and the unique actions
-model.save('ee_neural_network_model.pb')
+model.save('ee_neural_network_model')
 with open('unique_actions.pkl', 'wb') as fid:
     pickle.dump(unique_actions, fid)
 
