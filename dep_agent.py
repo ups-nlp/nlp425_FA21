@@ -60,7 +60,7 @@ class DEPagent(Agent):
                           'east':'west', 'west':'east',
                           'up':'down', 'down':'up',
                           'northwest':'southeast', 'southeast':'northwest',
-                          'northeast':'southwest', 'southwest':'southeast', 
+                          'northeast':'southwest', 'southwest':'southeast',
                           'go':'go'}
 
         # index of the current observation in the enviroment
@@ -70,20 +70,20 @@ class DEPagent(Agent):
         self.PAST_ACTIONS_CHECK = 3
 
         self.vocab_vectors, self.word2id = embed_vocab()
-        
+
         #Find the NN files that will save weights to a file
         self.reconstructed_model = tf.keras.models.load_model('./NN/dm_nn')
 
         # set model for sentence transformers
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
-        
+
         # Load in the EE model (where should this happen?)
         self.ee_model = models.load_model('NN/ee_neural_network_model')
-        
+
         # We need the unique actions for the ee neural network
         with open('NN/unique_actions.pkl', 'rb') as fid:
             self.unique_actions = pickle.load(fid)
-            
+
         # The training file to use to create the autoencoder for the
         # Everything Else module. Hard-wiring for now
         INPUT_FILE = 'data/frotz_builtin_walkthrough.csv'
@@ -176,7 +176,7 @@ class DEPagent(Agent):
         @param history
         @return chosen_action: A String containing a new action
         """
-        
+
         # The current observation is not in the history yet! Get from here:
         curr_obs = str(env.get_state()[-1])
 
@@ -185,12 +185,12 @@ class DEPagent(Agent):
 
         # Run the neural network to choose an action
         predict = self.ee_model.predict(encoded_obs)
-        
+
         # Get the index to the maximum and the associated action
         chosen_action = self.unique_actions[np.argmax(predict)]
 
         return chosen_action
-        
+
 
     def take_action(self, env: FrotzEnv, history: list) -> str:
         """
@@ -224,8 +224,8 @@ class DEPagent(Agent):
         elif len(sorted_actions[3]) == 0 and chosen_module == 3:
              chosen_module = 1
 
-        action = action_modules[chosen_module](env, 
-                                               sorted_actions[chosen_module], 
+        action = action_modules[chosen_module](env,
+                                               sorted_actions[chosen_module],
                                                history)
         return action
 
@@ -258,14 +258,34 @@ class DEPagent(Agent):
         #print(type(self.reconstructed_model))
         prediction = self.reconstructed_model.predict(np_vector)
 
-        sorted_prediction = np.ndarray.argsort(prediction)
-        #reverse_sorted_prediction = sorted_prediction.flip()
-        #print(prediction)
-        #print(reverse_sorted_prediction)
+        #0 at the end because its a 2D array for some reason
+        sorted_prediction = np.ndarray.argsort(prediction)[0]
+        reverse_sorted_prediction = sorted_prediction[::-1]
+        print(prediction)
+        print(sorted_prediction)
+        print(reverse_sorted_prediction)
 
-        chosen_module = random.randint(0, 3)
-        return chosen_module
-        
+        #0 is hoarder
+        #1 is mover
+        #2 is fighter
+        #3 is everything else
+        module_rank_num = 0
+        while(module_rank_num < 4):
+            module_num = reverse_sorted_prediction[0]
+
+            #if there are actions for that module or is the everything else module
+            actions_exist = len(sorted_actions[module_num]) > 0
+            #is_ee_module = module_num == 3
+            if(actions_exist):
+                print(reverse_sorted_prediction[0])
+                print(module_num)
+                return module_num
+
+
+
+        #chosen_module = random.randint(0, 3)
+        #return chosen_module
+
 
 
 
