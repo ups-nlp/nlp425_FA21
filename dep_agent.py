@@ -182,9 +182,9 @@ class DEPagent(Agent):
 
         # Assign probabilities to all the valid actions, make them equally
         # probable
-        
+
         prob = [1/len(valid_actions) for i in range(len(valid_actions))]
-        
+
         # The current observation is not in the history yet! Get from here:
         curr_obs = str(env.get_state()[-1])
 
@@ -193,13 +193,13 @@ class DEPagent(Agent):
 
         # Run the neural network to choose an action
         predict = self.ee_model.predict(encoded_obs)
-        
+
         # Add these probabilities to the list
         prob += predict
-        
+
         # Normalize
         prob = prob/np.sum(prob)
-        
+
         # Roll the dice
         probs = np.zeros(len(prob))
         counter = 0
@@ -209,13 +209,13 @@ class DEPagent(Agent):
             if randnum >= counter and randnum <= probs[i]:
                 return i
             counter += probs[i]
-        
+
         if i < len(valid_actions):
             chosen_action = valid_actions[i]
         else:
             chosen_action = self.unique_actions[len(valid_actions) + i]
 
-                        
+
         return chosen_action
 
 
@@ -303,7 +303,7 @@ class DEPagent(Agent):
             num_actions = len(sorted_actions[module_num])
             #is_ee_module = module_num == 3
             if(num_actions > 0):
-                if hist_len > 1:
+                if hist_len > 2:
                     if history[hist_len-1] == history[hist_len-2]:
                         print(reverse_sorted_prediction[0])
                         rand_int = random.randint(0,3)
