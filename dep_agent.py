@@ -177,6 +177,9 @@ class DEPagent(Agent):
         @return chosen_action: A String containing a new action
         """
 
+        #if len(valid_actions) == 1:
+        #    return valid_actions[0]
+        
         # The current observation is not in the history yet! Get from here:
         curr_obs = str(env.get_state()[-1])
 
@@ -186,8 +189,21 @@ class DEPagent(Agent):
         # Run the neural network to choose an action
         predict = self.ee_model.predict(encoded_obs)
 
+        
+        # Get the valid_action with the highest probability
+        prob = 0
+        for valid_action in valid_actions:
+            if valid_action in self.unique_actions:
+                ind = self.unique_actions.argwhere(valid_action)
+                newprob = predict[ind] 
+                if newprob > prob:
+                    prob = newprob
+                    chosen_action = valid_action
+            else:
+                print('pause')
+                
         # Get the index to the maximum and the associated action
-        chosen_action = self.unique_actions[np.argmax(predict)]
+        #chosen_action = self.unique_actions[np.argmax(predict)]
 
         return chosen_action
 
