@@ -10,6 +10,8 @@ Created on Thu Oct 28 18:59:14 2021
 import random
 import numpy as np
 import re
+import random
+
 
 # Installed modules
 from jericho import FrotzEnv
@@ -177,8 +179,10 @@ class DEPagent(Agent):
         @return chosen_action: A String containing a new action
         """
 
-        #if len(valid_actions) == 1:
-        #    return valid_actions[0]
+        # Assign probabilities to all the valid actions, make them equally
+        # probable
+        
+        prob = [1/len(valid_actions)] * len(valid_actions)
         
         # The current observation is not in the history yet! Get from here:
         curr_obs = str(env.get_state()[-1])
@@ -187,24 +191,34 @@ class DEPagent(Agent):
         encoded_obs = self.pcaEncoder.encode(np.array([curr_obs]))
 
         # Run the neural network to choose an action
-        predict = self.ee_model.predict(encoded_obs)
-
+        predictions = self.ee_model.predict(encoded_obs)
         
-        # Get the valid_action with the highest probability
-        prob = 0
-        for valid_action in valid_actions:
-            if valid_action in self.unique_actions:
-                ind = self.unique_actions.argwhere(valid_action)
-                newprob = predict[ind] 
-                if newprob > prob:
-                    prob = newprob
-                    chosen_action = valid_action
-            else:
-                print('pause')
-                
-        # Get the index to the maximum and the associated action
-        #chosen_action = self.unique_actions[np.argmax(predict)]
+        # Paste the prediction probabilities onto the probability vector
+        for i,predict in enumerate(predictions):
+            if self.unique_actions[i] in valid_actions:
+                print('got a valid action')
+                # Append the probability of this prediction
+            prob.append(predict)
+        
+        # Normalize
+        prob = prob/np.sum(prob)
+        
+        # Roll the dice
+        probs = np.zeros(len(prob))
+        counter = 0
+        randnum = random.random()
+        for i in range(len(prob)):
+            probs[i] = prob[i] + counter
+            if randnum >= counter and randnum <= probs[i]:
+                return i
+            counter += probs[i]
+        
+        if i < len(valid_actions):
+            chosen_action = valid_actions[i]
+        else:
+            chosen_action = self.unique_actions[len(valid_actions) + i]
 
+                        
         return chosen_action
 
 
