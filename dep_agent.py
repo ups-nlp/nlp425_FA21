@@ -38,6 +38,7 @@ import pandas as pd
 # In-house modules
 from agent import Agent
 from pca_encoder import PCAencoder
+from word_transformer import glove
 
 
 class DEPagent(Agent):
@@ -335,7 +336,8 @@ class DEPagent(Agent):
         observation = onlyTxt
 
         #Call the create_vect method to turn the string into a list representing a vector
-        avg_vect = create_vect(self.vocab_vectors, self.word2id, observation)
+        #avg_vect = create_vect(self.vocab_vectors, self.word2id, observation)
+        avg_vect = glove.create_vect(self, observation)
 
         return(avg_vect)
 
@@ -392,10 +394,10 @@ class DEPagent(Agent):
                 past_actions.append(combo[1])
 
         # get the oberservation
-        observation = env.get_state()[8]
+        observation = self.create_observation_vect(env)
 
         # Encode the observation
-        query_vec = self.model.encode([observation])[0]
+        #query_vec = self.model.encode([observation])[0]
 
         # set up for testing all actions
         chosen_action = ""
