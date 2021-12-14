@@ -106,14 +106,12 @@ def create_vect(vocab_vectors:list, word2id:dict, observation:str) -> list:
 
     return(avg_vect)
 
-
+vocab_vectors, word2id = embed_vocab()
 
 for line in dm_training_data:
     lst = line.split(',')
     observation = lst[0]
-    vocab_vectors, word2id = embed_vocab()
     obs_vect = create_vect(vocab_vectors, word2id, observation)
-
     action = lst[1]
     module = lst[2]
     module = re.sub('\n', '', module)
