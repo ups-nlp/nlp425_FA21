@@ -209,7 +209,7 @@ class DEPagent(Agent):
         # get sorted actions: in order: Hoarder, mover, fighter, and everything else.
         sorted_actions = self.sort_actions(valid_actions)
 
-        chosen_module = self.decision_maker(valid_actions, env)
+        chosen_module = self.decision_maker(valid_actions, env, history)
 
         action_modules = [self.hoarder,
                           self.mover,
@@ -230,7 +230,7 @@ class DEPagent(Agent):
         return action
 
 
-    def decision_maker(self, valid_actions:list, env: FrotzEnv) -> int:
+    def decision_maker(self, valid_actions:list, env: FrotzEnv, history:list) -> int:
         """
         Decide which choice to take.
 
@@ -249,13 +249,9 @@ class DEPagent(Agent):
         vector = self.create_observation_vect(env)
         np_vector = np.array([vector])
 
-
         sorted_actions = self.sort_actions(valid_actions)
 
-        #print(np_vector)
-        #print(type(np_vector))
-        #print(np_vector.shape)
-        #print(type(self.reconstructed_model))
+
         prediction = self.reconstructed_model.predict(np_vector)
 
         #0 at the end because its a 2D array for some reason
@@ -265,29 +261,35 @@ class DEPagent(Agent):
         print(sorted_prediction)
         print(reverse_sorted_prediction)
 
+        hist_len = len(history)
+
         #0 is hoarder
         #1 is mover
         #2 is fighter
         #3 is everything else
         module_rank_num = 0
+        i=0
         while(module_rank_num < 4):
-            module_num = reverse_sorted_prediction[0]
+            module_num = reverse_sorted_prediction[i]
 
             #if there are actions for that module or is the everything else module
-            actions_exist = len(sorted_actions[module_num]) > 0
+            num_actions = len(sorted_actions[module_num])
             #is_ee_module = module_num == 3
-            if(actions_exist):
+            if(num_actions > 0):
+
+                if hist_len > 1:
+                    if history[hist_len-1] == history[hist_len-2]:
+                        return random.randint(0,3)
+
                 print(reverse_sorted_prediction[0])
                 print(module_num)
                 return module_num
 
+            i+=1
 
 
         #chosen_module = random.randint(0, 3)
         #return chosen_module
-
-
-
 
 
     def create_observation_vect(self, env:FrotzEnv) -> list:
