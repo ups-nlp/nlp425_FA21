@@ -298,7 +298,7 @@ class DEPagent(Agent):
                         rand_int = random.randint(0,3)
                         print("Chose random module: " + str(rand_int))
                         return rand_int
-                    elif if history[hist_len-1] == history[hist_len-3]:
+                    elif history[hist_len-1] == history[hist_len-3]:
                         print(reverse_sorted_prediction[0])
                         rand_int = random.randint(0,3)
                         print("Chose random module: " + str(rand_int))
