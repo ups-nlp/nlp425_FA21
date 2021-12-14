@@ -279,10 +279,13 @@ class DEPagent(Agent):
 
                 if hist_len > 1:
                     if history[hist_len-1] == history[hist_len-2]:
-                        return random.randint(0,3)
+                        print(reverse_sorted_prediction[0])
+                        rand_int = random.randint(0,3)
+                        print("Chose random module: " + str(rand_int))
+                        return rand_int
 
-                print(reverse_sorted_prediction[0])
-                print(module_num)
+                print("Top choice: " + str(reverse_sorted_prediction[0]))
+                print("Chosen module: " + str(module_num))
                 return module_num
 
             i+=1
