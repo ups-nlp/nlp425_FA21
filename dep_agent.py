@@ -276,9 +276,13 @@ class DEPagent(Agent):
             num_actions = len(sorted_actions[module_num])
             #is_ee_module = module_num == 3
             if(num_actions > 0):
-
                 if hist_len > 1:
                     if history[hist_len-1] == history[hist_len-2]:
+                        print(reverse_sorted_prediction[0])
+                        rand_int = random.randint(0,3)
+                        print("Chose random module: " + str(rand_int))
+                        return rand_int
+                    elif if history[hist_len-1] == history[hist_len-3]:
                         print(reverse_sorted_prediction[0])
                         rand_int = random.randint(0,3)
                         print("Chose random module: " + str(rand_int))
