@@ -183,7 +183,7 @@ class DEPagent(Agent):
         # Assign probabilities to all the valid actions, make them equally
         # probable
         
-        prob = [1/len(valid_actions)] * len(valid_actions)
+        prob = [1/len(valid_actions) for i in range(len(valid_actions))]
         
         # The current observation is not in the history yet! Get from here:
         curr_obs = str(env.get_state()[-1])
@@ -192,14 +192,10 @@ class DEPagent(Agent):
         encoded_obs = self.pcaEncoder.encode(np.array([curr_obs]))
 
         # Run the neural network to choose an action
-        predictions = self.ee_model.predict(encoded_obs)
+        predict = self.ee_model.predict(encoded_obs)
         
-        # Paste the prediction probabilities onto the probability vector
-        for i,predict in enumerate(predictions):
-            if self.unique_actions[i] in valid_actions:
-                print('got a valid action')
-                # Append the probability of this prediction
-            prob.append(predict)
+        # Add these probabilities to the list
+        prob += predict
         
         # Normalize
         prob = prob/np.sum(prob)
