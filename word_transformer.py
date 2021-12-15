@@ -12,7 +12,7 @@ class word_Transformer:
     def create_vect(observation:str) -> list:
         """Takes in a string and transforms into a vector"""
         raise NotImplementedError
-    
+
 class glove(word_Transformer):
     """
     uses glove to transfrom words into vectors
@@ -50,11 +50,18 @@ class glove(word_Transformer):
                 num_words +=1
             #else:
                 #print("Word not in the vocab: " + word)
+        if num_words > 0:
+            words = [num_words] * vect_size
+            avg_vect = list(map(truediv, avg_vect, words))
 
-        words = [num_words] * vect_size
-        avg_vect = list(map(truediv, avg_vect, words))
-
-        return(avg_vect)
+            return(avg_vect)
+        else:
+            i=0
+            random_vect = [0] * vect_size
+            while i<50:
+                random_vect[i] = (random.random()/vect_size)
+                i+=1
+            return random_vect
 
     def embed_vocab() -> (list, dict):
         """
@@ -102,7 +109,7 @@ class glove(word_Transformer):
 
 class sen_transformer(word_Transformer):
     """
-    uses Sentance transfromers to transfrom words to vectors 
+    uses Sentance transfromers to transfrom words to vectors
     """
     def __init__(self):
         """
