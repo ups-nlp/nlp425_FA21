@@ -284,9 +284,9 @@ class DEPagent(Agent):
         #0 at the end because its a 2D array for some reason
         sorted_prediction = np.ndarray.argsort(prediction)[0]
         reverse_sorted_prediction = sorted_prediction[::-1]
-        print(prediction)
-        print(sorted_prediction)
-        print(reverse_sorted_prediction)
+        #print(prediction)
+        #print(sorted_prediction)
+        #print(reverse_sorted_prediction)
 
         hist_len = len(history)
 
@@ -299,7 +299,7 @@ class DEPagent(Agent):
             module_num = reverse_sorted_prediction[module_rank_num]
             rand_val = random.random()
             if (rand_val < .25) and module_num == 3:
-                print("hit rand val")
+                #print("hit rand val")
                 module_rank_num+=1
                 continue
 
@@ -309,18 +309,18 @@ class DEPagent(Agent):
             if(num_actions > 0):
                 if hist_len > 2:
                     if history[hist_len-1] == history[hist_len-2]:
-                        print(reverse_sorted_prediction[0])
+                        #print(reverse_sorted_prediction[0])
                         rand_int = random.randint(0,3)
-                        print("Chose random module: " + str(rand_int))
+                        #print("Chose random module: " + str(rand_int))
                         return rand_int
                     elif history[hist_len-1] == history[hist_len-3]:
-                        print(reverse_sorted_prediction[0])
+                        #print(reverse_sorted_prediction[0])
                         rand_int = random.randint(0,3)
-                        print("Chose random module: " + str(rand_int))
+                        #print("Chose random module: " + str(rand_int))
                         return rand_int
 
-                print("Top choice: " + str(reverse_sorted_prediction[0]))
-                print("Chosen module: " + str(module_num))
+                #print("Top choice: " + str(reverse_sorted_prediction[0]))
+                #print("Chosen module: " + str(module_num))
                 return module_num
 
             module_rank_num+=1
@@ -504,8 +504,8 @@ def create_vect(vocab_vectors:list, word2id:dict, observation:str) -> list:
             norm_vect = vocab_vectors[id]
             avg_vect = list(map(add, avg_vect, norm_vect))
             num_words +=1
-        else:
-            print("Word not in the vocab: " + word)
+        #else:
+            #print("Word not in the vocab: " + word)
 
     words = [num_words] * vect_size
     avg_vect = list(map(truediv, avg_vect, words))
