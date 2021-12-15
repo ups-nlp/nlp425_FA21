@@ -17,7 +17,7 @@ import random
 from jericho import FrotzEnv
 from numpy import dot
 from numpy.linalg import norm
-from sentence_transformers import SentenceTransformer
+#from sentence_transformers import SentenceTransformer
 import tensorflow as tf
 from operator import add
 from operator import truediv
@@ -78,7 +78,7 @@ class DEPagent(Agent):
         self.reconstructed_model = tf.keras.models.load_model('./NN/dm_nn')
 
         # set model for sentence transformers
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        #self.model = SentenceTransformer('all-MiniLM-L6-v2')
 
         # Load in the EE model (where should this happen?)
         self.ee_model = models.load_model('NN/ee_neural_network_model')
@@ -403,7 +403,11 @@ class DEPagent(Agent):
                 past_actions.append(combo[1])
 
         # get the oberservation
-        observation = self.create_observation_vect(env)
+        currState = env.get_state()
+        gameState = currState[8].decode()
+        observation = glove.create_vect(self, gameState)
+        #glove.create_vect(env)
+        #observation = self.creat_vect
 
         # Encode the observation
         #query_vec = self.model.encode([observation])[0]
@@ -415,11 +419,11 @@ class DEPagent(Agent):
         for action in valid_actions:
             if (len(history) !=0 and action in past_actions):
                 continue
-            action_vec = self.create_observation_vect(action)
+            action_vec = glove.create_vect(action)
             sim = dot(observation, action_vec) \
                       /(norm(observation)*norm(action_vec))
             # choose action with the best similarity
-            if (best_similarity < sim):
+            if (best_similarity < sim)
                 best_similarity = sim
                 chosen_action = action
         # return the action with the closest similarity
