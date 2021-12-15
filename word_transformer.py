@@ -53,8 +53,8 @@ class glove(word_Transformer):
         if num_words > 0:
             words = [num_words] * vect_size
             avg_vect = list(map(truediv, avg_vect, words))
-
             return(avg_vect)
+            
         else:
             i=0
             random_vect = [0] * vect_size

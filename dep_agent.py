@@ -294,9 +294,13 @@ class DEPagent(Agent):
         #2 is fighter
         #3 is everything else
         module_rank_num = 0
-        i=0
         while(module_rank_num < 4):
-            module_num = reverse_sorted_prediction[i]
+            module_num = reverse_sorted_prediction[module_rank_num]
+            rand_val = random.random()
+            if (rand_val < .25) and module_num == 3:
+                print("hit rand val")
+                module_rank_num+=1
+                continue
 
             #if there are actions for that module or is the everything else module
             num_actions = len(sorted_actions[module_num])
@@ -318,7 +322,7 @@ class DEPagent(Agent):
                 print("Chosen module: " + str(module_num))
                 return module_num
 
-            i+=1
+            module_rank_num+=1
 
 
         #chosen_module = random.randint(0, 3)
