@@ -192,6 +192,7 @@ class DEPagent(Agent):
         encoded_obs = self.pcaEncoder.encode(np.array([curr_obs]))
 
         # Run the neural network to choose an action
+        # Give these a much lower probability
         predict = 0.1 * self.ee_model.predict(encoded_obs)
 
         # Add these probabilities to the list

@@ -103,15 +103,28 @@ loss, accuracy = model.evaluate(test_obs, test_labels)
 
 predictions = model.predict(train_obs)
 
-# The predictions are all very similar to each other and close to 0
+# The predictions 
 plt.figure()
 plt.plot(predictions)
 plt.xlabel('Observation')
 plt.ylabel('Probability')
 plt.title('Probability determined by NN for Actions')
 
+n_train = len(train_obs)
+max_predict_train = [np.argmax(predictions[i,:]) for i in range(n_train)]
+max_train = [np.argmax(train_labels[i,:]) for i in range(n_train)]
+
+# Scatter plot of predictions vs true
+plt.figure()
+plt.plot([0,140],[0,140],'k:')
+plt.plot(max_train, max_predict_train, '.')
+plt.xlabel('true')
+plt.ylabel('max(predicted)')
+
+
 def plot_result(i):
-    plt.plot(predictions[i,:], label=str(np.argmax(predictions[i,:]))+','+str(train_labels[i,:].argmax()))
+    plt.plot(predictions[i,:], label=str(np.argmax(predictions[i,:])) + ',' \
+                                     + str(train_labels[i,:].argmax()))
 
 plt.figure()
 plt.subplot(4,1,1)
@@ -140,6 +153,35 @@ plot_result(11)
 plot_result(12)
 plt.legend()
 plt.xlabel('Action')
+
+# Make histogram of actions
+labels = []
+for i,action in enumerate(actions):
+    labels.append(unique_actions.index(action))
+
+bin_edges = np.arange(-.5, n_actions+.5)
+bins = bin_edges + .5
+
+plt.figure()
+bin_vals, _,_ = plt.hist(labels, bin_edges)
+plt.hist(labels, bin_edges)
+plt.xlabel('Action number')
+plt.ylabel('Times in Walkthrough')
+
+
+bins = [int(x) for x in bins]
+
+max_vals = []
+max_acts = []
+for i in range(n_actions):
+    max_vals.append(max(bin_vals))
+    imax = bin_vals.argmax()
+    max_acts.append(unique_actions[bins[imax]])
+    bin_vals[imax] = -1
+
+# Get the top most common actions
+i = unique_actions.index('n')
+
 
 # Evaluate the model.
 model.evaluate(test_obs, test_labels)
