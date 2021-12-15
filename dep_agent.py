@@ -415,8 +415,9 @@ class DEPagent(Agent):
         for action in valid_actions:
             if (len(history) !=0 and action in past_actions):
                 continue
-            sim = dot(observation, self.model.encode([action])[0]) \
-                      /(norm(observation)*norm(self.model.encode([action])[0]))
+            action_vec = self.create_observation_vect(action)
+            sim = dot(observation, action_vec) \
+                      /(norm(observation)*norm(action_vec))
             # choose action with the best similarity
             if (best_similarity < sim):
                 best_similarity = sim
