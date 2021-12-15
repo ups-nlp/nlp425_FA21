@@ -195,25 +195,24 @@ class DEPagent(Agent):
         predict = self.ee_model.predict(encoded_obs)
 
         # Add these probabilities to the list
-        prob += predict
+        prob += predict[0]
 
         # Normalize
         prob = prob/np.sum(prob)
 
         # Roll the dice
-        probs = np.zeros(len(prob))
-        counter = 0
+        prob_sum = np.zeros(len(prob))
+        prob_sum[0] = prob[0]
         randnum = random.random()
-        for i in range(len(prob)):
-            probs[i] = prob[i] + counter
-            if randnum >= counter and randnum <= probs[i]:
-                return i
-            counter += probs[i]
+        for i in range(1,len(prob)):
+            prob_sum[i] = prob_sum[i-1] + prob[i]
+            if randnum >= prob_sum[i-1] and randnum <= prob_sum[i]:
+                break
 
         if i < len(valid_actions):
             chosen_action = valid_actions[i]
         else:
-            chosen_action = self.unique_actions[len(valid_actions) + i]
+            chosen_action = self.unique_actions[i-len(valid_actions)]
 
 
         return chosen_action
