@@ -419,7 +419,7 @@ class DEPagent(Agent):
         for action in valid_actions:
             if (len(history) !=0 and action in past_actions):
                 continue
-            action_vec = glove.create_vect(action)
+            action_vec = glove.create_vect(self, action)
             sim = dot(observation, action_vec) \
                       /(norm(observation)*norm(action_vec))
             # choose action with the best similarity
