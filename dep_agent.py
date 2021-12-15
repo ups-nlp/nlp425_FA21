@@ -423,7 +423,7 @@ class DEPagent(Agent):
             sim = dot(observation, action_vec) \
                       /(norm(observation)*norm(action_vec))
             # choose action with the best similarity
-            if (best_similarity < sim)
+            if (best_similarity < sim):
                 best_similarity = sim
                 chosen_action = action
         # return the action with the closest similarity
