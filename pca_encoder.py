@@ -49,10 +49,10 @@ class PCAencoder:
         """Plot the observation at the given index
         @param index The index to the observation to plot"""
         
-        norig_features = np.shape(st_encoded)[1]
+        norig_features = np.shape(self.st_encoded)[1]
                     
         plt.figure()
-        plt.plot(np.arange(norig_features), self.st_encoded[:,index])
+        plt.plot(np.arange(norig_features), self.st_encoded[index,:])
         plt.xlabel('feature')
         plt.ylabel('value')
         plt.title('Original: each curve represents the values for a particular observation')    
@@ -188,6 +188,9 @@ if __name__ == "__main__":
 
     # Save the encoded inputs to a file
     #pcaEncoder.save_to_file('data/encoded_observations.csv')
+    
+    # Plot the encoded observation 1 (2nd obs)
+    pcaEncoder.plot_input(1)
         
   
         
