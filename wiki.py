@@ -1,5 +1,6 @@
 import string
 print(string.punctuation)
+import collections
 
 # Cutoff -- this is the minimum number of occurances we want
 threshhold = 10
@@ -49,6 +50,21 @@ def unigramizer():
 				prev = line[1]
 				freq = line[0]
 
+def make_dict()
+	# wikiCorpus = open('wiki.txt', 'r')
+
+	# make dict
+	d = collections.defaultdict(dict)
+
+	with open('wiki.txr', 'r') as f:
+		for line in f:
+		values = line.split(' ')
+		main_key = values[1]
+		secondary_key = values[2]
+		main_value = [0]
+		d[main_key][secondary_key] = main_value
+	
+	f.close
 
 if __name__ == "__main__" :
 	# Code you want to run
